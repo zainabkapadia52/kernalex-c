@@ -1,0 +1,26 @@
+# Test file for fixed operators
+
+# Test XOR operator ^^
+int a = 5 ^^ 3;  # Should recognize ^^ as XOR
+
+# Test multiply operator ^
+int b = 4 ^ 2;   # Should recognize ^ as multiply
+
+# Test hex with lowercase x only
+int hex1 = 0xFF;     # Valid
+int hex2 = 0x1A2B;   # Valid
+
+# Test binary with lowercase b only
+int bin = 0b1010;    # Valid
+
+# Test octal with lowercase o only  
+int oct = 0o777;     # Valid
+
+# Test pointer dereference (not brace)
+int* ptr;
+int val = *ptr;
+
+# Test begin/end (not braces)
+begin
+    int x = 1;
+end;

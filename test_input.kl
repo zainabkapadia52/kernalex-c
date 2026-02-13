@@ -1,0 +1,130 @@
+# This is a single-line comment
+/// This is a documentation comment
+/** 
+ * This is a multi-line documentation comment
+ * It can span multiple lines
+ */
+
+# Another single-line comment
+
+int main() {
+    // This should NOT be recognized (C-style comment)
+    
+    # Single-line comment example
+    
+    int x = 42;              # Integer declaration
+    short y = 100;           # Short integer
+    float pi = 3.14;         # Float literal
+    float scientific = 1.5e10; # Scientific notation
+    float negative_exp = 6.022e-23;
+    
+    char letter = 'a';       # Character literal
+    string message = "Hello, World!";
+    
+    bool flag = true;
+    boolean check = false;
+    
+    # Keywords test
+    if (x > 10) {
+        /// Documentation comment for code block
+        y++;
+    } else {
+        y--;
+    }
+    
+    # Loop keywords
+    for (int i = 0; i < 10; i++) {
+        continue;
+    }
+    
+    while (true) {
+        break;
+    }
+    
+    repeat {
+        x++;
+    } until (x > 100);
+    
+    # Type keywords
+    struct Point {
+        int x;
+        int y;
+    };
+    
+    # Type modifiers
+    extern int global_var;
+    static int counter;
+    unsigned int positive;
+    signed int negative;
+    
+    # Operators
+    int a = 5;
+    int b = 10;
+    int sum = a + b;
+    int diff = a - b;
+    int product = a ^ b;   # Multiplication
+    int quotient = a / b;
+    int remainder = a % b;
+    
+    # Compound assignment
+    a += 5;
+    b -= 3;
+    a ^= 2;
+    b /= 2;
+    
+    # Relational operators
+    if (a < b) { }
+    if (a <= b) { }
+    if (a > b) { }
+    if (a >= b) { }
+    if (a == b) { }
+    if (a != b) { }
+    
+    # Three-way comparison
+    int cmp = a <=> b;
+    
+    # Logical operators
+    if (a > 0 && b > 0) { }
+    if (a > 0 || b > 0) { }
+    if (!flag) { }
+    
+    # Bitwise operators
+    int bits = a & b;
+    bits = a | b;
+    bits = a ^ b;
+    bits = ~a;
+    bits = a << 2;
+    bits = a >> 2;
+    
+    # Increment/Decrement
+    a++;
+    b--;
+    
+    # Arrays and pointers
+    int array[10];
+    int* ptr = &array[0];
+    int value = *ptr;
+    
+    # Structure access
+    Point p;
+    p.x = 10;
+    Point* pp = &p;
+    pp->y = 20;
+    
+    # sizeof
+    int size = sizeof(int);
+    
+    # Integer literals in different bases
+    int decimal = 42;
+    int binary = 0b1010;
+    int octal = 0o777;
+    int hex = 0xFF;
+    
+    # Identifiers
+    int _variable;
+    int Variable123;
+    int MAX_SIZE;
+    int count_down;
+    
+    return 0;
+}
