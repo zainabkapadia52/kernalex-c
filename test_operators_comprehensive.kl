@@ -1,0 +1,60 @@
+# Comprehensive operator testing
+
+# Arithmetic operators
+int a = 10 + 5;
+int b = 10 - 5;
+int c = 10 * 5;
+int d = 10 / 5;
+int e = 10 % 3;
+
+# Comparison operators
+bool cmp1 = a == b;
+bool cmp2 = a != b;
+bool cmp3 = a < b;
+bool cmp4 = a <= b;
+bool cmp5 = a > b;
+bool cmp6 = a >= b;
+bool cmp7 = a <=> b;
+
+# Logical operators
+bool log1 = true && false;
+bool log2 = true || false;
+bool log3 = !true;
+
+# Bitwise operators
+int bit1 = a & b;
+int bit2 = a | b;
+int bit3 = a ^ b;
+int bit4 = a << 2;
+int bit5 = a >> 2;
+int bit6 = ~a;
+int bit7 = a ^^ b;
+
+# Increment/Decrement
+int x = 5;
+x++;
+x--;
+int y = ++x;
+int z = x--;
+
+# Assignment operators
+int assign = 10;
+assign += 5;
+assign -= 3;
+assign *= 2;
+assign /= 4;
+assign %= 3;
+assign ^= 7;
+
+# Pointer and member operators
+int* ptr = &assign;
+int val = *ptr;
+int arr[10];
+int elem = arr[0];
+struct Point {
+    int x;
+    int y;
+} point;
+int dot = point.x;
+struct Point* pptr = &point;
+int member = pptr->x;

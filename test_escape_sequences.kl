@@ -1,0 +1,38 @@
+# Comprehensive escape sequence testing
+
+# Character literals with escape sequences
+char newline = '\n';
+char tab = '\t';
+char carriage = '\r';
+char backslash = '\\';
+char quote = '\'';
+char double_quote_in_char = '"';
+char backspace = '\b';
+char formfeed = '\f';
+char vertical_tab = '\v';
+char null_char = '\0';
+
+# String literals with escape sequences
+string newline_str = "hello\nworld";
+string tab_str = "hello\tworld";
+string escaped_quote = "say \"hello\"";
+string escaped_backslash = "path\\to\\file";
+string mixed = "line1\nline2\ttabbed\x41\u0042";
+string complex = "starts\nhere\t\tends";
+
+# Edge cases
+string empty = "";
+string single_space = " ";
+string many_escapes = "\\\\\\\\";
+
+# Multiple lines with strings
+int x = 42;
+string msg = "Part1\nPart2\nPart3";
+int y = 100;
+
+# Invalid cases (should report errors)
+char bad1 = '\c';
+string bad2 = "unterminated;
+string bad3 = "line1
+line2";
+char bad4 = 'a\nb';

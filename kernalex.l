@@ -29,11 +29,6 @@ void process_token(const char *text, int save_start) {
     }
 }
 
-int is_valid_escape(char c) {
-    return (c == 'n' || c == 't' || c == 'r' || c == '\\' || 
-            c == '"' || c == '\'' || c == 'b' || c == 'f' || 
-            c == 'v' || c == '0' || c == 'x' || c == 'u');
-}
 %}
 
 %option noyywrap
@@ -315,29 +310,20 @@ int is_valid_escape(char c) {
 
 %%
 
-int main(int argc, char *argv[]) {
-    if (argc > 1) {
+int main(int argc, char *argv[]){
+    if(argc > 1){
         yyin = fopen(argv[1], "r");
-        if (!yyin) {
+        if(!yyin){
             fprintf(stderr, "Error: Could not open file %s\n", argv[1]);
             return 1;
         }
     }
     
-    printf("=== KernaLex Lexical Analyzer ===\n");
-    if (argc > 1) {
-        printf("Input file: %s\n", argv[1]);
-    } else {
-        printf("Reading from stdin...\n");
-    }
-    printf("====================================\n\n");
-    
     yylex();
     
-    if (argc > 1) {
+    if(argc > 1){
         fclose(yyin);
     }
     
-    printf("\n=== End of input ===\n");
     return 0;
 }

@@ -1,0 +1,51 @@
+# Keyword boundary and identifier tests
+
+# Keywords that are prefixes of identifiers
+int integer;
+int intvalue=10;
+int intagain;
+
+short shortage;
+float floatvalue;
+char charactername;
+void voidptr;
+bool boolean_check;
+boolean booleanflag;
+struct structname;
+
+# Single-letter keywords as substrings
+int ifvalue;
+int forall;
+int whileloop;
+int forcebreak;
+int continuity;
+int returnvalue;
+int unreturned;
+int sizeofvalue;
+
+# Keywords with underscores
+int int8_t_var;
+int int16_t_var;
+int int32_t_var;
+int int64_t_var;
+
+# Identifiers starting with underscore
+int _private;
+int __dunder;
+int _123start;
+
+# All valid keyword matches
+if (true) { x = 1; }
+else { x = 2; }
+for (;;) { break; }
+while (true) { continue; }
+repeat { } until (false);
+switch (x) { case 1: x++; default: x--; }
+return 0;
+sizeof(int);
+begin { }
+end { }
+signed int s;
+unsigned int u;
+extern int e;
+static int st;

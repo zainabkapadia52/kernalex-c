@@ -1,0 +1,81 @@
+# Numeric literal edge cases
+
+# Integer literals - all formats
+int dec1 = 0;
+int dec2 = 1;
+int dec3 = 42;
+int dec4 = 123456789;
+
+int bin1 = 0b0;
+int bin2 = 0b1;
+int bin3 = 0b1010;
+int bin4 = 0b11111111;
+int bin5 = 0b1010_1010;
+
+int oct1 = 0o0;
+int oct2 = 0o7;
+int oct3 = 0o10;
+int oct4 = 0o777;
+int oct5 = 0o1234567;
+
+int hex1 = 0x0;
+int hex2 = 0xa;
+int hex3 = 0xF;
+int hex4 = 0xDEAD;
+int hex5 = 0xBEEF;
+int hex6 = 0xCAFEBABE;
+int hex7 = 0xdeadbeef;
+
+# Floating point literals - basic formats
+float f1 = 0.0;
+float f2 = 1.0;
+float f3 = 3.14;
+float f4 = 0.123;
+float f5 = 123.456;
+
+# Floating point with leading decimal
+float f6 = .1;
+float f7 = .5;
+float f8 = .999;
+
+# Floating point with trailing decimal
+float f9 = 1.;
+float f10 = 10.;
+float f11 = 999.;
+
+# Scientific notation - positive exponent
+float s1 = 1e1;
+float s2 = 1e10;
+float s3 = 1.5e5;
+float s4 = 3.14e2;
+float s5 = .5e3;
+
+# Scientific notation - negative exponent
+float s6 = 1e-1;
+float s7 = 1e-10;
+float s8 = 1.5e-5;
+float s9 = 3.14e-2;
+float s10 = .5e-3;
+float s11 = 6.022e-23;
+
+# Scientific notation - explicit plus
+float s12 = 1e+1;
+float s13 = 1e+10;
+float s14 = 1.5e+5;
+
+# Uppercase E
+float s15 = 1E10;
+float s16 = 3.14E-2;
+float s17 = .5E+3;
+
+# Edge case: very small and very large numbers
+float tiny = 1.23e-100;
+float huge = 9.87e+100;
+float normal = 6.626e-34;
+
+# Invalid formats (should error)
+int bad1 = 0b2;
+int bad2 = 0o8;
+int bad3 = 0xG;
+float bad4 = 1.2.3;
+float bad5 = 1ee5;

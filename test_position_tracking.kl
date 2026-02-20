@@ -1,0 +1,63 @@
+# Position tracking validation test
+
+# Line 1: start
+int x = 1;
+int y = 2;
+int z = 3;
+
+# Multiple statements on lines
+int a = 1; int b = 2; int c = 3;
+
+# Comment line
+# This is line 9
+
+/** Multi-line comment
+   starting here
+   ending on line 13 */
+
+int result = 42;
+
+# String spanning context
+string line21 = "hello";
+
+# Spacing and alignment
+int       spacious       =       100;
+
+# Tab characters
+int	tab_before = 1;
+int tab_after	= 2;
+
+# Multiple comments
+# Comment 1
+/// Doc comment 1
+# Comment 2
+/// Doc comment 2
+
+# Character literal sequence
+char c1 = 'a';
+char c2 = 'b';
+char c3 = 'c';
+
+# Operators spread across tokens
+int math1 = 10+5;
+int math2 = 10 + 5;
+int math3 = 10    +    5;
+
+# Complex expression
+int complex = (10 + 20) * (30 - 15) / 5;
+
+# Struct definition
+struct Point {
+    int x;
+    int y;
+    int z;
+};
+
+# Long identifier
+int very_long_identifier_to_test_column_tracking = 99;
+
+# Error on specific line
+int error_x = "@invalid";
+
+# Final line
+int final = 999;
