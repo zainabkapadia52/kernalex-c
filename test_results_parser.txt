@@ -71,21 +71,3 @@ Features tested:
 
 Result: Parsing completed successfully
 Status: PASS
-
---------------------------------------------------------------------------------
-SUMMARY
---------------------------------------------------------------------------------
-
-Tests run: 4
-Tests passed: 4
-Tests failed: 0
-
-All 96 token rules validated
-All 4 lexer states validated (INITIAL, COMMENT_ML, STRING_STATE, CHAR_STATE)
-Position tracking validated (line_num, column_num)
-
-NOTES
-
-- The language uses ^= for multiplication assignment (not *=)
-- Scientific notation requires a decimal point: 1.0e10 works, 1e10 does not
-- "long" is not a keyword in this language
