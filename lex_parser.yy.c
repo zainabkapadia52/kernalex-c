@@ -1054,12 +1054,12 @@ case YY_STATE_EOF(COMMENT_ML):
 case 5:
 YY_RULE_SETUP
 #line 70 "kernalex_parser.l"
-{ process_token(yytext, 1); /* Doc comment - ignore */ }
+{ process_token(yytext, 1); /* doc comment - consumed */ }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 72 "kernalex_parser.l"
-{ process_token(yytext, 1); /* Single-line comment - ignore */ }
+{ process_token(yytext, 1); /* single-line comment - consumed */ }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP

@@ -12,17 +12,13 @@ int char_start_line = 0;
 int comment_start_col = 0;
 int comment_start_line = 0;
 
-// Track position: count newlines for line numbers, position in line for columns
 int token_start_col = 0;
 
-// Process position tracking for a token
-// Saves starting position, then updates for next token
 void process_token(const char *text, int save_start) {
     if (save_start) {
         token_start_col = column_num;
     }
     
-    // Update position based on text
     for (int i = 0; text[i] != '\0'; i++) {
         if (text[i] == '\n') {
             line_num++;
@@ -33,7 +29,6 @@ void process_token(const char *text, int save_start) {
     }
 }
 
-// Validate escape sequences in strings and characters
 int is_valid_escape(char c) {
     return (c == 'n' || c == 't' || c == 'r' || c == '\\' || 
             c == '"' || c == '\'' || c == 'b' || c == 'f' || 
@@ -52,9 +47,7 @@ int is_valid_escape(char c) {
 
 "/**"               { 
     token_start_col = column_num;
-    column_num++;  // '/**' is 3 chars
-    column_num++;
-    column_num++;
+    column_num += 3;
     comment_start_line = line_num;
     comment_start_col = token_start_col;
     BEGIN(COMMENT_ML); 
@@ -102,7 +95,7 @@ int is_valid_escape(char c) {
     token_start_col = column_num;
     string_start_line = line_num;
     string_start_col = token_start_col;
-    column_num++;  // Consume the quote
+    column_num++;
     BEGIN(STRING_STATE);
 }
 
@@ -143,7 +136,7 @@ int is_valid_escape(char c) {
 
 \'\'                                {
     token_start_col = column_num;
-    column_num += 2;  // Two quotes
+    column_num += 2;
     printf("[ERROR: Line %d, Col %d: Empty character literal]\n", line_num, token_start_col);
 }
 
@@ -153,13 +146,10 @@ int is_valid_escape(char c) {
     process_token(yytext, 0);
     
     if (yyleng == 4 && yytext[1] == '\\') {
-        // Escape sequence - allowed
         printf("[CHAR_LIT: %s] (Token #%d)\n", yytext, TOK_CHAR_LIT);
     } else if (yyleng == 3) {
-        // Single character - allowed
         printf("[CHAR_LIT: %s] (Token #%d)\n", yytext, TOK_CHAR_LIT);
     } else if (yyleng > 4) {
-        // Multiple characters in single quotes
         printf("[ERROR: Line %d, Col %d: Multiple characters in character literal]\n", 
                line_num, char_start_col);
     }
@@ -182,7 +172,7 @@ int is_valid_escape(char c) {
     token_start_col = column_num;
     char_start_line = line_num;
     char_start_col = token_start_col;
-    column_num++;  // Consume the quote
+    column_num++;
     BEGIN(CHAR_STATE);
 }
 

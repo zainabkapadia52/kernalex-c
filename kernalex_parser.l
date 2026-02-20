@@ -67,9 +67,9 @@ int is_valid_escape(char c) {
     return 0; 
 }
 
-"///".*             { process_token(yytext, 1); /* Doc comment - ignore */ }
+"///".*             { process_token(yytext, 1); /* doc comment - consumed */ }
 
-"#".*               { process_token(yytext, 1); /* Single-line comment - ignore */ }
+"#".*               { process_token(yytext, 1); /* single-line comment - consumed */ }
 
 [0-9]+\.[0-9]*([eE][+-]?[0-9]+)? { process_token(yytext, 1); return TOK_FLOAT_LIT; }
 
