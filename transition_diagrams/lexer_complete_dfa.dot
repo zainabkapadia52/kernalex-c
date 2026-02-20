@@ -1,0 +1,254 @@
+digraph LexerCompleteDFA {
+    rankdir=LR;
+    node [shape=circle, style=filled, fillcolor=lightblue, fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+    
+    // Start state
+    START [shape=point, width=0.3];
+    
+    // Main INITIAL state
+    S0 [label="S0\nINITIAL", fillcolor=lightgreen, shape=doublecircle];
+    
+    START -> S0;
+    
+    // ===== KEYWORD RECOGNITION: "int" example =====
+    K1 [label="K1\ni"];
+    K2 [label="K2\nin"];
+    K3 [label="K3\nint", shape=doublecircle, fillcolor=yellow];
+    
+    S0 -> K1 [label="i"];
+    K1 -> K2 [label="n"];
+    K2 -> K3 [label="t"];
+    K3 -> S0 [label="output\nKEYWORD", style=dashed, color=green];
+    
+    // "if" keyword
+    IF1 [label="IF1\ni"];
+    IF2 [label="IF2\nif", shape=doublecircle, fillcolor=yellow];
+    S0 -> IF1 [label="i"];
+    IF1 -> IF2 [label="f"];
+    IF2 -> S0 [label="output\nKEYWORD", style=dashed, color=green];
+    
+    // ===== IDENTIFIER RECOGNITION =====
+    ID1 [label="ID1\n[a-zA-Z_]"];
+    ID2 [label="ID2\nident", shape=doublecircle, fillcolor=yellow];
+    
+    S0 -> ID1 [label="[a-zA-Z_]"];
+    ID1 -> ID2 [label="[a-zA-Z0-9_]*"];
+    ID2 -> ID2 [label="[a-zA-Z0-9_]"];
+    ID2 -> S0 [label="output\nIDENTIFIER", style=dashed, color=green];
+    
+    // ===== INTEGER RECOGNITION =====
+    // Decimal
+    DEC1 [label="DEC1\n[1-9]"];
+    DEC2 [label="DEC2\ndec", shape=doublecircle, fillcolor=yellow];
+    S0 -> DEC1 [label="[1-9]"];
+    DEC1 -> DEC2 [label="[0-9]*"];
+    DEC2 -> DEC2 [label="[0-9]"];
+    DEC2 -> S0 [label="output\nINTEGER", style=dashed, color=green];
+    
+    // Zero
+    ZERO [label="ZERO\n0", shape=doublecircle, fillcolor=yellow];
+    S0 -> ZERO [label="0"];
+    
+    // Binary 0b
+    BIN1 [label="BIN1\n0b"];
+    BIN2 [label="BIN2\nbin", shape=doublecircle, fillcolor=yellow];
+    ZERO -> BIN1 [label="b"];
+    BIN1 -> BIN2 [label="[01]+"];
+    BIN2 -> BIN2 [label="[01]"];
+    BIN2 -> S0 [label="output\nINTEGER", style=dashed, color=green];
+    
+    // Octal 0o
+    OCT1 [label="OCT1\n0o"];
+    OCT2 [label="OCT2\noct", shape=doublecircle, fillcolor=yellow];
+    ZERO -> OCT1 [label="o"];
+    OCT1 -> OCT2 [label="[0-7]+"];
+    OCT2 -> OCT2 [label="[0-7]"];
+    OCT2 -> S0 [label="output\nINTEGER", style=dashed, color=green];
+    
+    // Hex 0x
+    HEX1 [label="HEX1\n0x"];
+    HEX2 [label="HEX2\nhex", shape=doublecircle, fillcolor=yellow];
+    ZERO -> HEX1 [label="x"];
+    HEX1 -> HEX2 [label="[0-9a-fA-F]+"];
+    HEX2 -> HEX2 [label="[0-9a-fA-F]"];
+    HEX2 -> S0 [label="output\nINTEGER", style=dashed, color=green];
+    
+    ZERO -> S0 [label="output\nINTEGER", style=dashed, color=green];
+    
+    // ===== FLOAT RECOGNITION =====
+    // [0-9]+.[0-9]*
+    FLT1 [label="FLT1\n."];
+    FLT2 [label="FLT2\nfloat", shape=doublecircle, fillcolor=yellow];
+    DEC2 -> FLT1 [label="."];
+    FLT1 -> FLT2 [label="[0-9]*"];
+    FLT2 -> FLT2 [label="[0-9]"];
+    
+    // Scientific notation
+    SCI1 [label="SCI1\ne"];
+    SCI2 [label="SCI2\ne+/-"];
+    SCI3 [label="SCI3\nsci", shape=doublecircle, fillcolor=yellow];
+    FLT2 -> SCI1 [label="e|E"];
+    SCI1 -> SCI2 [label="+|-"];
+    SCI1 -> SCI3 [label="[0-9]+"];
+    SCI2 -> SCI3 [label="[0-9]+"];
+    SCI3 -> SCI3 [label="[0-9]"];
+    
+    FLT2 -> S0 [label="output\nFLOAT", style=dashed, color=green];
+    SCI3 -> S0 [label="output\nFLOAT", style=dashed, color=green];
+    
+    // ===== OPERATORS =====
+    // Single char operators
+    OP_PLUS [label="+", shape=doublecircle, fillcolor=yellow];
+    OP_MINUS [label="-", shape=doublecircle, fillcolor=yellow];
+    OP_MUL [label="*", shape=doublecircle, fillcolor=yellow];
+    OP_DIV [label="/", shape=doublecircle, fillcolor=yellow];
+    
+    S0 -> OP_PLUS [label="+"];
+    S0 -> OP_MINUS [label="-"];
+    S0 -> OP_MUL [label="*"];
+    S0 -> OP_DIV [label="/"];
+    
+    // ++ operator
+    OP_INC [label="++", shape=doublecircle, fillcolor=yellow];
+    OP_PLUS -> OP_INC [label="+"];
+    
+    // += operator
+    OP_PLUSEQ [label="+=", shape=doublecircle, fillcolor=yellow];
+    OP_PLUS -> OP_PLUSEQ [label="="];
+    
+    // -- operator
+    OP_DEC [label="--", shape=doublecircle, fillcolor=yellow];
+    OP_MINUS -> OP_DEC [label="-"];
+    
+    // -> operator
+    OP_ARROW [label="->", shape=doublecircle, fillcolor=yellow];
+    OP_MINUS -> OP_ARROW [label=">"];
+    
+    // Comparison operators
+    OP_LT [label="<", shape=doublecircle, fillcolor=yellow];
+    OP_LE [label="<=", shape=doublecircle, fillcolor=yellow];
+    OP_LSHIFT [label="<<", shape=doublecircle, fillcolor=yellow];
+    OP_SPACESHIP1 [label="<=>1\n<="];
+    OP_SPACESHIP [label="<=>", shape=doublecircle, fillcolor=yellow];
+    
+    S0 -> OP_LT [label="<"];
+    OP_LT -> OP_LE [label="="];
+    OP_LT -> OP_LSHIFT [label="<"];
+    OP_LE -> OP_SPACESHIP1 [label=">"];
+    OP_SPACESHIP1 -> OP_SPACESHIP [label="(complete)"];
+    
+    // Output operators
+    OP_PLUS -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_MINUS -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_MUL -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_DIV -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_INC -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_PLUSEQ -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_DEC -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_ARROW -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_LT -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_LE -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_LSHIFT -> S0 [label="output\nOP", style=dashed, color=green];
+    OP_SPACESHIP -> S0 [label="output\nOP", style=dashed, color=green];
+    
+    // ===== COMMENTS =====
+    // Single-line comment #
+    CMT1 [label="CMT1\n#"];
+    CMT2 [label="CMT2\ncomment", shape=doublecircle, fillcolor=lightyellow];
+    S0 -> CMT1 [label="#"];
+    CMT1 -> CMT2 [label="[^\\n]*"];
+    CMT2 -> CMT2 [label="[^\\n]"];
+    CMT2 -> S0 [label="\\n | output", style=dashed, color=green];
+    
+    // Multi-line comment /**
+    MLC1 [label="MLC1\n/"];
+    MLC2 [label="MLC2\n/*"];
+    MLC3 [label="MLC3\n/**"];
+    MLC4 [label="MLC4\nml-cmt"];
+    MLC5 [label="MLC5\n*"];
+    MLC6 [label="MLC6\n*/", shape=doublecircle, fillcolor=lightyellow];
+    
+    S0 -> MLC1 [label="/"];
+    MLC1 -> MLC2 [label="*"];
+    MLC2 -> MLC3 [label="*"];
+    MLC3 -> MLC4 [label="any"];
+    MLC4 -> MLC4 [label="[^*]"];
+    MLC4 -> MLC5 [label="*"];
+    MLC5 -> MLC4 [label="[^/]"];
+    MLC5 -> MLC6 [label="/"];
+    MLC6 -> S0 [label="output", style=dashed, color=green];
+    
+    // ===== STRING STATE =====
+    STR1 [label="STR1\n\""];
+    STR2 [label="STR2\nstr-body"];
+    STR3 [label="STR3\n\\"];
+    STR4 [label="STR4\nescape"];
+    STR5 [label="STR5\n\"", shape=doublecircle, fillcolor=lightyellow];
+    
+    S0 -> STR1 [label="\""];
+    STR1 -> STR2 [label="[^\"\\\\\\n]"];
+    STR2 -> STR2 [label="[^\"\\\\\\n]"];
+    STR2 -> STR3 [label="\\\\"];
+    STR3 -> STR4 [label="n|t|r|\\\\|'|\"|b|f|v|0"];
+    STR4 -> STR2 [label="continue"];
+    STR2 -> STR5 [label="\""];
+    STR5 -> S0 [label="output\nSTRING", style=dashed, color=green];
+    
+    // ===== CHAR STATE =====
+    CHR1 [label="CHR1\n'"];
+    CHR2 [label="CHR2\nchar"];
+    CHR3 [label="CHR3\n\\"];
+    CHR4 [label="CHR4\nescape"];
+    CHR5 [label="CHR5\n'", shape=doublecircle, fillcolor=lightyellow];
+    
+    S0 -> CHR1 [label="'"];
+    CHR1 -> CHR2 [label="[^'\\\\\\n]"];
+    CHR1 -> CHR3 [label="\\\\"];
+    CHR3 -> CHR4 [label="n|t|r|\\\\|'|\"|b|f|v|0"];
+    CHR2 -> CHR5 [label="'"];
+    CHR4 -> CHR5 [label="'"];
+    CHR5 -> S0 [label="output\nCHAR", style=dashed, color=green];
+    
+    // ===== PUNCTUATION =====
+    LPAREN [label="(", shape=doublecircle, fillcolor=lightcyan];
+    RPAREN [label=")", shape=doublecircle, fillcolor=lightcyan];
+    LBRACE [label="{", shape=doublecircle, fillcolor=lightcyan];
+    RBRACE [label="}", shape=doublecircle, fillcolor=lightcyan];
+    SEMI [label=";", shape=doublecircle, fillcolor=lightcyan];
+    
+    S0 -> LPAREN [label="("];
+    S0 -> RPAREN [label=")"];
+    S0 -> LBRACE [label="{"];
+    S0 -> RBRACE [label="}"];
+    S0 -> SEMI [label=";"];
+    
+    LPAREN -> S0 [label="output\nPUNCT", style=dashed, color=green];
+    RPAREN -> S0 [label="output\nPUNCT", style=dashed, color=green];
+    LBRACE -> S0 [label="output\nPUNCT", style=dashed, color=green];
+    RBRACE -> S0 [label="output\nPUNCT", style=dashed, color=green];
+    SEMI -> S0 [label="output\nPUNCT", style=dashed, color=green];
+    
+    // ===== WHITESPACE =====
+    WS [label="WS\nwhitespace"];
+    S0 -> WS [label="[ \\t\\n]"];
+    WS -> WS [label="[ \\t\\n]"];
+    WS -> S0 [label="skip", style=dashed];
+    
+    // ===== ERROR =====
+    ERROR [label="ERROR", shape=doublecircle, fillcolor=lightcoral];
+    S0 -> ERROR [label="unknown char", color=red];
+    ERROR -> S0 [label="report\ncontinue", style=dashed, color=red];
+    
+    // Labels
+    labelloc="t";
+    label="Complete DFA (Simplified Representation)\nShowing major token patterns - Flex generates optimized version with ~200+ states";
+    fontsize=14;
+    fontname="Arial Bold";
+    
+    // Legend
+    {
+        rank=sink;
+        legend [shape=box, label="Legend:\n\nDouble circle = Accept state\nYellow = Token states\nCyan = Punctuation\nGreen dashed = Output & return to S0\nRed = Error handling", fontsize=10, fillcolor=white];
+    }
+}

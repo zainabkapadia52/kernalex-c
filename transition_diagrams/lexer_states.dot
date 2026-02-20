@@ -1,0 +1,49 @@
+digraph LexerStates {
+    rankdir=LR;
+    node [shape=circle, style=filled, fillcolor=lightblue, fontname="Arial"];
+    edge [fontname="Arial", fontsize=10];
+    
+    START [shape=point, width=0.3];
+    INITIAL [fillcolor=lightgreen, label="INITIAL\n(Default)"];
+    COMMENT_ML [fillcolor=lightyellow, label="COMMENT_ML"];
+    STRING_STATE [fillcolor=lightyellow, label="STRING_STATE"];
+    CHAR_STATE [fillcolor=lightyellow, label="CHAR_STATE"];
+    ERROR [shape=doublecircle, fillcolor=lightcoral, label="ERROR"];
+    END [shape=doublecircle, fillcolor=lightgreen, label="EOF"];
+    
+    START -> INITIAL;
+    
+    // Multi-line comment transitions
+    INITIAL -> COMMENT_ML [label="/**", color=blue];
+    COMMENT_ML -> COMMENT_ML [label="any char\n(except */)"];
+    COMMENT_ML -> INITIAL [label="*/", color=green];
+    COMMENT_ML -> ERROR [label="EOF", color=red];
+    
+    // String literal transitions
+    INITIAL -> STRING_STATE [label="\"", color=blue];
+    STRING_STATE -> STRING_STATE [label="char | \\escape"];
+    STRING_STATE -> INITIAL [label="\"", color=green];
+    STRING_STATE -> ERROR [label="newline | EOF", color=red];
+    
+    // Character literal transitions
+    INITIAL -> CHAR_STATE [label="'", color=blue];
+    CHAR_STATE -> CHAR_STATE [label="char | \\escape"];
+    CHAR_STATE -> INITIAL [label="'", color=green];
+    CHAR_STATE -> ERROR [label="newline | EOF", color=red];
+    
+    // Token recognition (stays in INITIAL)
+    INITIAL -> INITIAL [label="keywords (34)\noperators (31)\nnumerics\ncomments (#, ///)\nwhitespace", style=dashed];
+    
+    // Error transitions
+    INITIAL -> ERROR [label="unknown char", color=red];
+    
+    // End transitions
+    INITIAL -> END [label="EOF"];
+    ERROR -> END;
+    
+    // Labels
+    labelloc="t";
+    label="State Transition Diagram";
+    fontsize=16;
+    fontname="Arial Bold";
+}

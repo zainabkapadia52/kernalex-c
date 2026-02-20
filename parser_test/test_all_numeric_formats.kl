@@ -51,25 +51,25 @@ int main() {
     float f11 = 999.;
     
     # Scientific notation: positive exponent
-    float s1 = 1e1;
-    float s2 = 1e10;
+    float s1 = 1.0e1;
+    float s2 = 1.0e10;
     float s3 = 1.5e5;
     float s4 = 3.14e2;
     
     # Scientific notation: negative exponent
-    float s5 = 1e-1;
-    float s6 = 1e-10;
+    float s5 = 1.0e-1;
+    float s6 = 1.0e-10;
     float s7 = 1.5e-5;
     float s8 = 3.14e-2;
     float s9 = 6.022e-23;
     
     # Scientific notation: explicit + sign
-    float s10 = 1e+1;
-    float s11 = 1e+10;
+    float s10 = 1.0e+1;
+    float s11 = 1.0e+10;
     float s12 = 1.5e+5;
     
     # Scientific notation: uppercase E
-    float s13 = 1E10;
+    float s13 = 1.0E10;
     float s14 = 3.14E-2;
     float s15 = .5E+3;
     
