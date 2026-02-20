@@ -48,6 +48,24 @@ tokens.h            Shared token definitions
 
 **Error Detection:** Position tracking, unterminated strings/chars/comments, invalid escape sequences
 
+## Lexer States
+
+The lexer uses 4 states for handling multi-line constructs:
+- INITIAL: Default state for token recognition
+- COMMENT_ML: Multi-line comment processing
+- STRING_STATE: String literal processing
+- CHAR_STATE: Character literal processing
+
+![Lexer State Transitions](transition_diagrams/lexer_states.png)
+
+Note: This shows state management flow, not the actual token recognition DFA.
+
+**Token Recognition DFA:**
+
+![Complete DFA](transition_diagrams/lexer_complete_dfa.png)
+
+The complete DFA shows the detailed automaton for recognizing all tokens (keywords, operators, literals, etc.).
+
 ## Build
 
 ```bash
