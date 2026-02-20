@@ -1,0 +1,69 @@
+# Lexer Validation Test 5: All Comment Styles
+# If this parses successfully, all comment types are tokenized correctly
+
+# Single-line comment at start
+
+/** Multi-line comment at start **/
+
+/// Documentation comment at start
+
+int main() {
+    # Single-line comment before variable
+    int x = 10;
+    
+    /** Multi-line comment before variable **/
+    int y = 20;
+    
+    /// Documentation comment before variable
+    int z = 30;
+    
+    int a = 1;  # Single-line comment after statement
+    int b = 2;  /** Multi-line comment after statement **/
+    int c = 3;  /// Documentation comment after statement
+    
+    # Multiple single-line comments
+    # Line 1
+    # Line 2
+    # Line 3
+    int d = 4;
+    
+    /** 
+     * Multi-line comment
+     * spanning multiple lines
+     * with asterisks
+     **/
+    int e = 5;
+    
+    /// Documentation comment line 1
+    /// Documentation comment line 2
+    /// Documentation comment line 3
+    int f = 6;
+    
+    # Comment before if
+    if (x > 0) {
+        # Comment inside if block
+        x++;
+    } else {
+        # Comment inside else block
+        x--;
+    }
+    
+    /** Comment before for loop **/
+    for (int i = 0; i < 10; i++) {
+        /** Comment inside loop **/
+        z++;
+    }
+    
+    /// Comment before while loop
+    while (y > 0) {
+        /// Comment inside while loop
+        y--;
+    }
+    
+    # Comment before return
+    return 0;  # Comment after return
+}
+
+# Single-line comment at end
+/** Multi-line comment at end **/
+/// Documentation comment at end

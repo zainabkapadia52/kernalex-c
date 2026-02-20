@@ -1,0 +1,58 @@
+# Lexer Validation Test 4: All String and Character Literals
+# If this parses successfully, all literals and escape sequences are tokenized correctly
+
+int main() {
+    # Character literals: regular characters
+    char c1 = 'a';
+    char c2 = 'Z';
+    char c3 = '0';
+    char c4 = '9';
+    char c5 = ' ';
+    char c6 = '"';
+    
+    # Character literals: escape sequences
+    char e1 = '\n';
+    char e2 = '\t';
+    char e3 = '\r';
+    char e4 = '\\';
+    char e5 = '\'';
+    char e6 = '\b';
+    char e7 = '\f';
+    char e8 = '\v';
+    char e9 = '\0';
+    
+    # String literals: basic
+    char* s1 = "hello";
+    char* s2 = "world";
+    char* s3 = "Hello, World!";
+    char* s4 = "";
+    char* s5 = " ";
+    char* s6 = "123";
+    
+    # String literals: with escape sequences
+    char* es1 = "hello\nworld";
+    char* es2 = "hello\tworld";
+    char* es3 = "line1\nline2\nline3";
+    char* es4 = "tab\tseparated\tvalues";
+    char* es5 = "carriage\rreturn";
+    char* es6 = "backslash\\test";
+    char* es7 = "quote\"inside";
+    char* es8 = "say \"hello\"";
+    char* es9 = "path\\to\\file";
+    char* es10 = "null\0terminator";
+    
+    # String literals: mixed content
+    char* m1 = "mixed\n\t\r\\content";
+    char* m2 = "line1\nline2\ttabbed";
+    char* m3 = "escape\nand\"quote";
+    char* m4 = "all\n\t\r\\\'\"\b\f\v\0escapes";
+    
+    # String literals: special cases
+    char* sp1 = "with spaces";
+    char* sp2 = "with    multiple    spaces";
+    char* sp3 = "with-dashes-and_underscores";
+    char* sp4 = "With123Numbers456";
+    char* sp5 = "!@#$%^&*()";
+    
+    return 0;
+}

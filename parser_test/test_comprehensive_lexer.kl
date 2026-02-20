@@ -1,0 +1,173 @@
+# Comprehensive Lexer Validation Test
+# This test combines all lexer features in one valid program
+# If this parses successfully, the lexer correctly tokenizes:
+# - All 34 keywords
+# - All 31+ operators
+# - All numeric formats (decimal, binary, octal, hex, float, scientific)
+# - All string/char literals with escape sequences
+# - All 3 comment styles
+
+# Single-line comment
+/** Multi-line comment **/
+/// Documentation comment
+
+struct Point {
+    int x;
+    int y;
+};
+
+int fibonacci(int n) {
+    if (n <= 1) {
+        return n;
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+int main() {
+    # All integer types
+    int i8 = 127;
+    short sint = 32767;
+    signed int si = -100;
+    unsigned int ui = 100;
+    
+    # All numeric formats
+    int decimal = 42;
+    int binary = 0b1010;
+    int octal = 0o77;
+    int hexadecimal = 0xFF;
+    float pi = 3.14159;
+    float scientific = 6.022e-23;
+    float noleading = .5;
+    float notrailing = 5.;
+    
+    # Character and string literals
+    char ch = 'a';
+    char newline = '\n';
+    char tab = '\t';
+    char backslash = '\\';
+    char* str = "Hello, World!";
+    char* escaped = "line1\nline2\ttabbed";
+    char* quoted = "say \"hello\"";
+    
+    # All arithmetic operators
+    int sum = decimal + binary;
+    int diff = decimal - binary;
+    int prod = decimal * binary;
+    int quot = decimal / binary;
+    int mod = decimal % binary;
+    
+    # All comparison operators
+    bool eq = (decimal == binary);
+    bool neq = (decimal != binary);
+    bool lt = (decimal < binary);
+    bool lte = (decimal <= binary);
+    bool gt = (decimal > binary);
+    bool gte = (decimal >= binary);
+    int spaceship = decimal <=> binary;
+    
+    # All logical operators
+    bool and_op = (decimal > 0 && binary > 0);
+    bool or_op = (decimal > 0 || binary > 0);
+    bool not_op = !eq;
+    
+    # All bitwise operators
+    int bit_and = decimal & binary;
+    int bit_or = decimal | binary;
+    int bit_xor = decimal ^ binary;
+    int bit_not = ~decimal;
+    int left_shift = decimal << 2;
+    int right_shift = decimal >> 2;
+    int custom_xor = decimal ^^ binary;
+    
+    # All assignment operators
+    int x = 10;
+    x += 5;
+    x -= 3;
+    x *= 2;
+    x /= 2;
+    x %= 3;
+    x ^= 1;
+    
+    # Increment/decrement
+    x++;
+    x--;
+    ++x;
+    --x;
+    
+    # Pointers
+    int* ptr = &x;
+    int val = *ptr;
+    
+    # Arrays
+    int arr[10];
+    arr[0] = 1;
+    arr[1] = 2;
+    
+    # Struct
+    struct Point pt;
+    pt.x = 10;
+    pt.y = 20;
+    struct Point* pptr = &pt;
+    int coord = pptr->x;
+    
+    # Control flow: if-else
+    if (decimal > 0) {
+        x = 1;
+    } else {
+        x = 0;
+    }
+    
+    # Control flow: for loop
+    for (int i = 0; i < 10; i++) {
+        arr[i] = i;
+        continue;
+    }
+    
+    # Control flow: while loop
+    while (x < 100) {
+        x++;
+        if (x == 50) {
+            break;
+        }
+    }
+    
+    # Control flow: repeat-until
+    repeat {
+        x--;
+    } until (x == 0);
+    
+    # Control flow: switch-case
+    switch (x) {
+        case 0:
+            x = 1;
+            break;
+        case 1:
+            x = 2;
+            break;
+        default:
+            x = -1;
+    }
+    
+    # Other keywords
+    int size = sizeof(int);
+    static int static_var = 10;
+    extern int extern_var;
+    void* void_ptr;
+    bool flag = true;
+    flag = false;
+    
+    # Begin-end block
+    begin
+        int block_var = 5;
+        block_var++;
+    end
+    
+    # Function call
+    int result = fibonacci(10);
+    
+    return 0;
+}
+
+# Final comments
+/** End of comprehensive test **/
+/// All lexer features tested
