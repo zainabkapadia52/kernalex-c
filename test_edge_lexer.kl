@@ -1,0 +1,36 @@
+# Edge case lexer tests
+
+# Numeric literals
+int a = 0;
+int b = 007;        # decimal with leading zero
+int c = 0b1010;
+int d = 0o777;
+int e = 0xFF;
+float f1 = 0.0;
+float f2 = .5;
+float f3 = 5.;
+float f4 = 3.14;
+float f5 = 1.0e-2;
+float f6 = 2.5E+6;
+
+# String and character literals
+char c1 = 'a';
+char c2 = '\n';
+char c3 = '\\';
+char c4 = '\'';
+
+string s1 = "hello";
+string s2 = "line1\nline2";
+string s3 = "tab\tend";
+string s4 = "quote\"inside";
+
+# Identifier length edge case
+int aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = 1;
+
+# Intentional lexical errors
+char e1 = '';
+char e2 = 'ab';
+int z = 1 @ 2;
+string bad = "unterminated
+
+/** Unterminated comment at EOF

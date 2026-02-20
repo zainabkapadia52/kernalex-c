@@ -109,7 +109,7 @@ variable_declaration:
 
 declarator:
       TOK_IDENTIFIER
-    | TOK_MULT declarator                    /* pointer */
+    | TOK_STAR declarator                    /* pointer */
     | declarator TOK_LBRACKET TOK_RBRACKET   /* array (no size) */
     | declarator TOK_LBRACKET TOK_INTEGER TOK_RBRACKET  /* array with size */
     ;
@@ -291,7 +291,7 @@ unary_expression:
     | TOK_NOT unary_expression
     | TOK_BITNOT unary_expression
     | TOK_AMP unary_expression %prec ADDR_OF
-    | TOK_MULT unary_expression %prec DEREF
+    | TOK_STAR unary_expression %prec DEREF
     | TOK_SIZEOF TOK_LPAREN type_specifier TOK_RPAREN
     ;
 
