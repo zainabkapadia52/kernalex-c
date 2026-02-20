@@ -240,7 +240,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "kernalex.y"
+#line 1 "parser/kernalex.y"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -287,7 +287,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 291 "kernalex.tab.c"
+#line 291 "parser/kernalex.tab.c"
 
 #ifdef short
 # undef short
@@ -1841,7 +1841,7 @@ yyreduce:
     {
       
 /* Line 1267 of yacc.c.  */
-#line 1845 "kernalex.tab.c"
+#line 1845 "parser/kernalex.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2055,7 +2055,7 @@ yyreturn:
 }
 
 
-#line 325 "kernalex.y"
+#line 325 "parser/kernalex.y"
 
 
 void yyerror(const char *s) {
