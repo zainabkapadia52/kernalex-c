@@ -2729,10 +2729,10 @@ void yyfree (void * ptr )
 #line 311 "kernalex.l"
 
 
-int main(int argc, char *argv[]) {
-    if (argc > 1) {
+int main(int argc, char *argv[]){
+    if(argc > 1){
         yyin = fopen(argv[1], "r");
-        if (!yyin) {
+        if(!yyin){
             fprintf(stderr, "Error: Could not open file %s\n", argv[1]);
             return 1;
         }
@@ -2740,7 +2740,7 @@ int main(int argc, char *argv[]) {
     
     yylex();
     
-    if (argc > 1) {
+    if(argc > 1){
         fclose(yyin);
     }
     

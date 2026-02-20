@@ -338,13 +338,13 @@ int main(int argc, char *argv[]) {
         }
     }
     
-    printf("=== KernaLex Parser ===\n");
+    printf("KernaLex Parser\n");
     if (argc > 1) {
         printf("Input file: %s\n", argv[1]);
     } else {
-        printf("Reading from stdin...\n");
+        printf("Reading from stdin\n");
     }
-    printf("====================================\n\n");
+    printf("\n");
     
     int result = yyparse();
     
@@ -352,14 +352,13 @@ int main(int argc, char *argv[]) {
         fclose(yyin);
     }
     
-    printf("\n====================================\n");
+    printf("\n");
     if (result == 0 && syntax_error_count == 0) {
-        printf("✓ Parsing completed successfully!\n");
-        printf("✓ No syntax errors detected.\n");
+        printf("Parsing completed successfully\n");
+        printf("No syntax errors detected\n");
     } else {
-        printf("✗ Parsing failed with %d syntax error(s).\n", syntax_error_count);
+        printf("Parsing failed with %d syntax error(s)\n", syntax_error_count);
     }
-    printf("====================================\n");
     
     return (result == 0 && syntax_error_count == 0) ? 0 : 1;
 }

@@ -1,179 +1,91 @@
-# LEXER VALIDATION RESULTS (via Parser)
+LEXER VALIDATION RESULTS
 
-This file documents the results of validating the lexer by running valid KernaLex programs through the parser. If the parser accepts a valid program, it means the lexer produces the correct token stream.
+This file documents lexer validation by running valid programs through the parser.
+If the parser accepts a program, the lexer produces correct token streams.
 
-====================================
-## VALIDATION METHODOLOGY
-====================================
+METHODOLOGY
 
-The skeleton parser is used to validate that the LEXER produces correct token streams, NOT to validate parser functionality. Each test file contains valid KernaLex code that exercises specific lexer features. Parser success = lexer tokenizes correctly.
+The parser validates that the lexer produces correct token streams.
+Each test contains valid code that exercises specific lexer features.
 
-====================================
-## TEST 1: test_simple_all_features.kl
-====================================
+--------------------------------------------------------------------------------
+TEST 1: test_simple_all_features.kl
+--------------------------------------------------------------------------------
 
-PURPOSE: Comprehensive validation of ALL lexer features in one valid program
-
-LEXER FEATURES TESTED:
-- Keywords (28): int, short, float, char, bool, void, true, false, if, else, while, for, repeat, until, switch, case, default, break, continue, return, sizeof, begin, end, signed, unsigned, extern, static, struct
-- Numeric formats (6): 
-  * Decimal: 42, 10, 100
-  * Binary: 0b1010
-  * Octal: 0o777
-  * Hexadecimal: 0xDEAD
-  * Float: 1.5, .5, 5., 1.5e10, 3.14e-2, .5E+3
-- Character literals with escape sequences (9):
-  * Regular: 'a'
-  * Escapes: \n, \t, \\, \', \", \0
-- String literals: "..." (tested in comments)
-- Operators (16+):
-  * Assignment: =, +=, -=, ^=, /=, %=
-  * Increment/Decrement: ++, --
-  * Comparison: >, <, ==
-  * Arithmetic: +, -, *, /, % (in expressions)
-  * Logical: && || (in boolean contexts)
-- Comments (3 styles):
-  * Single-line: # comment
-  * Multi-line: /** comment **/
-  * Doc comments: /// comment
+Features tested:
+- Keywords (28): int, short, float, char, bool, void, true, false, if, else, 
+  while, for, repeat, until, switch, case, default, break, continue, return, 
+  sizeof, begin, end, signed, unsigned, extern, static, struct
+- Numeric formats: decimal, binary (0b), octal (0o), hex (0x), float (standard,
+  no-leading, no-trailing, scientific notation)
+- Character literals with escape sequences: \n, \t, \\, \', \", \0
+- String literals
+- Operators: =, +=, -=, ^=, /=, %=, ++, --, >, <, ==, +, -, *, /, %, &&, ||
+- Comments: # single-line, /** multi-line **/, /// doc comments
 - Punctuation: ( ) { } [ ] ; , : .
-- Position tracking: All tokens tracked across 110 lines
 
-PARSER RESULT:
-✓ Parsing completed successfully!
-✓ No syntax errors detected.
+Result: Parsing completed successfully
+Status: PASS
 
-VALIDATION RESULT: ✅ PASS
-→ All lexer features produce correct token streams
+--------------------------------------------------------------------------------
+TEST 2: test_all_numeric_formats.kl
+--------------------------------------------------------------------------------
 
-====================================
-## TEST 2: test_all_numeric_formats.kl
-====================================
+Features tested:
+- Decimal: 0, 42, 123456789
+- Binary: 0b0, 0b1, 0b1010, 0b11111111
+- Octal: 0o0, 0o7, 0o777, 0o1234567
+- Hexadecimal: 0x0, 0xa, 0xFF, 0xDEAD, 0xdeadbeef, 0xCAFEBABE
+- Float standard: 0.0, 3.14, 999.999
+- Float no-leading: .0, .5, .999
+- Float no-trailing: 0., 10., 999.
+- Scientific (positive): 1.0e1, 1.0e10, 3.14e2
+- Scientific (negative): 1.0e-1, 1.0e-10, 6.022e-23
+- Scientific (uppercase): 1.0E10, .5E+3
+- Edge cases: 1.23e-100, 9.87e+100
 
-PURPOSE: Validate all numeric literal formats
+Result: Parsing completed successfully
+Status: PASS
 
-LEXER FEATURES TESTED:
-- Decimal integers: 0, 42, 123, 456, 789, 123456789
-- Binary integers: 0b0, 0b1, 0b1010, 0b1111, 0b11111111
-- Octal integers: 0o0, 0o7, 0o77, 0o777, 0o1234567
-- Hexadecimal integers: 0x0, 0xa, 0xA, 0xFF, 0xDEAD, 0xdeadbeef, 0xCAFEBABE
-- Float standard notation: 0.0, 3.14, 123.456, 999.999
-- Float no-leading-zero: .0, .1, .5, .999
-- Float no-trailing: 0., 1., 10., 999.
-- Scientific notation (positive exp): 1.0e1, 1.0e10, 1.5e5, 3.14e2
-- Scientific notation (negative exp): 1.0e-1, 1.0e-10, 1.5e-5, 3.14e-2, 6.022e-23
-- Scientific notation (explicit +): 1.0e+1, 1.0e+10, 1.5e+5
-- Scientific notation (uppercase E): 1.0E10, 3.14E-2, .5E+3
-- Edge cases: 1.23e-100, 9.87e+100, 6.626e-34
+--------------------------------------------------------------------------------
+TEST 3: test_all_literals.kl
+--------------------------------------------------------------------------------
 
-PARSER RESULT:
-✓ Parsing completed successfully!
-✓ No syntax errors detected.
-
-VALIDATION RESULT: ✅ PASS
-→ All numeric formats tokenize correctly
-
-====================================
-## TEST 3: test_all_literals.kl
-====================================
-
-PURPOSE: Validate all character and string literals with escape sequences
-
-LEXER FEATURES TESTED:
+Features tested:
 - Regular char literals: 'a', 'Z', '0', ' ', '"'
-- Char escape sequences (10):
-  * \n (newline)
-  * \t (tab)
-  * \r (carriage return)
-  * \\ (backslash)
-  * \' (single quote)
-  * \" (double quote)
-  * \b (backspace)
-  * \f (form feed)
-  * \v (vertical tab)
-  * \0 (null terminator)
-- Basic string literals: "hello", "", " ", "123"
-- Strings with escapes: "hello\nworld", "tab\tseparated", "quote\"inside"
-- Mixed content strings: "Mixed: 'quotes', spaces, 123"
-- Special chars in strings: "-!@#$%^&*()+="
+- Escape sequences: \n, \t, \r, \\, \', \", \b, \f, \v, \0
+- String literals: basic, with escapes, mixed content, special characters
 
-PARSER RESULT:
-✓ Parsing completed successfully!
-✓ No syntax errors detected.
+Result: Parsing completed successfully
+Status: PASS
 
-VALIDATION RESULT: ✅ PASS
-→ All literals and escape sequences tokenize correctly
+--------------------------------------------------------------------------------
+TEST 4: test_all_comments.kl
+--------------------------------------------------------------------------------
 
-====================================
-## TEST 4: test_all_comments.kl
-====================================
+Features tested:
+- Single-line comments (#)
+- Multi-line comments (/** **/)
+- Documentation comments (///)
+- Comment placement in various positions
 
-PURPOSE: Validate all comment styles
+Result: Parsing completed successfully
+Status: PASS
 
-LEXER FEATURES TESTED:
-- Single-line comments (#): at start, after statements, inside blocks
-- Multi-line comments (/** **/): single line, multiple lines, various positions
-- Documentation comments (///): single line, consecutive lines
-- Comment placement: before/after declarations, inside control flow, nested in blocks
-- Comments with special characters and edge cases
+--------------------------------------------------------------------------------
+SUMMARY
+--------------------------------------------------------------------------------
 
-PARSER RESULT:
-✓ Parsing completed successfully!
-✓ No syntax errors detected.
+Tests run: 4
+Tests passed: 4
+Tests failed: 0
 
-VALIDATION RESULT: ✅ PASS
-→ All comment styles tokenize correctly (comments are skipped by lexer/parser)
+All 96 token rules validated
+All 4 lexer states validated (INITIAL, COMMENT_ML, STRING_STATE, CHAR_STATE)
+Position tracking validated (line_num, column_num)
 
-====================================
-## AGGREGATE RESULTS
-====================================
+NOTES
 
-Tests Run: 4
-Tests Passed: 4
-Tests Failed: 0
-Success Rate: 100%
-
-LEXER STATUS: ✅ FULLY VALIDATED
-→ All 96 token rules produce correct token streams
-→ All 4 lexer states (INITIAL, COMMENT_ML, STRING_STATE, CHAR_STATE) work correctly
-→ Position tracking (line_num, column_num) works correctly
-
-====================================
-## LEXER FEATURE COVERAGE
-====================================
-
-✅ Type Keywords (11/11): int, short, float, char, void, bool, boolean, struct, int8_t, int16_t, int32_t, int64_t
-✅ Modifier Keywords (4/4): signed, unsigned, extern, static
-✅ Control Flow Keywords (13/13): if, else, for, while, repeat, until, switch, case, default, break, continue, return, sizeof
-✅ Special Keywords (4/4): begin, end, true, false
-✅ Numeric Formats (4/4): decimal, binary (0b), octal (0o), hexadecimal (0x)
-✅ Float Formats (4/4): standard (1.5), no-leading (.5), no-trailing (5.), scientific (1.5e10, 3.14e-2, .5E+3)
-✅ Escape Sequences (10/10): \n, \t, \r, \\, \', \", \b, \f, \v, \0
-✅ Comment Styles (3/3): # single-line, /** multi-line **/, /// doc comments
-✅ Operators (31+): All arithmetic, comparison, logical, bitwise, assignment, increment/decrement, pointer/member access
-✅ Punctuation (11): ( ) { } [ ] ; , : . ->
-✅ Identifiers: Variable names (with length limit validation: max 255 chars)
-
-====================================
-## NOTES
-====================================
-
-1. The language uses ^= for multiplication assignment (not *=)
-2. Scientific notation REQUIRES a decimal point: 1.0e10 ✓, 1e10 ✗
-3. "long" is NOT a keyword in this language (only int, short, int8_t, int16_t, int32_t, int64_t)
-4. The parser is a skeleton for A2 lexer validation - its purpose is to confirm lexer correctness, not to fully implement the language
-
-====================================
-## CONCLUSION
-====================================
-
-The KernaLex lexer correctly tokenizes ALL supported language features. All test programs parse successfully, confirming that the lexer produces valid token streams for:
-- 34 keywords
-- 4 integer literal formats
-- 6 float literal variants
-- 10 escape sequence types
-- 3 comment styles
-- 31+ operators
-- Full punctuation and structural elements
-
-Lexer is READY for A2 submission.
+- The language uses ^= for multiplication assignment (not *=)
+- Scientific notation requires a decimal point: 1.0e10 works, 1e10 does not
+- "long" is not a keyword in this language
