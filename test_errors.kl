@@ -1,0 +1,26 @@
+# Test file with error cases
+
+# Test 1: Unterminated string
+int x = "hello world
+
+# Test 2: Unterminated character literal
+char c = 'a
+
+# Test 3: Empty character literal
+char d = '';
+
+# Test 4: Multiple characters in literal
+char e = 'abc';
+
+# Test 5: Unknown character
+int y = 5 @ 10;
+
+# Test 6: Identifier too long (should be fine if <= 255)
+int verylongidentifiernamethatgoesonforsometimewithlotsofcharactersbutnotmorethan255charactersinlength = 42;
+
+# Test 7: Valid constructs
+int main() {
+    float pi = 3.14;
+    string msg = "Hello, World!";
+    return 0;
+}
