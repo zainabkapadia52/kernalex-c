@@ -1,0 +1,21 @@
+# Test file with intentional syntax errors
+
+int main() {
+    int x = 42;
+    
+    # Error 1: Missing semicolon
+    int y = 100
+    
+    # Error 2: Mismatched braces
+    if (x > 10) {
+        y++;
+    
+    # Error 3: Invalid expression
+    x = + + 5;
+    
+    return 0;
+}
+
+# Error 4: Function with missing closing brace
+int test() {
+    int a = 5;

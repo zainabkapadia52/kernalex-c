@@ -1075,39 +1075,39 @@ YY_RULE_SETUP
 case 7:
 YY_RULE_SETUP
 #line 75 "kernalex.l"
-{ process_token(yytext, 1); printf("[FLOAT_LIT: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[FLOAT_LIT: %s] (Token #%d)\n", yytext, TOK_FLOAT_LIT); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 76 "kernalex.l"
-{ process_token(yytext, 1); printf("[FLOAT_LIT: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[FLOAT_LIT: %s] (Token #%d)\n", yytext, TOK_FLOAT_LIT); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 78 "kernalex.l"
-{ process_token(yytext, 1); printf("[INTEGER: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[INTEGER: %s] (Token #%d)\n", yytext, TOK_INTEGER); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 79 "kernalex.l"
-{ process_token(yytext, 1); printf("[INTEGER: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[INTEGER: %s] (Token #%d)\n", yytext, TOK_INTEGER); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 80 "kernalex.l"
-{ process_token(yytext, 1); printf("[INTEGER: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[INTEGER: %s] (Token #%d)\n", yytext, TOK_INTEGER); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 81 "kernalex.l"
-{ process_token(yytext, 1); printf("[INTEGER: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[INTEGER: %s] (Token #%d)\n", yytext, TOK_INTEGER); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 83 "kernalex.l"
 { 
     process_token(yytext, 1); 
-    printf("[STRING_LIT: %s]\n", yytext); 
+    printf("[STRING_LIT: %s] (Token #%d)\n", yytext, TOK_STRING_LIT); 
 }
 	YY_BREAK
 case 14:
@@ -1147,7 +1147,7 @@ YY_RULE_SETUP
 #line 109 "kernalex.l"
 {
     process_token(yytext, 0);
-    printf("[STRING_LIT: \"%s]\n", yytext);
+    printf("[STRING_LIT: \"%s] (Token #%d)\n", yytext, TOK_STRING_LIT);
     BEGIN(INITIAL);
 }
 	YY_BREAK
@@ -1215,10 +1215,10 @@ YY_RULE_SETUP
     
     if (yyleng == 4 && yytext[1] == '\\') {
         // Escape sequence - allowed
-        printf("[CHAR_LIT: %s]\n", yytext);
+        printf("[CHAR_LIT: %s] (Token #%d)\n", yytext, TOK_CHAR_LIT);
     } else if (yyleng == 3) {
         // Single character - allowed
-        printf("[CHAR_LIT: %s]\n", yytext);
+        printf("[CHAR_LIT: %s] (Token #%d)\n", yytext, TOK_CHAR_LIT);
     } else if (yyleng > 4) {
         // Multiple characters in single quotes
         printf("[ERROR: Line %d, Col %d: Multiple characters in character literal]\n", 
@@ -1263,7 +1263,7 @@ YY_RULE_SETUP
 #line 189 "kernalex.l"
 {
     process_token(yytext, 0);
-    printf("[CHAR_LIT: \'%s]\n", yytext);
+    printf("[CHAR_LIT: '%s] (Token #%d)\n", yytext, TOK_CHAR_LIT);
     BEGIN(INITIAL);
 }
 	YY_BREAK
@@ -1315,372 +1315,372 @@ case YY_STATE_EOF(CHAR_STATE):
 case 30:
 YY_RULE_SETUP
 #line 224 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_INT8_T); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 225 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_INT16_T); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 226 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_INT32_T); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 227 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_INT64_T); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 228 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_INT); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 229 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_SHORT); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 230 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_FLOAT); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 231 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_CHAR); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 232 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_VOID); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 233 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_BOOL); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 234 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_BOOLEAN); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 235 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_STRUCT); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 236 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_SIGNED); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 237 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_UNSIGNED); }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 238 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_EXTERN); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 239 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_STATIC); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 240 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_IF); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 241 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_ELSE); }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 242 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_FOR); }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 243 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_WHILE); }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 244 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_REPEAT); }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 245 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_UNTIL); }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 246 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_SWITCH); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 247 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_CASE); }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 248 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_DEFAULT); }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 249 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_BREAK); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 250 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_CONTINUE); }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 251 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_RETURN); }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 252 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_SIZEOF); }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
 #line 253 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_BEGIN); }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
 #line 254 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_END); }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
 #line 255 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_TRUE); }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
 #line 256 "kernalex.l"
-{ process_token(yytext, 1); printf("[KEYWORD: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[KEYWORD: %s] (Token #%d)\n", yytext, TOK_FALSE); }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
 #line 258 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_SPACESHIP); }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
 #line 259 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_XOR); }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
 #line 260 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_LSHIFT); }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
 #line 261 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_RSHIFT); }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
 #line 262 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_PLUSEQ); }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
 #line 263 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_MINUSEQ); }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
 #line 264 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_MULTEQ); }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
 #line 265 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_DIVEQ); }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
 #line 266 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_MODEQ); }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
 #line 267 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_EQ); }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
 #line 268 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_NE); }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
 #line 269 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_LE); }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
 #line 270 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_GE); }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
 #line 271 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_AND); }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
 #line 272 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_OR); }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
 #line 273 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_INC); }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
 #line 274 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_DEC); }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
 #line 275 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_ARROW); }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
 #line 277 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_PLUS); }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
 #line 278 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_MINUS); }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
 #line 279 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_STAR); }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
 #line 280 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_MULT); }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
 #line 281 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_DIV); }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
 #line 282 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_MOD); }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
 #line 283 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_ASSIGN); }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
 #line 284 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_LT); }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
 #line 285 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_GT); }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
 #line 286 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_NOT); }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
 #line 287 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_AMP); }
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
 #line 288 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_BITOR); }
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
 #line 289 "kernalex.l"
-{ process_token(yytext, 1); printf("[OPERATOR: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[OPERATOR: %s] (Token #%d)\n", yytext, TOK_BITNOT); }
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
 #line 291 "kernalex.l"
-{ process_token(yytext, 1); printf("[PUNCTUATION: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[PUNCTUATION: %s] (Token #%d)\n", yytext, TOK_DOT); }
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
 #line 292 "kernalex.l"
-{ process_token(yytext, 1); printf("[PUNCTUATION: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[PUNCTUATION: %s] (Token #%d)\n", yytext, TOK_SEMICOLON); }
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
 #line 293 "kernalex.l"
-{ process_token(yytext, 1); printf("[PUNCTUATION: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[PUNCTUATION: %s] (Token #%d)\n", yytext, TOK_COMMA); }
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
 #line 294 "kernalex.l"
-{ process_token(yytext, 1); printf("[PUNCTUATION: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[PUNCTUATION: %s] (Token #%d)\n", yytext, TOK_LPAREN); }
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
 #line 295 "kernalex.l"
-{ process_token(yytext, 1); printf("[PUNCTUATION: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[PUNCTUATION: %s] (Token #%d)\n", yytext, TOK_RPAREN); }
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
 #line 296 "kernalex.l"
-{ process_token(yytext, 1); printf("[PUNCTUATION: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[PUNCTUATION: %s] (Token #%d)\n", yytext, TOK_LBRACE); }
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
 #line 297 "kernalex.l"
-{ process_token(yytext, 1); printf("[PUNCTUATION: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[PUNCTUATION: %s] (Token #%d)\n", yytext, TOK_RBRACE); }
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
 #line 298 "kernalex.l"
-{ process_token(yytext, 1); printf("[PUNCTUATION: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[PUNCTUATION: %s] (Token #%d)\n", yytext, TOK_LBRACKET); }
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
 #line 299 "kernalex.l"
-{ process_token(yytext, 1); printf("[PUNCTUATION: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[PUNCTUATION: %s] (Token #%d)\n", yytext, TOK_RBRACKET); }
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
 #line 300 "kernalex.l"
-{ process_token(yytext, 1); printf("[PUNCTUATION: %s]\n", yytext); }
+{ process_token(yytext, 1); printf("[PUNCTUATION: %s] (Token #%d)\n", yytext, TOK_COLON); }
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
@@ -1689,7 +1689,7 @@ YY_RULE_SETUP
     token_start_col = column_num;
     process_token(yytext, 0);
     if (yyleng <= 255) {
-        printf("[IDENTIFIER: %s]\n", yytext);
+        printf("[IDENTIFIER: %s] (Token #%d)\n", yytext, TOK_IDENTIFIER);
     } else {
         printf("[ERROR: Line %d, Col %d: Identifier too long (max 255)]\n", 
                line_num, token_start_col);
