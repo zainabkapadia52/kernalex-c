@@ -96,14 +96,15 @@ type_specifier:
     ;
 
 storage_class:
-      /* empty */
-    | TOK_EXTERN
+      TOK_EXTERN
     | TOK_STATIC
     ;
 
 /* Variable Declarations */
 variable_declaration:
-      storage_class type_specifier declarator
+      type_specifier declarator
+    | type_specifier declarator TOK_ASSIGN expression
+    | storage_class type_specifier declarator
     | storage_class type_specifier declarator TOK_ASSIGN expression
     ;
 
