@@ -156,13 +156,26 @@ struct_member:
 
 /* Statements */
 statement:
-      expression_statement
-    | compound_statement
-    | selection_statement
-    | iteration_statement
-    | jump_statement
-    | variable_declaration TOK_SEMICOLON
-    ;
+     matched_stmt
+   | unmatched_stmt
+;
+
+matched_stmt:
+     expression_statement
+   | compound_statement
+   | iteration_statement
+   | jump_statement
+   | variable_declaration TOK_SEMICOLON
+   | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN TOK_LBRACE case_list TOK_RBRACE
+   | TOK_IF TOK_LPAREN expression TOK_RPAREN matched_stmt TOK_ELSE matched_stmt
+;
+
+unmatched_stmt:
+     TOK_IF TOK_LPAREN expression TOK_RPAREN statement
+   | TOK_IF TOK_LPAREN expression TOK_RPAREN matched_stmt TOK_ELSE unmatched_stmt
+;
+
+
 
 compound_statement:
       TOK_LBRACE TOK_RBRACE
@@ -199,11 +212,12 @@ case_item:
 
 /* Iteration Statements */
 iteration_statement:
-      TOK_WHILE TOK_LPAREN expression TOK_RPAREN statement
-    | TOK_FOR TOK_LPAREN expression_opt TOK_SEMICOLON expression_opt TOK_SEMICOLON expression_opt TOK_RPAREN statement
-    | TOK_FOR TOK_LPAREN variable_declaration TOK_SEMICOLON expression_opt TOK_SEMICOLON expression_opt TOK_RPAREN statement
-    | TOK_REPEAT statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
-    ;
+     TOK_WHILE TOK_LPAREN expression TOK_RPAREN matched_stmt
+   | TOK_FOR TOK_LPAREN expression_opt TOK_SEMICOLON expression_opt TOK_SEMICOLON expression_opt TOK_RPAREN matched_stmt
+   | TOK_FOR TOK_LPAREN variable_declaration TOK_SEMICOLON expression_opt TOK_SEMICOLON expression_opt TOK_RPAREN matched_stmt
+   | TOK_REPEAT matched_stmt TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
+;
+
 
 expression_opt:
       /* empty */
