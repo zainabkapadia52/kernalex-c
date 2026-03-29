@@ -109,11 +109,21 @@ variable_declaration:
     ;
 
 declarator:
-      TOK_IDENTIFIER
-    | TOK_STAR declarator                    /* pointer */
-    | declarator TOK_LBRACKET TOK_RBRACKET   /* array (no size) */
-    | declarator TOK_LBRACKET TOK_INTEGER TOK_RBRACKET  /* array with size */
-    ;
+declarator:
+     pointer direct_declarator
+   | direct_declarator
+;
+
+pointer:
+     TOK_STAR
+   | TOK_STAR pointer
+;
+
+direct_declarator:
+     TOK_IDENTIFIER
+   | direct_declarator TOK_LBRACKET TOK_RBRACKET
+   | direct_declarator TOK_LBRACKET TOK_INTEGER TOK_RBRACKET
+;
 
 /* Function Declarations */
 function_declaration:
@@ -172,7 +182,7 @@ expression_statement:
 
 /* Selection Statements (if/else, switch) */
 selection_statement:
-      TOK_IF TOK_LPAREN expression TOK_RPAREN statement
+  TOK_IF TOK_LPAREN expression TOK_RPAREN statement
     | TOK_IF TOK_LPAREN expression TOK_RPAREN statement TOK_ELSE statement
     | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN TOK_LBRACE case_list TOK_RBRACE
     ;
@@ -363,3 +373,4 @@ int main(int argc, char *argv[]) {
     
     return (result == 0 && syntax_error_count == 0) ? 0 : 1;
 }
+
