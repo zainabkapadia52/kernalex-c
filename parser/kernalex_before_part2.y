@@ -109,21 +109,11 @@ variable_declaration:
     ;
 
 declarator:
-     pointer direct_declarator
-   | direct_declarator
-;
-
-pointer:
-     TOK_STAR
-   | TOK_STAR pointer
-;
-
-direct_declarator:
-     TOK_IDENTIFIER
-   | direct_declarator TOK_LBRACKET TOK_RBRACKET
-   | direct_declarator TOK_LBRACKET TOK_INTEGER TOK_RBRACKET
-;
-
+      TOK_IDENTIFIER
+    | TOK_STAR declarator                    /* pointer */
+    | declarator TOK_LBRACKET TOK_RBRACKET   /* array (no size) */
+    | declarator TOK_LBRACKET TOK_INTEGER TOK_RBRACKET  /* array with size */
+    ;
 
 /* Function Declarations */
 function_declaration:
