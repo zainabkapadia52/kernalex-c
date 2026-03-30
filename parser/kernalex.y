@@ -9,6 +9,25 @@ extern char *yytext;
 extern FILE *yyin;
 
 void yyerror(const char *s);
+/* ===== PART 3: DERIVATION STORAGE ===== */
+
+#define MAX_STEPS 2000
+
+char *derivation[MAX_STEPS];
+int derivation_count = 0;
+
+void add_derivation(const char *rule) {
+   if (derivation_count < MAX_STEPS) {
+       derivation[derivation_count++] = strdup(rule);
+   }
+}
+
+void print_reverse_derivation() {
+   printf("\nReverse Derivation:\n");
+   for (int i = derivation_count - 1; i >= 0; i--) {
+       printf("%s\n", derivation[i]);
+   }
+}
 
 int syntax_error_count = 0;
 %}
@@ -62,9 +81,12 @@ int syntax_error_count = 0;
 /* Grammar Rules */
 
 program:
-      /* empty */
-    | declaration_list
-    ;
+     /* empty */
+   | declaration_list
+   {
+       add_derivation("program → declaration_list");
+   }
+
 
 declaration_list:
       declaration
@@ -72,10 +94,20 @@ declaration_list:
     ;
 
 declaration:
-      function_declaration
-    | variable_declaration TOK_SEMICOLON
-    | struct_declaration TOK_SEMICOLON
-    ;
+     function_declaration
+   {
+       add_derivation("declaration → function_declaration");
+   }
+   | variable_declaration TOK_SEMICOLON
+   {
+       add_derivation("declaration → variable_declaration ;");
+   }
+   | struct_declaration TOK_SEMICOLON
+   {
+       add_derivation("declaration → struct_declaration ;");
+   }
+;
+
 
 /* Type Specifiers */
 type_specifier:
@@ -109,10 +141,16 @@ variable_declaration:
     ;
 
 declarator:
-declarator:
      pointer direct_declarator
+   {
+       add_derivation("declarator → pointer direct_declarator");
+   }
    | direct_declarator
+   {
+       add_derivation("declarator → direct_declarator");
+   }
 ;
+
 
 pointer:
      TOK_STAR
@@ -121,9 +159,19 @@ pointer:
 
 direct_declarator:
      TOK_IDENTIFIER
+   {
+       add_derivation("direct_declarator → identifier");
+   }
    | direct_declarator TOK_LBRACKET TOK_RBRACKET
+   {
+       add_derivation("direct_declarator → direct_declarator []");
+   }
    | direct_declarator TOK_LBRACKET TOK_INTEGER TOK_RBRACKET
+   {
+       add_derivation("direct_declarator → direct_declarator [int]");
+   }
 ;
+
 
 /* Function Declarations */
 function_declaration:
@@ -162,18 +210,47 @@ statement:
 
 matched_stmt:
      expression_statement
+   {
+       add_derivation("matched_stmt → expression_statement");
+   }
    | compound_statement
+   {
+       add_derivation("matched_stmt → compound_statement");
+   }
    | iteration_statement
+   {
+       add_derivation("matched_stmt → iteration_statement");
+   }
    | jump_statement
+   {
+       add_derivation("matched_stmt → jump_statement");
+   }
    | variable_declaration TOK_SEMICOLON
+   {
+       add_derivation("matched_stmt → variable_declaration ;");
+   }
    | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN TOK_LBRACE case_list TOK_RBRACE
+   {
+       add_derivation("matched_stmt → switch");
+   }
    | TOK_IF TOK_LPAREN expression TOK_RPAREN matched_stmt TOK_ELSE matched_stmt
+   {
+       add_derivation("matched_stmt → if (expr) stmt else stmt");
+   }
 ;
+
 
 unmatched_stmt:
      TOK_IF TOK_LPAREN expression TOK_RPAREN statement
+   {
+       add_derivation("unmatched_stmt → if (expr) stmt");
+   }
    | TOK_IF TOK_LPAREN expression TOK_RPAREN matched_stmt TOK_ELSE unmatched_stmt
+   {
+       add_derivation("unmatched_stmt → if (expr) stmt else unmatched");
+   }
 ;
+
 
 
 
@@ -234,9 +311,16 @@ jump_statement:
 
 /* Expressions */
 expression:
-      assignment_expression
-    | expression TOK_COMMA assignment_expression
-    ;
+     assignment_expression
+   {
+       add_derivation("expression → assignment_expression");
+   }
+   | expression TOK_COMMA assignment_expression
+   {
+       add_derivation("expression → expression , assignment_expression");
+   }
+;
+
 
 assignment_expression:
       logical_or_expression
@@ -381,10 +465,11 @@ int main(int argc, char *argv[]) {
     if (result == 0 && syntax_error_count == 0) {
         printf("Parsing completed successfully\n");
         printf("No syntax errors detected\n");
+
+        print_reverse_derivation();  
     } else {
         printf("Parsing failed with %d syntax error(s)\n", syntax_error_count);
     }
     
     return (result == 0 && syntax_error_count == 0) ? 0 : 1;
 }
-
