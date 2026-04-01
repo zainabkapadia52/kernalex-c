@@ -47,11 +47,11 @@ int math3 = 10    +    5;
 int complex = (10 + 20) * (30 - 15) / 5;
 
 # Struct definition
-struct Point {
+struct Point begin
     int x;
     int y;
     int z;
-};
+end;
 
 # Long identifier
 int very_long_identifier_to_test_column_tracking = 99;

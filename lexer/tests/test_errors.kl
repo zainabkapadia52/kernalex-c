@@ -19,8 +19,8 @@ int y = 5 @ 10;
 int verylongidentifiernamethatgoesonforsometimewithlotsofcharactersbutnotmorethan255charactersinlength = 42;
 
 # Test 7: Valid constructs
-int main() {
+int main() begin
     float pi = 3.14;
     string msg = "Hello, World!";
     return 0;
-}
+end

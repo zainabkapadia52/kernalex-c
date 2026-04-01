@@ -35,16 +35,16 @@ int __dunder;
 int _123start;
 
 # All valid keyword matches
-if (true) { x = 1; }
-else { x = 2; }
-for (;;) { break; }
-while (true) { continue; }
-repeat { } until (false);
-switch (x) { case 1: x++; default: x--; }
+if (true) begin x = 1; end
+else begin x = 2; end
+for (;;) begin break; end
+while (true) begin continue; end
+repeat begin end until (false);
+switch (x) begin case 1: x++; default: x--; end
 return 0;
 sizeof(int);
-begin { }
-end { }
+begin begin end
+end begin end
 signed int s;
 unsigned int u;
 extern int e;

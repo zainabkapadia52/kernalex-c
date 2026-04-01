@@ -51,10 +51,10 @@ int* ptr = &assign;
 int val = *ptr;
 int arr[10];
 int elem = arr[0];
-struct Point {
+struct Point begin
     int x;
     int y;
-} point;
+end point;
 int dot = point.x;
 struct Point* pptr = &point;
 int member = pptr->x;

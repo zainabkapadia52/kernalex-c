@@ -7,13 +7,13 @@
 
 # Another single-line comment
 
-int main() {
+int main() begin
     int zainy=5;
-    if(x>5){
+    if(x>5)begin
         zainy++;
-    }else{
+    endelsebegin
         zainy--;
-    }
+    end
     // This should NOT be recognized (C-style comment)
     
     # Single-line comment example
@@ -31,31 +31,31 @@ int main() {
     boolean check = false;
     
     # Keywords test
-    if (x > 10) {
+    if (x > 10) begin
         /// Documentation comment for code block
         y++;
-    } else {
+    end else begin
         y--;
-    }
+    end
     
     # Loop keywords
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) begin
         continue;
-    }
+    end
     
-    while (true) {
+    while (true) begin
         break;
-    }
+    end
     
-    repeat {
+    repeat begin
         x++;
-    } until (x > 100);
+    end until (x > 100);
     
     # Type keywords
-    struct Point {
+    struct Point begin
         int x;
         int y;
-    };
+    end;
     
     # Type modifiers
     extern int global_var;
@@ -79,20 +79,20 @@ int main() {
     b /= 2;
     
     # Relational operators
-    if (a < b) { }
-    if (a <= b) { }
-    if (a > b) { }
-    if (a >= b) { }
-    if (a == b) { }
-    if (a != b) { }
+    if (a < b) begin end
+    if (a <= b) begin end
+    if (a > b) begin end
+    if (a >= b) begin end
+    if (a == b) begin end
+    if (a != b) begin end
     
     # Three-way comparison
     int cmp = a <=> b;
     
     # Logical operators
-    if (a > 0 && b > 0) { }
-    if (a > 0 || b > 0) { }
-    if (!flag) { }
+    if (a > 0 && b > 0) begin end
+    if (a > 0 || b > 0) begin end
+    if (!flag) begin end
     
     # Bitwise operators
     int bits = a & b;
@@ -133,4 +133,4 @@ int main() {
     int count_down;
     
     return 0;
-}
+end
