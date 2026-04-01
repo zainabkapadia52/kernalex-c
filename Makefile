@@ -12,6 +12,7 @@ LEXER = $(LEXER_DIR)/kernalex
 PARSER = $(PARSER_DIR)/kernalex_parser
 LEXER_SRC = $(LEXER_DIR)/lex.yy.c
 PARSER_LEX_SRC = $(PARSER_DIR)/lex_parser.yy.c
+PARSER_LEX_FILE = $(LEXER_DIR)/kernalex.l
 PARSER_TAB_C = $(PARSER_DIR)/kernalex.tab.c
 PARSER_TAB_H = $(PARSER_DIR)/kernalex.tab.h
 
@@ -34,11 +35,11 @@ parser: $(PARSER)
 $(PARSER_TAB_C) $(PARSER_TAB_H): $(PARSER_DIR)/kernalex.y
 	$(BISON) -d -o $(PARSER_TAB_C) $(PARSER_DIR)/kernalex.y
 
-$(PARSER_LEX_SRC): $(PARSER_DIR)/kernalex_parser.l $(PARSER_TAB_H)
-	$(FLEX) -o $(PARSER_LEX_SRC) $(PARSER_DIR)/kernalex_parser.l
+$(PARSER_LEX_SRC): $(PARSER_LEX_FILE) $(PARSER_TAB_H)
+	$(FLEX) -o $(PARSER_LEX_SRC) $(PARSER_LEX_FILE)
 
 $(PARSER): $(PARSER_TAB_C) $(PARSER_LEX_SRC)
-	$(CC) $(CFLAGS) -I. -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC)
+	$(CC) $(CFLAGS) -DPARSER_MODE -I. -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC)
 
 clean:
 	rm -f $(LEXER) $(PARSER) $(LEXER_SRC) $(PARSER_LEX_SRC) $(PARSER_TAB_C) $(PARSER_TAB_H) *.gch

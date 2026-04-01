@@ -69,7 +69,6 @@ int max=-1;
 %token TOK_AND 52
 %token TOK_OR 53
 %token TOK_NOT 54
-%token TOK_BITAND 55
 %token TOK_BITOR 56
 %token TOK_XOR 57
 %token TOK_BITNOT 58
@@ -87,15 +86,12 @@ int max=-1;
 %token TOK_STAR 70
 %token TOK_LPAREN 71
 %token TOK_RPAREN 72
-%token TOK_LBRACE 73
-%token TOK_RBRACE 74
 %token TOK_LBRACKET 75
 %token TOK_RBRACKET 76
 %token TOK_SEMICOLON 77
 %token TOK_COMMA 78
 %token TOK_DOT 79
 %token TOK_COLON 80
-%token TOK_UNKNOWN 81
 
 %start translation_unit
 

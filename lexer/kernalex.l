@@ -305,6 +305,7 @@ void process_token(const char *text, int save_start) {
 
 %%
 
+#ifndef PARSER_MODE
 int main(int argc, char *argv[]){
     if(argc > 1){
         yyin = fopen(argv[1], "r");
@@ -322,4 +323,5 @@ int main(int argc, char *argv[]){
     
     return 0;
 }
+#endif
 
