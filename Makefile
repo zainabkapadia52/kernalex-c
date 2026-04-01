@@ -16,7 +16,7 @@ PARSER_LEX_FILE = $(LEXER_DIR)/kernalex.l
 PARSER_TAB_C = $(PARSER_DIR)/kernalex.tab.c
 PARSER_TAB_H = $(PARSER_DIR)/kernalex.tab.h
 
-.PHONY: all clean lexer parser
+.PHONY: all clean lexer parser lalr-table lalr-table-full lalr-table-important
 
 all: lexer parser
 
@@ -32,6 +32,12 @@ $(LEXER): $(LEXER_SRC)
 # Parser build 
 parser: $(PARSER)
 
+lalr-table: lalr-table-full lalr-table-important
+
+lalr-table-full: $(PARSER_DIR)/parsing_table/lalr1_table_full.csv
+
+lalr-table-important: $(PARSER_DIR)/parsing_table/lalr1_table_important.csv
+
 $(PARSER_TAB_C) $(PARSER_TAB_H): $(PARSER_DIR)/kernalex.y
 	$(BISON) -v -d -o $(PARSER_TAB_C) $(PARSER_DIR)/kernalex.y
 
@@ -41,5 +47,13 @@ $(PARSER_LEX_SRC): $(PARSER_LEX_FILE) $(PARSER_TAB_H)
 $(PARSER): $(PARSER_TAB_C) $(PARSER_LEX_SRC)
 	$(CC) $(CFLAGS) -DYYDEBUG=1 -DPARSER_MODE -I. -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC)
 
+$(PARSER_DIR)/parsing_table/lalr1_table_full.csv: $(PARSER_DIR)/kernalex.output $(PARSER_DIR)/parsing_table/generate_lalr_table.py
+	python3 $(PARSER_DIR)/parsing_table/generate_lalr_table.py $(PARSER_DIR)/kernalex.output $(PARSER_DIR)/parsing_table/lalr1_table_full
+
+$(PARSER_DIR)/parsing_table/lalr1_table_important.csv: $(PARSER_DIR)/kernalex.output $(PARSER_DIR)/parsing_table/generate_lalr_table.py $(PARSER_DIR)/parsing_table/important_states.txt
+	python3 $(PARSER_DIR)/parsing_table/generate_lalr_table.py $(PARSER_DIR)/kernalex.output $(PARSER_DIR)/parsing_table/lalr1_table_important --states-file $(PARSER_DIR)/parsing_table/important_states.txt
+
 clean:
-	rm -f $(LEXER) $(PARSER) $(LEXER_SRC) $(PARSER_LEX_SRC) $(PARSER_TAB_C) $(PARSER_TAB_H) *.gch
+	rm -f $(LEXER) $(PARSER) $(LEXER_SRC) $(PARSER_LEX_SRC) $(PARSER_TAB_C) $(PARSER_TAB_H) *.gch \
+	$(PARSER_DIR)/parsing_table/lalr1_table_full.csv \
+	$(PARSER_DIR)/parsing_table/lalr1_table_important.csv
