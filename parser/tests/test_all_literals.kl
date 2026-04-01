@@ -1,7 +1,6 @@
-# Lexer Validation Test 4: All String and Character Literals
-# If this parses successfully, all literals and escape sequences are tokenized correctly
+# Parser/Lexer Validation: All String and Character Literals
 
-int main() {
+int main() begin
     # Character literals: regular characters
     char c1 = 'a';
     char c2 = 'Z';
@@ -55,4 +54,4 @@ int main() {
     char* sp5 = "!@#$%^&*()";
     
     return 0;
-}
+end

@@ -188,10 +188,10 @@ int is_valid_escape(char c) {
     return 0;
 }
 
-"int8_t"    { process_token(yytext, 1); return TOK_INT8; }
-"int16_t"   { process_token(yytext, 1); return TOK_INT16; }
-"int32_t"   { process_token(yytext, 1); return TOK_INT32; }
-"int64_t"   { process_token(yytext, 1); return TOK_INT64; }
+"int8_t"    { process_token(yytext, 1); return TOK_INT8_T; }
+"int16_t"   { process_token(yytext, 1); return TOK_INT16_T; }
+"int32_t"   { process_token(yytext, 1); return TOK_INT32_T; }
+"int64_t"   { process_token(yytext, 1); return TOK_INT64_T; }
 "int"       { process_token(yytext, 1); return TOK_INT; }
 "short"     { process_token(yytext, 1); return TOK_SHORT; }
 "float"     { process_token(yytext, 1); return TOK_FLOAT; }

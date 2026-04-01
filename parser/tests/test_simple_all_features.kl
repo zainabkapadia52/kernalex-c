@@ -1,15 +1,29 @@
-# Simple Comprehensive Lexer Validation
-# This test exercises ALL lexer features in valid parser-friendly syntax
+# Parser/Lexer Validation: Simple All Features
 
-int main() {
-    # All type keywords
+struct Point begin
+    int x;
+    int y;
+end;
+
+extern int ext_var;
+static int stat_var;
+
+unsigned int test1() begin
+    return 0;
+end
+
+signed int test2() begin
+    return 0;
+end
+
+int main() begin
     int x = 10;
     short y = 20;
     float z = 3.14;
     char c = 'a';
     bool b = true;
-    
-    # Numeric formats
+    boolean bb = false;
+
     int dec = 42;
     int bin = 0b1010;
     int oct = 0o777;
@@ -20,76 +34,60 @@ int main() {
     float f4 = 1.5e10;
     float f5 = 3.14e-2;
     float f6 = .5E+3;
-    
-    # Literals with escape sequences
+
     char c1 = 'a';
     char c2 = '\n';
     char c3 = '\t';
     char c4 = '\\';
     char c5 = '\'';
-    char c6 = '\"';
+    char c6 = '"';
     char c7 = '\0';
-    
-    # Operators (assignment forms)
+
+    char* s1 = "hello";
+    char* s2 = "line1\\nline2";
+
     x = 100;
     x += 5;
     x -= 3;
     x ^= 2;
     x /= 2;
     x %= 7;
-    
-    # Operators (increment/decrement)
+
     x++;
     x--;
-    
-    # Control flow keywords
-    if (x > 0) {
+
+    if (x > 0) begin
         x = 1;
-    } else {
+    end else begin
         x = 0;
-    }
-    
-    while (y < 100) {
+    end
+
+    while (y < 100) begin
         y++;
-    }
-    
-    for (int i = 0; i < 10; i++) {
+    end
+
+    for (int i = 0; i < 10; i++) begin
         continue;
-    }
-    
-    switch (x) {
+    end
+
+    switch (x) begin
         case 1:
             break;
         default:
             continue;
-    }
-    
-    repeat {
+    end
+
+    repeat begin
         y--;
-    } until (y == 0);
-    
-    # begin/end blocks
+    end until (y == 0);
+
     begin
         int local = sizeof(int);
-        return local;
+        z = x <=> y;
+        z = x ^^ y;
+        x = x << 1;
+        y = y >> 1;
     end
-}
 
-# Signed/unsigned keywords 
-unsigned int test1() {
     return 0;
-}
-
-signed int test2() {
-    return 0;
-}
-
-# extern/static keywords
-extern int ext_var;
-static int stat_var;
-
-# struct keyword
-struct Point {
-    int x;
-    int y;
-};
+end

@@ -1,475 +1,564 @@
+
 %{
+#include<stdio.h>
+extern char *yytext;
+
+int yylex(void);
+void yyerror(const char *s);
+
+int global_declarations=0;
+int func_definitions=0;
+int int_consts=0;
+int pointer_decls=0;
+int ifs_wo_else=0;
+int ladder_len=0,hold=0;
+int max=-1;
+%}
+
+%token TOK_INT 1
+%token TOK_SHORT 2
+%token TOK_FLOAT 3
+%token TOK_CHAR 4
+%token TOK_VOID 5
+%token TOK_BOOL 6
+%token TOK_BOOLEAN 7
+%token TOK_STRUCT 8
+%token TOK_INT8_T 9
+%token TOK_INT16_T 10
+%token TOK_INT32_T 11
+%token TOK_INT64_T 12
+%token TOK_SIGNED 13
+%token TOK_UNSIGNED 14
+%token TOK_EXTERN 15
+%token TOK_STATIC 16
+%token <val> TOK_IF 17
+%token <val> TOK_ELSE 18
+%token TOK_FOR 19
+%token TOK_WHILE 20
+%token TOK_REPEAT 21
+%token TOK_UNTIL 22
+%token TOK_SWITCH 23
+%token TOK_CASE 24
+%token TOK_DEFAULT 25
+%token TOK_BREAK 26
+%token TOK_CONTINUE 27
+%token TOK_RETURN 28
+%token TOK_SIZEOF 29
+%token TOK_BEGIN 30
+%token TOK_END 31
+%token TOK_TRUE 32
+%token TOK_FALSE 33
+%token TOK_IDENTIFIER 34
+%token TOK_INTEGER 35
+%token TOK_FLOAT_LIT 36
+%token TOK_CHAR_LIT 37
+%token TOK_STRING_LIT 38
+%token TOK_PLUS 39
+%token TOK_MINUS 40
+%token TOK_MULT 41
+%token TOK_DIV 42
+%token TOK_MOD 43
+%token TOK_ASSIGN 44
+%token TOK_EQ 45
+%token TOK_NE 46
+%token TOK_LT 47
+%token TOK_LE 48
+%token TOK_GT 49
+%token TOK_GE 50
+%token TOK_SPACESHIP 51
+%token TOK_AND 52
+%token TOK_OR 53
+%token TOK_NOT 54
+%token TOK_BITAND 55
+%token TOK_BITOR 56
+%token TOK_XOR 57
+%token TOK_BITNOT 58
+%token TOK_LSHIFT 59
+%token TOK_RSHIFT 60
+%token TOK_INC 61
+%token TOK_DEC 62
+%token TOK_PLUSEQ 63
+%token TOK_MINUSEQ 64
+%token TOK_MULTEQ 65
+%token TOK_DIVEQ 66
+%token TOK_MODEQ 67
+%token TOK_ARROW 68
+%token TOK_AMP 69
+%token TOK_STAR 70
+%token TOK_LPAREN 71
+%token TOK_RPAREN 72
+%token TOK_LBRACE 73
+%token TOK_RBRACE 74
+%token TOK_LBRACKET 75
+%token TOK_RBRACKET 76
+%token TOK_SEMICOLON 77
+%token TOK_COMMA 78
+%token TOK_DOT 79
+%token TOK_COLON 80
+%token TOK_UNKNOWN 81
+
+%start translation_unit
+
+
+%union
+{
+	int val;
+	struct symtab *symp;
+}
+
+%%
+
+primary_expression
+	: TOK_IDENTIFIER
+    | constant
+    | string
+	| TOK_TRUE
+	| TOK_FALSE
+	| TOK_LPAREN expression TOK_RPAREN
+    ;
+
+constant
+	: TOK_INTEGER {int_consts++;}
+	| TOK_FLOAT_LIT
+	| TOK_CHAR_LIT
+	;
+
+string
+	: TOK_STRING_LIT
+	;
+
+
+postfix_expression
+	: primary_expression
+	| postfix_expression TOK_LBRACKET expression TOK_RBRACKET
+	| postfix_expression TOK_LPAREN TOK_RPAREN
+	| postfix_expression TOK_LPAREN argument_expression_list TOK_RPAREN
+	| postfix_expression TOK_DOT TOK_IDENTIFIER
+	| postfix_expression TOK_ARROW TOK_IDENTIFIER
+	| postfix_expression TOK_INC
+	| postfix_expression TOK_DEC
+	| TOK_LPAREN type_name TOK_RPAREN TOK_BEGIN initializer_list TOK_END
+	| TOK_LPAREN type_name TOK_RPAREN TOK_BEGIN initializer_list TOK_COMMA TOK_END
+	;
+
+argument_expression_list
+	: assignment_expression
+	| argument_expression_list TOK_COMMA assignment_expression
+	;
+
+unary_expression
+	: postfix_expression
+	| TOK_INC unary_expression
+	| TOK_DEC unary_expression
+	| unary_operator cast_expression
+	| TOK_SIZEOF unary_expression
+	| TOK_SIZEOF TOK_LPAREN type_name TOK_RPAREN
+	;
+
+unary_operator
+	: TOK_AMP
+	| TOK_STAR
+	| TOK_PLUS
+	| TOK_MINUS
+	| TOK_BITNOT
+	| TOK_NOT
+	;
+
+cast_expression
+	: unary_expression
+	| TOK_LPAREN type_name TOK_RPAREN cast_expression
+	;
+
+multiplicative_expression
+    : cast_expression
+	| multiplicative_expression TOK_MULT cast_expression
+	| multiplicative_expression TOK_DIV cast_expression
+	| multiplicative_expression TOK_MOD cast_expression
+    ;
+
+additive_expression
+	: multiplicative_expression
+	| additive_expression TOK_PLUS multiplicative_expression
+	| additive_expression TOK_MINUS multiplicative_expression
+	;
+
+shift_expression
+	: additive_expression
+	| shift_expression TOK_LSHIFT additive_expression
+	| shift_expression TOK_RSHIFT additive_expression
+	;
+
+relational_expression
+    : shift_expression
+	| relational_expression TOK_LT shift_expression
+	| relational_expression TOK_GT shift_expression
+	| relational_expression TOK_LE shift_expression
+	| relational_expression TOK_GE shift_expression
+	| relational_expression TOK_SPACESHIP shift_expression
+    ;
+
+equality_expression
+	: relational_expression
+	| equality_expression TOK_EQ relational_expression
+	| equality_expression TOK_NE relational_expression
+	;
+
+and_expression
+	: equality_expression
+	| and_expression TOK_AMP equality_expression
+	;
+
+exclusive_or_expression
+    : and_expression
+	| exclusive_or_expression TOK_XOR and_expression
+    ;
+
+inclusive_or_expression
+	: exclusive_or_expression
+	| inclusive_or_expression TOK_BITOR exclusive_or_expression
+	;
+
+logical_and_expression
+	: inclusive_or_expression
+	| logical_and_expression TOK_AND inclusive_or_expression
+	;
+
+logical_or_expression
+	: logical_and_expression
+	| logical_or_expression TOK_OR logical_and_expression
+	;
+
+conditional_expression
+	: logical_or_expression
+	;
+
+assignment_expression
+	: conditional_expression
+	| unary_expression assignment_operator assignment_expression
+	;
+
+assignment_operator
+	: TOK_ASSIGN
+	| TOK_MULTEQ
+	| TOK_DIVEQ
+	| TOK_MODEQ
+	| TOK_PLUSEQ
+	| TOK_MINUSEQ
+	;
+
+expression
+	: assignment_expression
+	| expression TOK_COMMA assignment_expression
+	;
+
+constant_expression
+	: conditional_expression	/* with constraints */
+	;
+
+declaration
+	: declaration_specifiers TOK_SEMICOLON
+	| declaration_specifiers init_declarator_list TOK_SEMICOLON
+	;
+
+declaration_specifiers
+	: storage_class_specifier declaration_specifiers
+	| storage_class_specifier
+	| type_specifier declaration_specifiers
+	| type_specifier
+	;
+
+init_declarator_list
+	: init_declarator
+	| init_declarator_list TOK_COMMA init_declarator
+	;
+
+init_declarator
+	: declarator TOK_ASSIGN initializer
+	| declarator
+	;
+
+storage_class_specifier
+	: TOK_EXTERN
+	| TOK_STATIC
+	;
+
+type_specifier
+	: TOK_VOID
+	| TOK_CHAR
+	| TOK_SHORT
+	| TOK_INT
+	| TOK_FLOAT
+	| TOK_BOOL
+	| TOK_BOOLEAN
+	| TOK_INT8_T
+	| TOK_INT16_T
+	| TOK_INT32_T
+	| TOK_INT64_T
+	| TOK_SIGNED
+	| TOK_UNSIGNED
+    | struct_specifier
+    ;
+
+struct_specifier
+	: TOK_STRUCT TOK_IDENTIFIER TOK_BEGIN struct_declaration_list TOK_END
+	| TOK_STRUCT TOK_IDENTIFIER
+	;
+
+struct_declaration_list
+	: struct_declaration
+	| struct_declaration_list struct_declaration
+	;
+
+struct_declaration
+	: specifier_qualifier_list TOK_SEMICOLON
+	| specifier_qualifier_list struct_declarator_list TOK_SEMICOLON
+	;
+
+specifier_qualifier_list
+	: type_specifier specifier_qualifier_list
+	| type_specifier
+	;
+
+struct_declarator_list
+	: struct_declarator
+	| struct_declarator_list TOK_COMMA struct_declarator
+	;
+
+struct_declarator
+	: TOK_COLON constant_expression
+	| declarator TOK_COLON constant_expression
+	| declarator
+	;
+
+
+declarator
+	: pointer {pointer_decls++;} direct_declarator
+	| direct_declarator
+	;
+
+direct_declarator
+	: TOK_IDENTIFIER
+	| TOK_LPAREN declarator TOK_RPAREN
+	| direct_declarator TOK_LBRACKET TOK_RBRACKET
+	| direct_declarator TOK_LBRACKET assignment_expression TOK_RBRACKET
+	| direct_declarator TOK_LPAREN parameter_type_list TOK_RPAREN
+	| direct_declarator TOK_LPAREN TOK_RPAREN
+	| direct_declarator TOK_LPAREN identifier_list TOK_RPAREN
+	;
+
+pointer
+	: TOK_STAR pointer {pointer_decls++;}
+	| TOK_STAR {pointer_decls++;}
+	;
+
+
+
+parameter_type_list
+	: parameter_list
+	;
+
+parameter_list
+	: parameter_declaration
+	| parameter_list TOK_COMMA parameter_declaration
+	;
+
+parameter_declaration
+	: declaration_specifiers declarator
+	| declaration_specifiers abstract_declarator
+	| declaration_specifiers
+	;
+
+identifier_list
+	: TOK_IDENTIFIER
+	| identifier_list TOK_COMMA TOK_IDENTIFIER
+	;
+
+type_name
+	: specifier_qualifier_list abstract_declarator
+	| specifier_qualifier_list
+	;
+
+abstract_declarator
+	: pointer direct_abstract_declarator
+	| pointer
+	| direct_abstract_declarator
+	;
+
+direct_abstract_declarator
+	: TOK_LPAREN abstract_declarator TOK_RPAREN
+	| TOK_LBRACKET TOK_RBRACKET
+	| TOK_LBRACKET assignment_expression TOK_RBRACKET
+	| direct_abstract_declarator TOK_LBRACKET TOK_RBRACKET
+	| direct_abstract_declarator TOK_LBRACKET assignment_expression TOK_RBRACKET
+	| TOK_LPAREN TOK_RPAREN
+	| TOK_LPAREN parameter_type_list TOK_RPAREN
+	| direct_abstract_declarator TOK_LPAREN TOK_RPAREN
+	| direct_abstract_declarator TOK_LPAREN parameter_type_list TOK_RPAREN
+	;
+
+initializer
+	: TOK_BEGIN initializer_list TOK_END
+	| TOK_BEGIN initializer_list TOK_COMMA TOK_END
+	| assignment_expression
+	;
+
+initializer_list
+	: designation initializer
+	| initializer
+	| initializer_list TOK_COMMA designation initializer
+	| initializer_list TOK_COMMA initializer
+	;
+
+designation
+	: designator_list TOK_ASSIGN
+	;
+
+designator_list
+	: designator
+	| designator_list designator
+	;
+
+designator
+	: TOK_LBRACKET constant_expression TOK_RBRACKET
+	| TOK_DOT TOK_IDENTIFIER
+	;
+
+statement
+	: labeled_statement
+	| compound_statement
+	| expression_statement
+	| selection_statement
+	| iteration_statement
+	| jump_statement
+	;
+
+labeled_statement
+	: TOK_IDENTIFIER TOK_COLON statement
+	| TOK_CASE constant_expression TOK_COLON statement
+	| TOK_DEFAULT TOK_COLON statement
+	;
+
+compound_statement
+	: TOK_BEGIN TOK_END
+	| TOK_BEGIN block_item_list TOK_END
+    ;
+
+block_item_list
+	: block_item
+	| block_item_list block_item
+	;
+
+block_item
+	: declaration
+	| statement
+	;
+
+expression_statement
+	: TOK_SEMICOLON
+	| expression TOK_SEMICOLON
+	;
+
+selection_statement
+	: TOK_IF TOK_LPAREN expression TOK_RPAREN statement TOK_ELSE {ladder_len++;$6=(ladder_len-1);} statement {if(ladder_len>=max){max=ladder_len;} ladder_len=$6;}
+	| TOK_IF TOK_LPAREN expression TOK_RPAREN statement {ifs_wo_else++;}
+	| TOK_SWITCH TOK_LPAREN expression TOK_RPAREN statement
+	;
+
+iteration_statement
+	: TOK_WHILE TOK_LPAREN expression TOK_RPAREN statement
+	| TOK_REPEAT statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
+	| TOK_FOR TOK_LPAREN expression_statement expression_statement TOK_RPAREN statement
+	| TOK_FOR TOK_LPAREN expression_statement expression_statement expression TOK_RPAREN statement
+	| TOK_FOR TOK_LPAREN declaration expression_statement TOK_RPAREN statement
+	| TOK_FOR TOK_LPAREN declaration expression_statement expression TOK_RPAREN statement
+    ;
+
+jump_statement
+	: TOK_CONTINUE TOK_SEMICOLON
+	| TOK_BREAK TOK_SEMICOLON
+	| TOK_RETURN TOK_SEMICOLON
+	| TOK_RETURN expression TOK_SEMICOLON
+	;
+
+translation_unit
+	: external_declaration {global_declarations++;}
+	| translation_unit external_declaration {global_declarations++;}
+	;
+
+external_declaration
+	: function_definition {func_definitions++;}
+	| declaration
+	;
+
+function_definition
+	: declaration_specifiers declarator declaration_list compound_statement
+	| declaration_specifiers declarator compound_statement
+	;
+
+declaration_list
+	: declaration
+	| declaration_list declaration
+	;
+
+%%
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-extern int yylex();
-extern int yylineno;
-extern char *yytext;
-extern FILE *yyin;
+char buff[2048];
 
-void yyerror(const char *s);
-/* ===== PART 3: DERIVATION STORAGE ===== */
+int yylex(void);
+int mode=-1;
 
-#define MAX_STEPS 2000
-
-char *derivation[MAX_STEPS];
-int derivation_count = 0;
-
-void add_derivation(const char *rule) {
-   if (derivation_count < MAX_STEPS) {
-       derivation[derivation_count++] = strdup(rule);
-   }
+void yyerror(const char *s)
+{
+	fflush(stdout);
+	
+	if(mode==-1)
+		printf("***parsing terminated*** [syntax error]\n");
+	else if(mode==0 || mode==1)
+		printf("%s\n",s);
+		
+	exit(-1);
 }
 
-void print_reverse_derivation() {
-   printf("\nReverse Derivation:\n");
-   for (int i = derivation_count - 1; i >= 0; i--) {
-       printf("%s\n", derivation[i]);
-   }
-}
-
-int syntax_error_count = 0;
-%}
-
-/* Token declarations - matching tokens.h */
-%token TOK_INT8 TOK_INT16 TOK_INT32 TOK_INT64
-%token TOK_INT TOK_SHORT TOK_FLOAT TOK_CHAR TOK_VOID
-%token TOK_BOOL TOK_BOOLEAN TOK_STRUCT
-%token TOK_SIGNED TOK_UNSIGNED TOK_EXTERN TOK_STATIC
-%token TOK_IF TOK_ELSE TOK_FOR TOK_WHILE TOK_REPEAT TOK_UNTIL
-%token TOK_SWITCH TOK_CASE TOK_DEFAULT
-%token TOK_BREAK TOK_CONTINUE TOK_RETURN
-%token TOK_SIZEOF TOK_TRUE TOK_FALSE
-%token TOK_BEGIN TOK_END
-
-%token TOK_IDENTIFIER TOK_INTEGER TOK_FLOAT_LIT TOK_CHAR_LIT TOK_STRING_LIT
-
-/* Operators */
-%token TOK_PLUS TOK_MINUS TOK_MULT TOK_DIV TOK_MOD
-%token TOK_ASSIGN TOK_EQ TOK_NE TOK_LT TOK_LE TOK_GT TOK_GE
-%token TOK_SPACESHIP
-%token TOK_AND TOK_OR TOK_NOT TOK_BITAND TOK_BITOR TOK_XOR TOK_BITNOT
-%token TOK_LSHIFT TOK_RSHIFT
-%token TOK_INC TOK_DEC
-%token TOK_PLUSEQ TOK_MINUSEQ TOK_MULTEQ TOK_DIVEQ TOK_MODEQ
-%token TOK_ARROW TOK_AMP TOK_STAR
-
-/* Punctuation */
-%token TOK_LPAREN TOK_RPAREN
-%token TOK_LBRACE TOK_RBRACE
-%token TOK_LBRACKET TOK_RBRACKET
-%token TOK_SEMICOLON TOK_COMMA TOK_DOT TOK_COLON
-
-/* Operator precedence and associativity (lowest to highest) */
-%right TOK_ASSIGN TOK_PLUSEQ TOK_MINUSEQ TOK_MULTEQ TOK_DIVEQ TOK_MODEQ
-%left TOK_OR
-%left TOK_AND
-%left TOK_BITOR
-%left TOK_XOR
-%left TOK_BITAND
-%left TOK_EQ TOK_NE
-%left TOK_LT TOK_LE TOK_GT TOK_GE TOK_SPACESHIP
-%left TOK_LSHIFT TOK_RSHIFT
-%left TOK_PLUS TOK_MINUS
-%left TOK_MULT TOK_DIV TOK_MOD
-%right TOK_NOT TOK_BITNOT UNARY_MINUS ADDR_OF DEREF
-%left TOK_INC TOK_DEC TOK_ARROW TOK_DOT TOK_LBRACKET
-
-%%
-
-/* Grammar Rules */
-
-program:
-     /* empty */
-   | declaration_list
-   {
-       add_derivation("program → declaration_list");
-   }
-
-
-declaration_list:
-      declaration
-    | declaration_list declaration
-    ;
-
-declaration:
-     function_declaration
-   {
-       add_derivation("declaration → function_declaration");
-   }
-   | variable_declaration TOK_SEMICOLON
-   {
-       add_derivation("declaration → variable_declaration ;");
-   }
-   | struct_declaration TOK_SEMICOLON
-   {
-       add_derivation("declaration → struct_declaration ;");
-   }
-;
-
-
-/* Type Specifiers */
-type_specifier:
-      TOK_INT
-    | TOK_INT8
-    | TOK_INT16
-    | TOK_INT32
-    | TOK_INT64
-    | TOK_SHORT
-    | TOK_FLOAT
-    | TOK_CHAR
-    | TOK_VOID
-    | TOK_BOOL
-    | TOK_BOOLEAN
-    | TOK_SIGNED type_specifier
-    | TOK_UNSIGNED type_specifier
-    | TOK_STRUCT TOK_IDENTIFIER
-    ;
-
-storage_class:
-      TOK_EXTERN
-    | TOK_STATIC
-    ;
-
-/* Variable Declarations */
-variable_declaration:
-      type_specifier declarator
-    | type_specifier declarator TOK_ASSIGN expression
-    | storage_class type_specifier declarator
-    | storage_class type_specifier declarator TOK_ASSIGN expression
-    ;
-
-declarator:
-     pointer direct_declarator
-   {
-       add_derivation("declarator → pointer direct_declarator");
-   }
-   | direct_declarator
-   {
-       add_derivation("declarator → direct_declarator");
-   }
-;
-
-
-pointer:
-     TOK_STAR
-   | TOK_STAR pointer
-;
-
-direct_declarator:
-     TOK_IDENTIFIER
-   {
-       add_derivation("direct_declarator → identifier");
-   }
-   | direct_declarator TOK_LBRACKET TOK_RBRACKET
-   {
-       add_derivation("direct_declarator → direct_declarator []");
-   }
-   | direct_declarator TOK_LBRACKET TOK_INTEGER TOK_RBRACKET
-   {
-       add_derivation("direct_declarator → direct_declarator [int]");
-   }
-;
-
-
-/* Function Declarations */
-function_declaration:
-      type_specifier TOK_IDENTIFIER TOK_LPAREN parameter_list TOK_RPAREN compound_statement
-    | type_specifier TOK_IDENTIFIER TOK_LPAREN TOK_RPAREN compound_statement
-    ;
-
-parameter_list:
-      parameter
-    | parameter_list TOK_COMMA parameter
-    ;
-
-parameter:
-      type_specifier declarator
-    ;
-
-/* Struct Declarations */
-struct_declaration:
-      TOK_STRUCT TOK_IDENTIFIER TOK_LBRACE struct_member_list TOK_RBRACE
-    ;
-
-struct_member_list:
-      struct_member
-    | struct_member_list struct_member
-    ;
-
-struct_member:
-      type_specifier declarator TOK_SEMICOLON
-    ;
-
-/* Statements */
-statement:
-     matched_stmt
-   | unmatched_stmt
-;
-
-matched_stmt:
-     expression_statement
-   {
-       add_derivation("matched_stmt → expression_statement");
-   }
-   | compound_statement
-   {
-       add_derivation("matched_stmt → compound_statement");
-   }
-   | iteration_statement
-   {
-       add_derivation("matched_stmt → iteration_statement");
-   }
-   | jump_statement
-   {
-       add_derivation("matched_stmt → jump_statement");
-   }
-   | variable_declaration TOK_SEMICOLON
-   {
-       add_derivation("matched_stmt → variable_declaration ;");
-   }
-   | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN TOK_LBRACE case_list TOK_RBRACE
-   {
-       add_derivation("matched_stmt → switch");
-   }
-   | TOK_IF TOK_LPAREN expression TOK_RPAREN matched_stmt TOK_ELSE matched_stmt
-   {
-       add_derivation("matched_stmt → if (expr) stmt else stmt");
-   }
-;
-
-
-unmatched_stmt:
-     TOK_IF TOK_LPAREN expression TOK_RPAREN statement
-   {
-       add_derivation("unmatched_stmt → if (expr) stmt");
-   }
-   | TOK_IF TOK_LPAREN expression TOK_RPAREN matched_stmt TOK_ELSE unmatched_stmt
-   {
-       add_derivation("unmatched_stmt → if (expr) stmt else unmatched");
-   }
-;
-
-
-
-
-compound_statement:
-      TOK_LBRACE TOK_RBRACE
-    | TOK_LBRACE statement_list TOK_RBRACE
-    | TOK_BEGIN statement_list TOK_END
-    ;
-
-statement_list:
-      statement
-    | statement_list statement
-    ;
-
-expression_statement:
-      TOK_SEMICOLON
-    | expression TOK_SEMICOLON
-    ;
-
-/* Selection Statements (if/else, switch) */
-selection_statement:
-  TOK_IF TOK_LPAREN expression TOK_RPAREN statement
-    | TOK_IF TOK_LPAREN expression TOK_RPAREN statement TOK_ELSE statement
-    | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN TOK_LBRACE case_list TOK_RBRACE
-    ;
-
-case_list:
-      case_item
-    | case_list case_item
-    ;
-
-case_item:
-      TOK_CASE expression TOK_COLON statement_list
-    | TOK_DEFAULT TOK_COLON statement_list
-    ;
-
-/* Iteration Statements */
-iteration_statement:
-     TOK_WHILE TOK_LPAREN expression TOK_RPAREN matched_stmt
-   | TOK_FOR TOK_LPAREN expression_opt TOK_SEMICOLON expression_opt TOK_SEMICOLON expression_opt TOK_RPAREN matched_stmt
-   | TOK_FOR TOK_LPAREN variable_declaration TOK_SEMICOLON expression_opt TOK_SEMICOLON expression_opt TOK_RPAREN matched_stmt
-   | TOK_REPEAT matched_stmt TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
-;
-
-
-expression_opt:
-      /* empty */
-    | expression
-    ;
-
-/* Jump Statements */
-jump_statement:
-      TOK_BREAK TOK_SEMICOLON
-    | TOK_CONTINUE TOK_SEMICOLON
-    | TOK_RETURN TOK_SEMICOLON
-    | TOK_RETURN expression TOK_SEMICOLON
-    ;
-
-/* Expressions */
-expression:
-     assignment_expression
-   {
-       add_derivation("expression → assignment_expression");
-   }
-   | expression TOK_COMMA assignment_expression
-   {
-       add_derivation("expression → expression , assignment_expression");
-   }
-;
-
-
-assignment_expression:
-      logical_or_expression
-    | logical_or_expression TOK_ASSIGN assignment_expression
-    | logical_or_expression TOK_PLUSEQ assignment_expression
-    | logical_or_expression TOK_MINUSEQ assignment_expression
-    | logical_or_expression TOK_MULTEQ assignment_expression
-    | logical_or_expression TOK_DIVEQ assignment_expression
-    | logical_or_expression TOK_MODEQ assignment_expression
-    ;
-
-logical_or_expression:
-      logical_and_expression
-    | logical_or_expression TOK_OR logical_and_expression
-    ;
-
-logical_and_expression:
-      bitwise_or_expression
-    | logical_and_expression TOK_AND bitwise_or_expression
-    ;
-
-bitwise_or_expression:
-      bitwise_xor_expression
-    | bitwise_or_expression TOK_BITOR bitwise_xor_expression
-    ;
-
-bitwise_xor_expression:
-      bitwise_and_expression
-    | bitwise_xor_expression TOK_XOR bitwise_and_expression
-    ;
-
-bitwise_and_expression:
-      equality_expression
-    | bitwise_and_expression TOK_BITAND equality_expression
-    ;
-
-equality_expression:
-      relational_expression
-    | equality_expression TOK_EQ relational_expression
-    | equality_expression TOK_NE relational_expression
-    ;
-
-relational_expression:
-      shift_expression
-    | relational_expression TOK_LT shift_expression
-    | relational_expression TOK_LE shift_expression
-    | relational_expression TOK_GT shift_expression
-    | relational_expression TOK_GE shift_expression
-    | relational_expression TOK_SPACESHIP shift_expression
-    ;
-
-shift_expression:
-      additive_expression
-    | shift_expression TOK_LSHIFT additive_expression
-    | shift_expression TOK_RSHIFT additive_expression
-    ;
-
-additive_expression:
-      multiplicative_expression
-    | additive_expression TOK_PLUS multiplicative_expression
-    | additive_expression TOK_MINUS multiplicative_expression
-    ;
-
-multiplicative_expression:
-      unary_expression
-    | multiplicative_expression TOK_MULT unary_expression
-    | multiplicative_expression TOK_DIV unary_expression
-    | multiplicative_expression TOK_MOD unary_expression
-    ;
-
-unary_expression:
-      postfix_expression
-    | TOK_INC unary_expression
-    | TOK_DEC unary_expression
-    | TOK_PLUS unary_expression
-    | TOK_MINUS unary_expression %prec UNARY_MINUS
-    | TOK_NOT unary_expression
-    | TOK_BITNOT unary_expression
-    | TOK_AMP unary_expression %prec ADDR_OF
-    | TOK_STAR unary_expression %prec DEREF
-    | TOK_SIZEOF TOK_LPAREN type_specifier TOK_RPAREN
-    ;
-
-postfix_expression:
-      primary_expression
-    | postfix_expression TOK_LBRACKET expression TOK_RBRACKET
-    | postfix_expression TOK_LPAREN argument_list TOK_RPAREN
-    | postfix_expression TOK_LPAREN TOK_RPAREN
-    | postfix_expression TOK_DOT TOK_IDENTIFIER
-    | postfix_expression TOK_ARROW TOK_IDENTIFIER
-    | postfix_expression TOK_INC
-    | postfix_expression TOK_DEC
-    ;
-
-primary_expression:
-      TOK_IDENTIFIER
-    | TOK_INTEGER
-    | TOK_FLOAT_LIT
-    | TOK_CHAR_LIT
-    | TOK_STRING_LIT
-    | TOK_TRUE
-    | TOK_FALSE
-    | TOK_LPAREN expression TOK_RPAREN
-    ;
-
-argument_list:
-      assignment_expression
-    | argument_list TOK_COMMA assignment_expression
-    ;
-
-%%
-
-void yyerror(const char *s) {
-    syntax_error_count++;
-    fprintf(stderr, "[SYNTAX ERROR: Line %d: %s near '%s']\n", yylineno, s, yytext);
-}
-
-int main(int argc, char *argv[]) {
-    if (argc > 1) {
-        yyin = fopen(argv[1], "r");
-        if (!yyin) {
-            fprintf(stderr, "Error: Could not open file %s\n", argv[1]);
-            return 1;
-        }
-    }
-    
-    printf("KernaLex Parser\n");
-    if (argc > 1) {
-        printf("Input file: %s\n", argv[1]);
-    } else {
-        printf("Reading from stdin\n");
-    }
-    printf("\n");
-    
-    int result = yyparse();
-    
-    if (argc > 1) {
-        fclose(yyin);
-    }
-    
-    printf("\n");
-    if (result == 0 && syntax_error_count == 0) {
-        printf("Parsing completed successfully\n");
-        printf("No syntax errors detected\n");
-
-        print_reverse_derivation();  
-    } else {
-        printf("Parsing failed with %d syntax error(s)\n", syntax_error_count);
-    }
-    
-    return (result == 0 && syntax_error_count == 0) ? 0 : 1;
+int main(int argc, char **argv)
+{
+    extern FILE *yyin;
+
+	if(argc<2)
+	{
+		sprintf(buff,"***process terminated*** [input error]: invalid number of command-line arguments");
+		mode=1;
+		yyerror(buff);
+		exit(1);
+	}
+
+	yyin=fopen(argv[1],"r");
+
+	if(yyin==NULL)
+	{
+		sprintf(buff,"***process terminated*** [input error]: no such file \"%s\" exists",argv[1]);
+		mode=1;
+		yyerror(buff);
+		exit(1);
+	}
+	else
+	{
+		do
+		{
+			yyparse();
+		}
+		while(!feof(yyin));
+	}
+
+	printf("***parsing successful***\n");
+	printf("#global_declarations = %d\n",global_declarations);
+	printf("#function_definitions = %d\n",func_definitions);
+	printf("#integer_constants = %d\n",int_consts);
+	printf("#pointers_declarations = %d\n",pointer_decls);
+	printf("#ifs_without_else = %d\n",ifs_wo_else);
+	printf("if-else max-depth = %d\n",((max<0)?0:max));
+
+	return(0);
 }

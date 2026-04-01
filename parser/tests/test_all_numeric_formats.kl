@@ -1,7 +1,6 @@
-# Lexer Validation Test 3: All Numeric Literal Formats
-# If this parses successfully, all numeric formats are tokenized correctly
+# Parser/Lexer Validation: All Numeric Literal Formats
 
-int main() {
+int main() begin
     # Decimal integers
     int d1 = 0;
     int d2 = 1;
@@ -79,4 +78,4 @@ int main() {
     float e3 = 6.626e-34;
     
     return 0;
-}
+end
