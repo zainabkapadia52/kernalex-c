@@ -458,8 +458,8 @@ expression_statement
 	;
 
 selection_statement
-	: TOK_IF TOK_LPAREN expression TOK_RPAREN statement TOK_ELSE {ladder_len++;$6=(ladder_len-1);} statement {if(ladder_len>=max){max=ladder_len;} ladder_len=$6;}
-	| TOK_IF TOK_LPAREN expression TOK_RPAREN statement {ifs_wo_else++;}
+	: TOK_IF TOK_LPAREN expression TOK_RPAREN statement TOK_ELSE statement
+	| TOK_IF TOK_LPAREN expression TOK_RPAREN statement 
 	| TOK_SWITCH TOK_LPAREN expression TOK_RPAREN statement
 	;
 

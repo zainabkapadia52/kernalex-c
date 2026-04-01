@@ -517,6 +517,268 @@ declaration_list
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+extern int fileno(FILE *stream);
+
+typedef struct DerivationNode
+{
+	char *label;
+	struct DerivationNode **children;
+	size_t child_count;
+} DerivationNode;
+
+typedef struct NodeStack
+{
+	DerivationNode **items;
+	size_t count;
+	size_t capacity;
+} NodeStack;
+
+static char *copy_string(const char *text)
+{
+	size_t length = strlen(text);
+	char *copy = malloc(length + 1);
+	if(copy == NULL)
+	{
+		return NULL;
+	}
+	memcpy(copy, text, length + 1);
+	return copy;
+}
+
+static DerivationNode *create_node(const char *label, DerivationNode **children, size_t child_count)
+{
+	DerivationNode *node = malloc(sizeof(*node));
+	if(node == NULL)
+	{
+		return NULL;
+	}
+
+	node->label = copy_string(label);
+	if(node->label == NULL)
+	{
+		free(node);
+		return NULL;
+	}
+
+	node->child_count = child_count;
+	node->children = NULL;
+	if(child_count > 0)
+	{
+		node->children = malloc(child_count * sizeof(*node->children));
+		if(node->children == NULL)
+		{
+			free(node->label);
+			free(node);
+			return NULL;
+		}
+		for(size_t index = 0; index < child_count; index++)
+		{
+			node->children[index] = children[index];
+		}
+	}
+
+	return node;
+}
+
+static void free_tree(DerivationNode *node)
+{
+	if(node == NULL)
+	{
+		return;
+	}
+
+	for(size_t index = 0; index < node->child_count; index++)
+	{
+		free_tree(node->children[index]);
+	}
+
+	free(node->children);
+	free(node->label);
+	free(node);
+}
+
+static void stack_init(NodeStack *stack)
+{
+	stack->items = NULL;
+	stack->count = 0;
+	stack->capacity = 0;
+}
+
+static int stack_push(NodeStack *stack, DerivationNode *node)
+{
+	if(stack->count == stack->capacity)
+	{
+		size_t next_capacity = (stack->capacity == 0) ? 64 : stack->capacity * 2;
+		DerivationNode **next_items = realloc(stack->items, next_capacity * sizeof(*next_items));
+		if(next_items == NULL)
+		{
+			return 0;
+		}
+		stack->items = next_items;
+		stack->capacity = next_capacity;
+	}
+
+	stack->items[stack->count++] = node;
+	return 1;
+}
+
+static DerivationNode *stack_pop(NodeStack *stack)
+{
+	if(stack->count == 0)
+	{
+		return NULL;
+	}
+
+	return stack->items[--stack->count];
+}
+
+static void stack_free(NodeStack *stack)
+{
+	free(stack->items);
+	stack->items = NULL;
+	stack->count = 0;
+	stack->capacity = 0;
+}
+
+static void print_tree(const DerivationNode *node, size_t depth)
+{
+	if(node == NULL)
+	{
+		return;
+	}
+
+	for(size_t index = 0; index < depth; index++)
+	{
+		printf("  ");
+	}
+	printf("%s\n", node->label);
+
+	for(size_t index = 0; index < node->child_count; index++)
+	{
+		print_tree(node->children[index], depth + 1);
+	}
+}
+
+static void extract_symbol_name(const char *line, char *buffer, size_t buffer_size)
+{
+	const char *start = strstr(line, "nterm ");
+	if(start != NULL)
+	{
+		start += 6;
+	}
+	else
+	{
+		start = strstr(line, "token ");
+		if(start != NULL)
+		{
+			start += 6;
+		}
+		else
+		{
+			buffer[0] = '\0';
+			return;
+		}
+	}
+
+	const char *end = strstr(start, " (");
+	if(end == NULL)
+	{
+		end = start + strlen(start);
+	}
+
+	size_t length = (size_t)(end - start);
+	if(length >= buffer_size)
+	{
+		length = buffer_size - 1;
+	}
+
+	memcpy(buffer, start, length);
+	buffer[length] = '\0';
+}
+
+static DerivationNode *build_tree_from_trace(FILE *trace)
+{
+	NodeStack stack;
+	stack_init(&stack);
+
+	char line[4096];
+	int in_reduction = 0;
+	size_t rhs_count = 0;
+
+	rewind(trace);
+	while(fgets(line, sizeof(line), trace) != NULL)
+	{
+		if(strncmp(line, "Shifting token ", 15) == 0)
+		{
+			char token_name[256];
+			extract_symbol_name(line, token_name, sizeof(token_name));
+			if(token_name[0] != '\0' && strstr(token_name, "end of file") == NULL && strcmp(token_name, "$end") != 0)
+			{
+				DerivationNode *leaf = create_node(token_name, NULL, 0);
+				if(leaf != NULL)
+				{
+					stack_push(&stack, leaf);
+				}
+			}
+			continue;
+		}
+
+		if(strncmp(line, "Reducing stack by rule", 22) == 0)
+		{
+			in_reduction = 1;
+			rhs_count = 0;
+			continue;
+		}
+
+		if(in_reduction && strncmp(line, "   $", 4) == 0)
+		{
+			rhs_count++;
+			continue;
+		}
+
+		if(in_reduction && strncmp(line, "-> $$ =", 7) == 0)
+		{
+			char lhs_name[256];
+			extract_symbol_name(line, lhs_name, sizeof(lhs_name));
+
+			DerivationNode **children = NULL;
+			if(rhs_count > 0)
+			{
+				children = malloc(rhs_count * sizeof(*children));
+				if(children != NULL)
+				{
+					for(size_t index = 0; index < rhs_count; index++)
+					{
+						children[rhs_count - 1 - index] = stack_pop(&stack);
+					}
+				}
+			}
+
+			if(lhs_name[0] != '\0')
+			{
+				DerivationNode *parent = create_node(lhs_name, children, rhs_count);
+				if(parent != NULL)
+				{
+					stack_push(&stack, parent);
+				}
+			}
+
+			free(children);
+			in_reduction = 0;
+			rhs_count = 0;
+		}
+	}
+
+	DerivationNode *root = NULL;
+	if(stack.count > 0)
+	{
+		root = stack.items[stack.count - 1];
+	}
+	stack_free(&stack);
+	return root;
+}
 
 char buff[2048];
 
@@ -538,10 +800,23 @@ void yyerror(const char *s)
 int main(int argc, char **argv)
 {
     extern FILE *yyin;
+	FILE *trace_capture = NULL;
+	int stderr_copy = -1;
 
 #if YYDEBUG
 	yydebug = 1;
 #endif
+
+	trace_capture = tmpfile();
+	if(trace_capture != NULL)
+	{
+		stderr_copy = dup(fileno(stderr));
+		if(stderr_copy != -1)
+		{
+			fflush(stderr);
+			dup2(fileno(trace_capture), fileno(stderr));
+		}
+	}
 
 	if(argc<2)
 	{
@@ -567,6 +842,21 @@ int main(int argc, char **argv)
 			yyparse();
 		}
 		while(!feof(yyin));
+	}
+
+	if(trace_capture != NULL && stderr_copy != -1)
+	{
+		fflush(stderr);
+		dup2(stderr_copy, fileno(stderr));
+		close(stderr_copy);
+		DerivationNode *root = build_tree_from_trace(trace_capture);
+		if(root != NULL)
+		{
+			printf("=== reverse derivation tree ===\n");
+			print_tree(root, 0);
+			free_tree(root);
+		}
+		fclose(trace_capture);
 	}
 
 	printf("***parsing successful***\n");
