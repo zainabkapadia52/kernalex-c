@@ -1,0 +1,348 @@
+Starting parse	Starting parse
+Entering state 0	Entering state 0
+Stack now 0	Stack now 0
+Reading a token	Reading a token
+Next token is token TOK_INT ()	Next token is token TOK_INT ()
+Shifting token TOK_INT ()	Shifting token TOK_INT ()
+Entering state 1	Entering state 1
+Stack now 0 1	Stack now 0 1
+Reducing stack by rule 93 (line 288):	Reducing stack by rule 93 (line 288):
+   $1 = token TOK_INT ()	   $1 = token TOK_INT ()
+-> $$ = nterm type_specifier ()	-> $$ = nterm type_specifier ()
+Entering state 20	Entering state 20
+Stack now 0 20	Stack now 0 20
+Reading a token	Reading a token
+Next token is token TOK_IDENTIFIER ()	Next token is token TOK_IDENTIFIER ()
+Reducing stack by rule 83 (line 266):	Reducing stack by rule 83 (line 266):
+   $1 = nterm type_specifier ()	   $1 = nterm type_specifier ()
+-> $$ = nterm declaration_specifiers ()	-> $$ = nterm declaration_specifiers ()
+Entering state 18	Entering state 18
+Stack now 0 18	Stack now 0 18
+Next token is token TOK_IDENTIFIER ()	Next token is token TOK_IDENTIFIER ()
+Shifting token TOK_IDENTIFIER ()	Shifting token TOK_IDENTIFIER ()
+Entering state 26	Entering state 26
+Stack now 0 18 26	Stack now 0 18 26
+Reducing stack by rule 120 (line 339):	Reducing stack by rule 119 (line 339):
+   $1 = token TOK_IDENTIFIER ()	   $1 = token TOK_IDENTIFIER ()
+-> $$ = nterm direct_declarator ()	-> $$ = nterm direct_declarator ()
+Entering state 33	Entering state 33
+Stack now 0 18 33	Stack now 0 18 33
+Reading a token	Reading a token
+Next token is token TOK_LPAREN ()	Next token is token TOK_LPAREN ()
+Shifting token TOK_LPAREN ()	Shifting token TOK_LPAREN ()
+Entering state 50	Entering state 50
+Stack now 0 18 33 50	Stack now 0 18 33 50
+Reading a token	Reading a token
+Next token is token TOK_INT ()	Next token is token TOK_INT ()
+Shifting token TOK_INT ()	Shifting token TOK_INT ()
+Entering state 1	Entering state 1
+Stack now 0 18 33 50 1	Stack now 0 18 33 50 1
+Reducing stack by rule 93 (line 288):	Reducing stack by rule 93 (line 288):
+   $1 = token TOK_INT ()	   $1 = token TOK_INT ()
+-> $$ = nterm type_specifier ()	-> $$ = nterm type_specifier ()
+Entering state 20	Entering state 20
+Stack now 0 18 33 50 20	Stack now 0 18 33 50 20
+Reading a token	Reading a token
+Next token is token TOK_LPAREN ()	Next token is token TOK_LPAREN ()
+Reducing stack by rule 83 (line 266):	Reducing stack by rule 83 (line 266):
+   $1 = nterm type_specifier ()	   $1 = nterm type_specifier ()
+-> $$ = nterm declaration_specifiers ()	-> $$ = nterm declaration_specifiers ()
+Entering state 127	Entering state 128
+Stack now 0 18 33 50 127	Stack now 0 18 33 50 128
+Next token is token TOK_LPAREN ()	Next token is token TOK_LPAREN ()
+Shifting token TOK_LPAREN ()	Shifting token TOK_LPAREN ()
+Entering state 209	Entering state 210
+Stack now 0 18 33 50 127 209	Stack now 0 18 33 50 128 210
+Reading a token	Reading a token
+Next token is token TOK_STAR ()	Next token is token TOK_STAR ()
+Shifting token TOK_STAR ()	Shifting token TOK_STAR ()
+Entering state 27	Entering state 27
+Stack now 0 18 33 50 127 209 27	Stack now 0 18 33 50 128 210 27
+Reading a token	Reading a token
+Next token is token TOK_IDENTIFIER ()	Next token is token TOK_IDENTIFIER ()
+Reducing stack by rule 128 (line 350):	Reducing stack by rule 127 (line 350):
+   $1 = token TOK_STAR ()	   $1 = token TOK_STAR ()
+-> $$ = nterm pointer ()	-> $$ = nterm pointer ()
+Entering state 212	Entering state 213
+Stack now 0 18 33 50 127 209 212	Stack now 0 18 33 50 128 210 213
+Next token is token TOK_IDENTIFIER ()	Next token is token TOK_IDENTIFIER ()
+Reducing stack by rule 117 (line 334):	Shifting token TOK_IDENTIFIER ()
+-> $$ = nterm $@1 ()	Entering state 26
+Entering state 52	Stack now 0 18 33 50 128 210 213 26
+Stack now 0 18 33 50 127 209 212 52	Reducing stack by rule 119 (line 339):
+Next token is token TOK_IDENTIFIER ()	   $1 = token TOK_IDENTIFIER ()
+Shifting token TOK_IDENTIFIER ()	-> $$ = nterm direct_declarator ()
+Entering state 26	Entering state 52
+Stack now 0 18 33 50 127 209 212 52 26	Stack now 0 18 33 50 128 210 213 52
+Reducing stack by rule 120 (line 339):	Reading a token
+   $1 = token TOK_IDENTIFIER ()	Next token is token TOK_RPAREN ()
+-> $$ = nterm direct_declarator ()	Reducing stack by rule 117 (line 334):
+Entering state 134	   $1 = nterm pointer ()
+Stack now 0 18 33 50 127 209 212 52 134	   $2 = nterm direct_declarator ()
+Reading a token	-> $$ = nterm declarator ()
+Next token is token TOK_RPAREN ()	Entering state 41
+Reducing stack by rule 118 (line 334):	Stack now 0 18 33 50 128 210 41
+   $1 = nterm pointer ()	Next token is token TOK_RPAREN ()
+   $2 = nterm $@1 ()	Shifting token TOK_RPAREN ()
+   $3 = nterm direct_declarator ()	Entering state 57
+-> $$ = nterm declarator ()	Stack now 0 18 33 50 128 210 41 57
+Entering state 41	Reducing stack by rule 120 (line 340):
+Stack now 0 18 33 50 127 209 41	   $1 = token TOK_LPAREN ()
+Next token is token TOK_RPAREN ()	   $2 = nterm declarator ()
+Shifting token TOK_RPAREN ()	   $3 = token TOK_RPAREN ()
+Entering state 57	-> $$ = nterm direct_declarator ()
+Stack now 0 18 33 50 127 209 41 57	Entering state 33
+Reducing stack by rule 121 (line 340):	Stack now 0 18 33 50 128 33
+   $1 = token TOK_LPAREN ()	Reading a token
+   $2 = nterm declarator ()	Next token is token TOK_LPAREN ()
+   $3 = token TOK_RPAREN ()	Shifting token TOK_LPAREN ()
+-> $$ = nterm direct_declarator ()	Entering state 50
+Entering state 33	Stack now 0 18 33 50 128 33 50
+Stack now 0 18 33 50 127 33	Reading a token
+Reading a token	Next token is token TOK_RPAREN ()
+Next token is token TOK_LPAREN ()	Shifting token TOK_RPAREN ()
+Shifting token TOK_LPAREN ()	Entering state 127
+Entering state 50	Stack now 0 18 33 50 128 33 50 127
+Stack now 0 18 33 50 127 33 50	Reducing stack by rule 124 (line 344):
+Reading a token	   $1 = nterm direct_declarator ()
+Next token is token TOK_RPAREN ()	   $2 = token TOK_LPAREN ()
+Shifting token TOK_RPAREN ()	   $3 = token TOK_RPAREN ()
+Entering state 126	-> $$ = nterm direct_declarator ()
+Stack now 0 18 33 50 127 33 50 126	Entering state 33
+Reducing stack by rule 125 (line 344):	Stack now 0 18 33 50 128 33
+   $1 = nterm direct_declarator ()	Reading a token
+   $2 = token TOK_LPAREN ()	Next token is token TOK_RPAREN ()
+   $3 = token TOK_RPAREN ()	Reducing stack by rule 118 (line 335):
+-> $$ = nterm direct_declarator ()	   $1 = nterm direct_declarator ()
+Entering state 33	-> $$ = nterm declarator ()
+Stack now 0 18 33 50 127 33	Entering state 212
+Reading a token	Stack now 0 18 33 50 128 212
+Next token is token TOK_RPAREN ()	Reducing stack by rule 131 (line 365):
+Reducing stack by rule 119 (line 335):	   $1 = nterm declaration_specifiers ()
+   $1 = nterm direct_declarator ()	   $2 = nterm declarator ()
+-> $$ = nterm declarator ()	-> $$ = nterm parameter_declaration ()
+Entering state 211	Entering state 131
+Stack now 0 18 33 50 127 211	Stack now 0 18 33 50 131
+Reducing stack by rule 132 (line 365):	Reducing stack by rule 129 (line 360):
+   $1 = nterm declaration_specifiers ()	   $1 = nterm parameter_declaration ()
+   $2 = nterm declarator ()	-> $$ = nterm parameter_list ()
+-> $$ = nterm parameter_declaration ()	Entering state 130
+Entering state 130	Stack now 0 18 33 50 130
+Stack now 0 18 33 50 130	Next token is token TOK_RPAREN ()
+Reducing stack by rule 130 (line 360):	Reducing stack by rule 128 (line 356):
+   $1 = nterm parameter_declaration ()	   $1 = nterm parameter_list ()
+-> $$ = nterm parameter_list ()	-> $$ = nterm parameter_type_list ()
+Entering state 129	Entering state 129
+Stack now 0 18 33 50 129	Stack now 0 18 33 50 129
+Next token is token TOK_RPAREN ()	Next token is token TOK_RPAREN ()
+Reducing stack by rule 129 (line 356):	Shifting token TOK_RPAREN ()
+   $1 = nterm parameter_list ()	Entering state 216
+-> $$ = nterm parameter_type_list ()	Stack now 0 18 33 50 129 216
+Entering state 128	Reducing stack by rule 123 (line 343):
+Stack now 0 18 33 50 128	   $1 = nterm direct_declarator ()
+Next token is token TOK_RPAREN ()	   $2 = token TOK_LPAREN ()
+Shifting token TOK_RPAREN ()	   $3 = nterm parameter_type_list ()
+Entering state 215	   $4 = token TOK_RPAREN ()
+Stack now 0 18 33 50 128 215	-> $$ = nterm direct_declarator ()
+Reducing stack by rule 124 (line 343):	Entering state 33
+   $1 = nterm direct_declarator ()	Stack now 0 18 33
+   $2 = token TOK_LPAREN ()	Reading a token
+   $3 = nterm parameter_type_list ()	Next token is token TOK_BEGIN ()
+   $4 = token TOK_RPAREN ()	Reducing stack by rule 118 (line 335):
+-> $$ = nterm direct_declarator ()	   $1 = nterm direct_declarator ()
+Entering state 33	-> $$ = nterm declarator ()
+Stack now 0 18 33	Entering state 32
+Reading a token	Stack now 0 18 32
+Next token is token TOK_BEGIN ()	Next token is token TOK_BEGIN ()
+Reducing stack by rule 119 (line 335):	Shifting token TOK_BEGIN ()
+   $1 = nterm direct_declarator ()	Entering state 44
+-> $$ = nterm declarator ()	Stack now 0 18 32 44
+Entering state 32	Reading a token
+Stack now 0 18 32	Next token is token TOK_RETURN ()
+Next token is token TOK_BEGIN ()	Shifting token TOK_RETURN ()
+Shifting token TOK_BEGIN ()	Entering state 69
+Entering state 44	Stack now 0 18 32 44 69
+Stack now 0 18 32 44	Reading a token
+Reading a token	Next token is token TOK_INTEGER ()
+Next token is token TOK_RETURN ()	Shifting token TOK_INTEGER ()
+Shifting token TOK_RETURN ()	Entering state 75
+Entering state 69	Stack now 0 18 32 44 69 75
+Stack now 0 18 32 44 69	Reducing stack by rule 7 (line 120):
+Reading a token	   $1 = token TOK_INTEGER ()
+Next token is token TOK_INTEGER ()	-> $$ = nterm constant ()
+Shifting token TOK_INTEGER ()	Entering state 90
+Entering state 75	Stack now 0 18 32 44 69 90
+Stack now 0 18 32 44 69 75	Reducing stack by rule 2 (line 112):
+Reducing stack by rule 7 (line 120):	   $1 = nterm constant ()
+   $1 = token TOK_INTEGER ()	-> $$ = nterm primary_expression ()
+-> $$ = nterm constant ()	Entering state 89
+Entering state 90	Stack now 0 18 32 44 69 89
+Stack now 0 18 32 44 69 90	Reducing stack by rule 11 (line 131):
+Reducing stack by rule 2 (line 112):	   $1 = nterm primary_expression ()
+   $1 = nterm constant ()	-> $$ = nterm postfix_expression ()
+-> $$ = nterm primary_expression ()	Entering state 92
+Entering state 89	Stack now 0 18 32 44 69 92
+Stack now 0 18 32 44 69 89	Reading a token
+Reducing stack by rule 11 (line 131):	Next token is token TOK_SEMICOLON ()
+   $1 = nterm primary_expression ()	Reducing stack by rule 23 (line 149):
+-> $$ = nterm postfix_expression ()	   $1 = nterm postfix_expression ()
+Entering state 92	-> $$ = nterm unary_expression ()
+Stack now 0 18 32 44 69 92	Entering state 93
+Reading a token	Stack now 0 18 32 44 69 93
+Next token is token TOK_SEMICOLON ()	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 23 (line 149):	Reducing stack by rule 35 (line 167):
+   $1 = nterm postfix_expression ()	   $1 = nterm unary_expression ()
+-> $$ = nterm unary_expression ()	-> $$ = nterm cast_expression ()
+Entering state 93	Entering state 95
+Stack now 0 18 32 44 69 93	Stack now 0 18 32 44 69 95
+Next token is token TOK_SEMICOLON ()	Reducing stack by rule 37 (line 172):
+Reducing stack by rule 35 (line 167):	   $1 = nterm cast_expression ()
+   $1 = nterm unary_expression ()	-> $$ = nterm multiplicative_expression ()
+-> $$ = nterm cast_expression ()	Entering state 96
+Entering state 95	Stack now 0 18 32 44 69 96
+Stack now 0 18 32 44 69 95	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 37 (line 172):	Reducing stack by rule 41 (line 179):
+   $1 = nterm cast_expression ()	   $1 = nterm multiplicative_expression ()
+-> $$ = nterm multiplicative_expression ()	-> $$ = nterm additive_expression ()
+Entering state 96	Entering state 97
+Stack now 0 18 32 44 69 96	Stack now 0 18 32 44 69 97
+Next token is token TOK_SEMICOLON ()	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 41 (line 179):	Reducing stack by rule 44 (line 185):
+   $1 = nterm multiplicative_expression ()	   $1 = nterm additive_expression ()
+-> $$ = nterm additive_expression ()	-> $$ = nterm shift_expression ()
+Entering state 97	Entering state 98
+Stack now 0 18 32 44 69 97	Stack now 0 18 32 44 69 98
+Next token is token TOK_SEMICOLON ()	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 44 (line 185):	Reducing stack by rule 47 (line 191):
+   $1 = nterm additive_expression ()	   $1 = nterm shift_expression ()
+-> $$ = nterm shift_expression ()	-> $$ = nterm relational_expression ()
+Entering state 98	Entering state 99
+Stack now 0 18 32 44 69 98	Stack now 0 18 32 44 69 99
+Next token is token TOK_SEMICOLON ()	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 47 (line 191):	Reducing stack by rule 53 (line 200):
+   $1 = nterm shift_expression ()	   $1 = nterm relational_expression ()
+-> $$ = nterm relational_expression ()	-> $$ = nterm equality_expression ()
+Entering state 99	Entering state 100
+Stack now 0 18 32 44 69 99	Stack now 0 18 32 44 69 100
+Next token is token TOK_SEMICOLON ()	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 53 (line 200):	Reducing stack by rule 56 (line 206):
+   $1 = nterm relational_expression ()	   $1 = nterm equality_expression ()
+-> $$ = nterm equality_expression ()	-> $$ = nterm and_expression ()
+Entering state 100	Entering state 101
+Stack now 0 18 32 44 69 100	Stack now 0 18 32 44 69 101
+Next token is token TOK_SEMICOLON ()	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 56 (line 206):	Reducing stack by rule 58 (line 211):
+   $1 = nterm equality_expression ()	   $1 = nterm and_expression ()
+-> $$ = nterm and_expression ()	-> $$ = nterm exclusive_or_expression ()
+Entering state 101	Entering state 102
+Stack now 0 18 32 44 69 101	Stack now 0 18 32 44 69 102
+Next token is token TOK_SEMICOLON ()	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 58 (line 211):	Reducing stack by rule 60 (line 216):
+   $1 = nterm and_expression ()	   $1 = nterm exclusive_or_expression ()
+-> $$ = nterm exclusive_or_expression ()	-> $$ = nterm inclusive_or_expression ()
+Entering state 102	Entering state 103
+Stack now 0 18 32 44 69 102	Stack now 0 18 32 44 69 103
+Next token is token TOK_SEMICOLON ()	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 60 (line 216):	Reducing stack by rule 62 (line 221):
+   $1 = nterm exclusive_or_expression ()	   $1 = nterm inclusive_or_expression ()
+-> $$ = nterm inclusive_or_expression ()	-> $$ = nterm logical_and_expression ()
+Entering state 103	Entering state 104
+Stack now 0 18 32 44 69 103	Stack now 0 18 32 44 69 104
+Next token is token TOK_SEMICOLON ()	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 62 (line 221):	Reducing stack by rule 64 (line 226):
+   $1 = nterm inclusive_or_expression ()	   $1 = nterm logical_and_expression ()
+-> $$ = nterm logical_and_expression ()	-> $$ = nterm logical_or_expression ()
+Entering state 104	Entering state 105
+Stack now 0 18 32 44 69 104	Stack now 0 18 32 44 69 105
+Next token is token TOK_SEMICOLON ()	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 64 (line 226):	Reducing stack by rule 66 (line 231):
+   $1 = nterm logical_and_expression ()	   $1 = nterm logical_or_expression ()
+-> $$ = nterm logical_or_expression ()	-> $$ = nterm conditional_expression ()
+Entering state 105	Entering state 106
+Stack now 0 18 32 44 69 105	Stack now 0 18 32 44 69 106
+Next token is token TOK_SEMICOLON ()	Reducing stack by rule 67 (line 235):
+Reducing stack by rule 66 (line 231):	   $1 = nterm conditional_expression ()
+   $1 = nterm logical_or_expression ()	-> $$ = nterm assignment_expression ()
+-> $$ = nterm conditional_expression ()	Entering state 107
+Entering state 106	Stack now 0 18 32 44 69 107
+Stack now 0 18 32 44 69 106	Reducing stack by rule 75 (line 249):
+Reducing stack by rule 67 (line 235):	   $1 = nterm assignment_expression ()
+   $1 = nterm conditional_expression ()	-> $$ = nterm expression ()
+-> $$ = nterm assignment_expression ()	Entering state 156
+Entering state 107	Stack now 0 18 32 44 69 156
+Stack now 0 18 32 44 69 107	Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 75 (line 249):	Shifting token TOK_SEMICOLON ()
+   $1 = nterm assignment_expression ()	Entering state 235
+-> $$ = nterm expression ()	Stack now 0 18 32 44 69 156 235
+Entering state 155	Reducing stack by rule 202 (line 493):
+Stack now 0 18 32 44 69 155	   $1 = token TOK_RETURN ()
+Next token is token TOK_SEMICOLON ()	   $2 = nterm expression ()
+Shifting token TOK_SEMICOLON ()	   $3 = token TOK_SEMICOLON ()
+Entering state 232	-> $$ = nterm jump_statement ()
+Stack now 0 18 32 44 69 155 232	Entering state 119
+Reducing stack by rule 193 (line 479):	Stack now 0 18 32 44 119
+   $1 = token TOK_RETURN ()	Reducing stack by rule 175 (line 454):
+   $2 = nterm expression ()	   $1 = nterm jump_statement ()
+   $3 = token TOK_SEMICOLON ()	-> $$ = nterm matched_statement ()
+-> $$ = nterm jump_statement ()	Entering state 115
+Entering state 118	Stack now 0 18 32 44 115
+Stack now 0 18 32 44 118	Reducing stack by rule 162 (line 426):
+Reducing stack by rule 168 (line 431):	   $1 = nterm matched_statement ()
+   $1 = nterm jump_statement ()	-> $$ = nterm statement ()
+-> $$ = nterm statement ()	Entering state 110
+Entering state 110	Stack now 0 18 32 44 110
+Stack now 0 18 32 44 110	Reducing stack by rule 169 (line 442):
+Reducing stack by rule 177 (line 452):	   $1 = nterm statement ()
+   $1 = nterm statement ()	-> $$ = nterm block_item ()
+-> $$ = nterm block_item ()	Entering state 113
+Entering state 114	Stack now 0 18 32 44 113
+Stack now 0 18 32 44 114	Reducing stack by rule 166 (line 436):
+Reducing stack by rule 174 (line 446):	   $1 = nterm block_item ()
+   $1 = nterm block_item ()	-> $$ = nterm block_item_list ()
+-> $$ = nterm block_item_list ()	Entering state 112
+Entering state 113	Stack now 0 18 32 44 112
+Stack now 0 18 32 44 113	Reading a token
+Reading a token	Next token is token TOK_END ()
+Next token is token TOK_END ()	Shifting token TOK_END ()
+Shifting token TOK_END ()	Entering state 201
+Entering state 200	Stack now 0 18 32 44 112 201
+Stack now 0 18 32 44 113 200	Reducing stack by rule 165 (line 432):
+Reducing stack by rule 173 (line 442):	   $1 = token TOK_BEGIN ()
+   $1 = token TOK_BEGIN ()	   $2 = nterm block_item_list ()
+   $2 = nterm block_item_list ()	   $3 = token TOK_END ()
+   $3 = token TOK_END ()	-> $$ = nterm compound_statement ()
+-> $$ = nterm compound_statement ()	Entering state 48
+Entering state 48	Stack now 0 18 32 48
+Stack now 0 18 32 48	Reducing stack by rule 208 (line 508):
+Reducing stack by rule 199 (line 494):	   $1 = nterm declaration_specifiers ()
+   $1 = nterm declaration_specifiers ()	   $2 = nterm declarator ()
+   $2 = nterm declarator ()	   $3 = nterm compound_statement ()
+   $3 = nterm compound_statement ()	-> $$ = nterm function_definition ()
+-> $$ = nterm function_definition ()	Entering state 24
+Entering state 24	Stack now 0 24
+Stack now 0 24	Reducing stack by rule 205 (line 502):
+Reducing stack by rule 196 (line 488):	   $1 = nterm function_definition ()
+   $1 = nterm function_definition ()	-> $$ = nterm external_declaration ()
+-> $$ = nterm external_declaration ()	Entering state 23
+Entering state 23	Stack now 0 23
+Stack now 0 23	Reducing stack by rule 203 (line 497):
+Reducing stack by rule 194 (line 483):	   $1 = nterm external_declaration ()
+   $1 = nterm external_declaration ()	-> $$ = nterm translation_unit ()
+-> $$ = nterm translation_unit ()	Entering state 22
+Entering state 22	Stack now 0 22
+Stack now 0 22	Reading a token
+Reading a token	Now at end of input.
+Now at end of input.	Shifting token "end of file" ()
+Shifting token "end of file" ()	Entering state 37
+Entering state 37	Stack now 0 22 37
+Stack now 0 22 37	Stack now 0 22 37
+Stack now 0 22 37	Cleanup: popping token "end of file" ()
+Cleanup: popping token "end of file" ()	Cleanup: popping nterm translation_unit ()
+Cleanup: popping nterm translation_unit ()	***parsing successful***
+***parsing successful***	#global_declarations = 1
+#global_declarations = 1	#function_definitions = 1
+#function_definitions = 1	#integer_constants = 1
+#integer_constants = 1	#pointers_declarations = 1
+#pointers_declarations = 2	#ifs_without_else = 0
+#ifs_without_else = 0	if-else max-depth = 0
+if-else max-depth = 0	

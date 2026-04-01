@@ -33,7 +33,7 @@ $(LEXER): $(LEXER_SRC)
 parser: $(PARSER)
 
 $(PARSER_TAB_C) $(PARSER_TAB_H): $(PARSER_DIR)/kernalex.y
-	$(BISON) -d -o $(PARSER_TAB_C) $(PARSER_DIR)/kernalex.y
+	$(BISON) -v -d -o $(PARSER_TAB_C) $(PARSER_DIR)/kernalex.y
 
 $(PARSER_LEX_SRC): $(PARSER_LEX_FILE) $(PARSER_TAB_H)
 	$(FLEX) -o $(PARSER_LEX_SRC) $(PARSER_LEX_FILE)

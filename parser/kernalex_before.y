@@ -331,7 +331,7 @@ struct_declarator
 
 
 declarator
-	: pointer direct_declarator
+	: pointer {pointer_decls++;} direct_declarator
 	| direct_declarator
 	;
 
@@ -423,9 +423,19 @@ designator
 	;
 
 statement
-    : matched_statement
-    | unmatched_statement
-    ;
+	: labeled_statement
+	| compound_statement
+	| expression_statement
+	| selection_statement
+	| iteration_statement
+	| jump_statement
+	;
+
+labeled_statement
+	: TOK_IDENTIFIER TOK_COLON statement
+	| TOK_CASE constant_expression TOK_COLON statement
+	| TOK_DEFAULT TOK_COLON statement
+	;
 
 compound_statement
 	: TOK_BEGIN TOK_END
@@ -447,44 +457,20 @@ expression_statement
 	| expression TOK_SEMICOLON
 	;
 
-matched_statement
-	: compound_statement
-    | expression_statement
-    | iteration_statement
-    | jump_statement
-	| TOK_IDENTIFIER TOK_COLON matched_statement
-	| TOK_CASE constant_expression TOK_COLON matched_statement
-	| TOK_DEFAULT TOK_COLON matched_statement
-    | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN matched_statement
-	| TOK_IF TOK_LPAREN expression TOK_RPAREN matched_statement TOK_ELSE matched_statement {ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--;}
-    ;
-
-unmatched_statement
-	: TOK_IDENTIFIER TOK_COLON unmatched_statement
-	| TOK_CASE constant_expression TOK_COLON unmatched_statement
-	| TOK_DEFAULT TOK_COLON unmatched_statement
-    | unmatched_iteration_statement
+selection_statement
+	: TOK_IF TOK_LPAREN expression TOK_RPAREN statement TOK_ELSE {ladder_len++;$6=(ladder_len-1);} statement {if(ladder_len>=max){max=ladder_len;} ladder_len=$6;}
 	| TOK_IF TOK_LPAREN expression TOK_RPAREN statement {ifs_wo_else++;}
-	| TOK_IF TOK_LPAREN expression TOK_RPAREN matched_statement TOK_ELSE unmatched_statement {ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--;}
-    ;
+	| TOK_SWITCH TOK_LPAREN expression TOK_RPAREN statement
+	;
 
 iteration_statement
-	: TOK_WHILE TOK_LPAREN expression TOK_RPAREN matched_statement
-	| TOK_REPEAT matched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement TOK_RPAREN matched_statement
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement expression TOK_RPAREN matched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement TOK_RPAREN matched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement expression TOK_RPAREN matched_statement
+	: TOK_WHILE TOK_LPAREN expression TOK_RPAREN statement
+	| TOK_REPEAT statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
+	| TOK_FOR TOK_LPAREN expression_statement expression_statement TOK_RPAREN statement
+	| TOK_FOR TOK_LPAREN expression_statement expression_statement expression TOK_RPAREN statement
+	| TOK_FOR TOK_LPAREN declaration expression_statement TOK_RPAREN statement
+	| TOK_FOR TOK_LPAREN declaration expression_statement expression TOK_RPAREN statement
     ;
-
-unmatched_iteration_statement
-	: TOK_WHILE TOK_LPAREN expression TOK_RPAREN unmatched_statement
-	| TOK_REPEAT unmatched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement TOK_RPAREN unmatched_statement
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement expression TOK_RPAREN unmatched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement TOK_RPAREN unmatched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement expression TOK_RPAREN unmatched_statement
-	;
 
 jump_statement
 	: TOK_CONTINUE TOK_SEMICOLON

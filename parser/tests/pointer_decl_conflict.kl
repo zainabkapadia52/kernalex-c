@@ -1,0 +1,3 @@
+int f(int (*p)()) begin
+    return 0;
+end

@@ -1,7 +1,10 @@
 %{
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 #include "tokens.h"
+
+extern int fileno(FILE *stream);
 
 int line_num = 1;
 int column_num = 1;
@@ -32,6 +35,8 @@ void process_token(const char *text, int save_start) {
 
 %option noyywrap
 %option yylineno
+%option noinput
+%option nounput
 
 %x COMMENT_ML
 %x STRING_STATE
@@ -55,9 +60,9 @@ void process_token(const char *text, int save_start) {
     return 0;
 }
 
-"///".*             { process_token(yytext, 1); printf("[DOC_COMMENT: %s]\n", yytext); }
+"///".*             { process_token(yytext, 1); }
 
-"#".*               { process_token(yytext, 1); printf("[COMMENT: %s]\n", yytext); }
+"#".*               { process_token(yytext, 1); }
 
 [0-9]+\.[0-9]*([eE][+-]?[0-9]+)?  { process_token(yytext, 1); return TOK_FLOAT_LIT; }
 [0-9]*\.[0-9]+([eE][+-]?[0-9]+)?  { process_token(yytext, 1); return TOK_FLOAT_LIT; }

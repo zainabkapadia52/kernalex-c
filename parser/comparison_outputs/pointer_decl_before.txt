@@ -1,0 +1,348 @@
+Starting parse
+Entering state 0
+Stack now 0
+Reading a token
+Next token is token TOK_INT ()
+Shifting token TOK_INT ()
+Entering state 1
+Stack now 0 1
+Reducing stack by rule 93 (line 288):
+   $1 = token TOK_INT ()
+-> $$ = nterm type_specifier ()
+Entering state 20
+Stack now 0 20
+Reading a token
+Next token is token TOK_IDENTIFIER ()
+Reducing stack by rule 83 (line 266):
+   $1 = nterm type_specifier ()
+-> $$ = nterm declaration_specifiers ()
+Entering state 18
+Stack now 0 18
+Next token is token TOK_IDENTIFIER ()
+Shifting token TOK_IDENTIFIER ()
+Entering state 26
+Stack now 0 18 26
+Reducing stack by rule 120 (line 339):
+   $1 = token TOK_IDENTIFIER ()
+-> $$ = nterm direct_declarator ()
+Entering state 33
+Stack now 0 18 33
+Reading a token
+Next token is token TOK_LPAREN ()
+Shifting token TOK_LPAREN ()
+Entering state 50
+Stack now 0 18 33 50
+Reading a token
+Next token is token TOK_INT ()
+Shifting token TOK_INT ()
+Entering state 1
+Stack now 0 18 33 50 1
+Reducing stack by rule 93 (line 288):
+   $1 = token TOK_INT ()
+-> $$ = nterm type_specifier ()
+Entering state 20
+Stack now 0 18 33 50 20
+Reading a token
+Next token is token TOK_LPAREN ()
+Reducing stack by rule 83 (line 266):
+   $1 = nterm type_specifier ()
+-> $$ = nterm declaration_specifiers ()
+Entering state 127
+Stack now 0 18 33 50 127
+Next token is token TOK_LPAREN ()
+Shifting token TOK_LPAREN ()
+Entering state 209
+Stack now 0 18 33 50 127 209
+Reading a token
+Next token is token TOK_STAR ()
+Shifting token TOK_STAR ()
+Entering state 27
+Stack now 0 18 33 50 127 209 27
+Reading a token
+Next token is token TOK_IDENTIFIER ()
+Reducing stack by rule 128 (line 350):
+   $1 = token TOK_STAR ()
+-> $$ = nterm pointer ()
+Entering state 212
+Stack now 0 18 33 50 127 209 212
+Next token is token TOK_IDENTIFIER ()
+Reducing stack by rule 117 (line 334):
+-> $$ = nterm $@1 ()
+Entering state 52
+Stack now 0 18 33 50 127 209 212 52
+Next token is token TOK_IDENTIFIER ()
+Shifting token TOK_IDENTIFIER ()
+Entering state 26
+Stack now 0 18 33 50 127 209 212 52 26
+Reducing stack by rule 120 (line 339):
+   $1 = token TOK_IDENTIFIER ()
+-> $$ = nterm direct_declarator ()
+Entering state 134
+Stack now 0 18 33 50 127 209 212 52 134
+Reading a token
+Next token is token TOK_RPAREN ()
+Reducing stack by rule 118 (line 334):
+   $1 = nterm pointer ()
+   $2 = nterm $@1 ()
+   $3 = nterm direct_declarator ()
+-> $$ = nterm declarator ()
+Entering state 41
+Stack now 0 18 33 50 127 209 41
+Next token is token TOK_RPAREN ()
+Shifting token TOK_RPAREN ()
+Entering state 57
+Stack now 0 18 33 50 127 209 41 57
+Reducing stack by rule 121 (line 340):
+   $1 = token TOK_LPAREN ()
+   $2 = nterm declarator ()
+   $3 = token TOK_RPAREN ()
+-> $$ = nterm direct_declarator ()
+Entering state 33
+Stack now 0 18 33 50 127 33
+Reading a token
+Next token is token TOK_LPAREN ()
+Shifting token TOK_LPAREN ()
+Entering state 50
+Stack now 0 18 33 50 127 33 50
+Reading a token
+Next token is token TOK_RPAREN ()
+Shifting token TOK_RPAREN ()
+Entering state 126
+Stack now 0 18 33 50 127 33 50 126
+Reducing stack by rule 125 (line 344):
+   $1 = nterm direct_declarator ()
+   $2 = token TOK_LPAREN ()
+   $3 = token TOK_RPAREN ()
+-> $$ = nterm direct_declarator ()
+Entering state 33
+Stack now 0 18 33 50 127 33
+Reading a token
+Next token is token TOK_RPAREN ()
+Reducing stack by rule 119 (line 335):
+   $1 = nterm direct_declarator ()
+-> $$ = nterm declarator ()
+Entering state 211
+Stack now 0 18 33 50 127 211
+Reducing stack by rule 132 (line 365):
+   $1 = nterm declaration_specifiers ()
+   $2 = nterm declarator ()
+-> $$ = nterm parameter_declaration ()
+Entering state 130
+Stack now 0 18 33 50 130
+Reducing stack by rule 130 (line 360):
+   $1 = nterm parameter_declaration ()
+-> $$ = nterm parameter_list ()
+Entering state 129
+Stack now 0 18 33 50 129
+Next token is token TOK_RPAREN ()
+Reducing stack by rule 129 (line 356):
+   $1 = nterm parameter_list ()
+-> $$ = nterm parameter_type_list ()
+Entering state 128
+Stack now 0 18 33 50 128
+Next token is token TOK_RPAREN ()
+Shifting token TOK_RPAREN ()
+Entering state 215
+Stack now 0 18 33 50 128 215
+Reducing stack by rule 124 (line 343):
+   $1 = nterm direct_declarator ()
+   $2 = token TOK_LPAREN ()
+   $3 = nterm parameter_type_list ()
+   $4 = token TOK_RPAREN ()
+-> $$ = nterm direct_declarator ()
+Entering state 33
+Stack now 0 18 33
+Reading a token
+Next token is token TOK_BEGIN ()
+Reducing stack by rule 119 (line 335):
+   $1 = nterm direct_declarator ()
+-> $$ = nterm declarator ()
+Entering state 32
+Stack now 0 18 32
+Next token is token TOK_BEGIN ()
+Shifting token TOK_BEGIN ()
+Entering state 44
+Stack now 0 18 32 44
+Reading a token
+Next token is token TOK_RETURN ()
+Shifting token TOK_RETURN ()
+Entering state 69
+Stack now 0 18 32 44 69
+Reading a token
+Next token is token TOK_INTEGER ()
+Shifting token TOK_INTEGER ()
+Entering state 75
+Stack now 0 18 32 44 69 75
+Reducing stack by rule 7 (line 120):
+   $1 = token TOK_INTEGER ()
+-> $$ = nterm constant ()
+Entering state 90
+Stack now 0 18 32 44 69 90
+Reducing stack by rule 2 (line 112):
+   $1 = nterm constant ()
+-> $$ = nterm primary_expression ()
+Entering state 89
+Stack now 0 18 32 44 69 89
+Reducing stack by rule 11 (line 131):
+   $1 = nterm primary_expression ()
+-> $$ = nterm postfix_expression ()
+Entering state 92
+Stack now 0 18 32 44 69 92
+Reading a token
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 23 (line 149):
+   $1 = nterm postfix_expression ()
+-> $$ = nterm unary_expression ()
+Entering state 93
+Stack now 0 18 32 44 69 93
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 35 (line 167):
+   $1 = nterm unary_expression ()
+-> $$ = nterm cast_expression ()
+Entering state 95
+Stack now 0 18 32 44 69 95
+Reducing stack by rule 37 (line 172):
+   $1 = nterm cast_expression ()
+-> $$ = nterm multiplicative_expression ()
+Entering state 96
+Stack now 0 18 32 44 69 96
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 41 (line 179):
+   $1 = nterm multiplicative_expression ()
+-> $$ = nterm additive_expression ()
+Entering state 97
+Stack now 0 18 32 44 69 97
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 44 (line 185):
+   $1 = nterm additive_expression ()
+-> $$ = nterm shift_expression ()
+Entering state 98
+Stack now 0 18 32 44 69 98
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 47 (line 191):
+   $1 = nterm shift_expression ()
+-> $$ = nterm relational_expression ()
+Entering state 99
+Stack now 0 18 32 44 69 99
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 53 (line 200):
+   $1 = nterm relational_expression ()
+-> $$ = nterm equality_expression ()
+Entering state 100
+Stack now 0 18 32 44 69 100
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 56 (line 206):
+   $1 = nterm equality_expression ()
+-> $$ = nterm and_expression ()
+Entering state 101
+Stack now 0 18 32 44 69 101
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 58 (line 211):
+   $1 = nterm and_expression ()
+-> $$ = nterm exclusive_or_expression ()
+Entering state 102
+Stack now 0 18 32 44 69 102
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 60 (line 216):
+   $1 = nterm exclusive_or_expression ()
+-> $$ = nterm inclusive_or_expression ()
+Entering state 103
+Stack now 0 18 32 44 69 103
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 62 (line 221):
+   $1 = nterm inclusive_or_expression ()
+-> $$ = nterm logical_and_expression ()
+Entering state 104
+Stack now 0 18 32 44 69 104
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 64 (line 226):
+   $1 = nterm logical_and_expression ()
+-> $$ = nterm logical_or_expression ()
+Entering state 105
+Stack now 0 18 32 44 69 105
+Next token is token TOK_SEMICOLON ()
+Reducing stack by rule 66 (line 231):
+   $1 = nterm logical_or_expression ()
+-> $$ = nterm conditional_expression ()
+Entering state 106
+Stack now 0 18 32 44 69 106
+Reducing stack by rule 67 (line 235):
+   $1 = nterm conditional_expression ()
+-> $$ = nterm assignment_expression ()
+Entering state 107
+Stack now 0 18 32 44 69 107
+Reducing stack by rule 75 (line 249):
+   $1 = nterm assignment_expression ()
+-> $$ = nterm expression ()
+Entering state 155
+Stack now 0 18 32 44 69 155
+Next token is token TOK_SEMICOLON ()
+Shifting token TOK_SEMICOLON ()
+Entering state 232
+Stack now 0 18 32 44 69 155 232
+Reducing stack by rule 193 (line 479):
+   $1 = token TOK_RETURN ()
+   $2 = nterm expression ()
+   $3 = token TOK_SEMICOLON ()
+-> $$ = nterm jump_statement ()
+Entering state 118
+Stack now 0 18 32 44 118
+Reducing stack by rule 168 (line 431):
+   $1 = nterm jump_statement ()
+-> $$ = nterm statement ()
+Entering state 110
+Stack now 0 18 32 44 110
+Reducing stack by rule 177 (line 452):
+   $1 = nterm statement ()
+-> $$ = nterm block_item ()
+Entering state 114
+Stack now 0 18 32 44 114
+Reducing stack by rule 174 (line 446):
+   $1 = nterm block_item ()
+-> $$ = nterm block_item_list ()
+Entering state 113
+Stack now 0 18 32 44 113
+Reading a token
+Next token is token TOK_END ()
+Shifting token TOK_END ()
+Entering state 200
+Stack now 0 18 32 44 113 200
+Reducing stack by rule 173 (line 442):
+   $1 = token TOK_BEGIN ()
+   $2 = nterm block_item_list ()
+   $3 = token TOK_END ()
+-> $$ = nterm compound_statement ()
+Entering state 48
+Stack now 0 18 32 48
+Reducing stack by rule 199 (line 494):
+   $1 = nterm declaration_specifiers ()
+   $2 = nterm declarator ()
+   $3 = nterm compound_statement ()
+-> $$ = nterm function_definition ()
+Entering state 24
+Stack now 0 24
+Reducing stack by rule 196 (line 488):
+   $1 = nterm function_definition ()
+-> $$ = nterm external_declaration ()
+Entering state 23
+Stack now 0 23
+Reducing stack by rule 194 (line 483):
+   $1 = nterm external_declaration ()
+-> $$ = nterm translation_unit ()
+Entering state 22
+Stack now 0 22
+Reading a token
+Now at end of input.
+Shifting token "end of file" ()
+Entering state 37
+Stack now 0 22 37
+Stack now 0 22 37
+Cleanup: popping token "end of file" ()
+Cleanup: popping nterm translation_unit ()
+***parsing successful***
+#global_declarations = 1
+#function_definitions = 1
+#integer_constants = 1
+#pointers_declarations = 2
+#ifs_without_else = 0
+if-else max-depth = 0
