@@ -1,0 +1,1 @@
+[SYNTAX ERROR] Line 1, Col 11: syntax error, unexpected TOK_BEGIN near 'begin'

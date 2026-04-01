@@ -8,6 +8,7 @@ extern int fileno(FILE *stream);
 
 int line_num = 1;
 int column_num = 1;
+int token_start_line = 1;
 int string_start_col = 0;
 int string_start_line = 0;
 int char_start_col = 0;
@@ -19,6 +20,7 @@ int token_start_col = 0;
 
 void process_token(const char *text, int save_start) {
     if (save_start) {
+        token_start_line = line_num;
         token_start_col = column_num;
     }
     
@@ -45,6 +47,7 @@ void process_token(const char *text, int save_start) {
 %%
 
 "/**"               { 
+    token_start_line = line_num;
     token_start_col = column_num;
     column_num += 3;
     comment_start_line = line_num;
@@ -91,6 +94,7 @@ void process_token(const char *text, int save_start) {
 }
 
 \"                                  {
+    token_start_line = line_num;
     token_start_col = column_num;
     string_start_line = line_num;
     string_start_col = token_start_col;
@@ -165,6 +169,7 @@ void process_token(const char *text, int save_start) {
 }
 
 \'                                  {
+    token_start_line = line_num;
     token_start_col = column_num;
     char_start_line = line_num;
     char_start_col = token_start_col;
@@ -285,6 +290,7 @@ void process_token(const char *text, int save_start) {
 ":"     { process_token(yytext, 1); return TOK_COLON; }
 
 [a-zA-Z_][a-zA-Z0-9_]* {
+    token_start_line = line_num;
     token_start_col = column_num;
     process_token(yytext, 0);
     if (yyleng <= 255) {

@@ -2,6 +2,8 @@
 %{
 #include<stdio.h>
 extern char *yytext;
+extern int token_start_line;
+extern int token_start_col;
 
 int yylex(void);
 void yyerror(const char *s);
@@ -97,6 +99,8 @@ int max=-1;
 %token TOK_COLON 80
 
 %start translation_unit
+%define parse.error detailed
+%define parse.lac full
 
 
 %union
@@ -788,18 +792,36 @@ int mode=-1;
 void yyerror(const char *s)
 {
 	fflush(stdout);
-	
+
 	if(mode==-1)
-		printf("***parsing terminated*** [syntax error]\n");
+	{
+		if(s != NULL && strstr(s, "syntax error") != NULL)
+		{
+			if(yytext != NULL && yytext[0] != '\0')
+			{
+				printf("[SYNTAX ERROR] Line %d, Col %d: %s near '%s'\n", token_start_line, token_start_col, s, yytext);
+			}
+			else
+			{
+				printf("[SYNTAX ERROR] Line %d, Col %d: %s\n", token_start_line, token_start_col, s);
+			}
+		}
+		else
+		{
+			printf("***parsing terminated*** [syntax error]\n");
+		}
+	}
 	else if(mode==0 || mode==1)
-		printf("%s\n",s);
-		
+	{
+		printf("%s\n", s);
+	}
+
 	exit(-1);
 }
 
 int main(int argc, char **argv)
 {
-    extern FILE *yyin;
+	extern FILE *yyin;
 	FILE *trace_capture = NULL;
 	int stderr_copy = -1;
 
