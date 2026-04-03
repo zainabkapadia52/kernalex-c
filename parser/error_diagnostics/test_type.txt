@@ -1,1 +1,4 @@
-[SYNTAX ERROR] Line 1, Col 5: syntax error, unexpected TOK_INTEGER near '123'
+[SYNTAX ERROR] Line 2, Col 9: syntax error, unexpected 'int', expecting identifier near 'int'
+      2 |     int int = 5;
+        |         ^^^
+  hint: 'int' is a reserved keyword and cannot be used as an identifier.
