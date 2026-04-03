@@ -159,6 +159,80 @@ def write_csv(prefix: Path, terminals, nonterminals, rows):
     return csv_path
 
 
+def write_action_csv(prefix: Path, terminals, rows):
+    csv_path = prefix.with_name(prefix.name + '_action').with_suffix('.csv')
+    with csv_path.open('w', newline='') as handle:
+        writer = csv.writer(handle)
+        writer.writerow(['State'] + terminals)
+        for row in rows:
+            writer.writerow([row['State']] + [row.get(symbol, '') for symbol in terminals])
+    return csv_path
+
+
+def write_goto_csv(prefix: Path, nonterminals, rows):
+    csv_path = prefix.with_name(prefix.name + '_goto').with_suffix('.csv')
+    with csv_path.open('w', newline='') as handle:
+        writer = csv.writer(handle)
+        writer.writerow(['State'] + nonterminals)
+        for row in rows:
+            writer.writerow([row['State']] + [row.get(symbol, '') for symbol in nonterminals])
+    return csv_path
+
+
+def write_html(prefix: Path, terminals, nonterminals, rows, table_type='complete'):
+    html_path = prefix.with_name(prefix.name + '_' + table_type).with_suffix('.html')
+    
+    # Generate action table HTML
+    action_html = '<table border="1" style="border-collapse:collapse"><tr><th>State</th>'
+    for terminal in terminals:
+        action_html += f'<th>{terminal}</th>'
+    action_html += '</tr>'
+    for row in rows:
+        action_html += f'<tr><td>{row["State"]}</td>'
+        for terminal in terminals:
+            action_html += f'<td>{row.get(terminal, "")}</td>'
+        action_html += '</tr>'
+    action_html += '</table>'
+    
+    # Generate goto table HTML
+    goto_html = '<table border="1" style="border-collapse:collapse"><tr><th>State</th>'
+    for nonterminal in nonterminals:
+        goto_html += f'<th>{nonterminal}</th>'
+    goto_html += '</tr>'
+    for row in rows:
+        goto_html += f'<tr><td>{row["State"]}</td>'
+        for nonterminal in nonterminals:
+            goto_html += f'<td>{row.get(nonterminal, "")}</td>'
+        goto_html += '</tr>'
+    goto_html += '</table>'
+    
+    html_content = f'''<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>LALR(1) Parsing Table - {table_type}</title>
+<style>
+body {{ font-family: Arial, sans-serif; margin: 20px; }}
+h1, h2 {{ color: #333; }}
+table {{ border-collapse: collapse; margin: 20px 0; }}
+th, td {{ border: 1px solid #999; padding: 10px; text-align: center; }}
+th {{ background-color: #e0e0e0; font-weight: bold; }}
+</style>
+</head>
+<body>
+<h1>LALR(1) Parsing Table - {table_type.title()}</h1>
+<h2>Action Table</h2>
+{action_html}
+<h2>Goto Table</h2>
+{goto_html}
+</body>
+</html>'''
+    
+    with html_path.open('w') as handle:
+        handle.write(html_content)
+    return html_path
+
+
 def main():
     parser = argparse.ArgumentParser(description='Extract the LALR(1) parsing table from a Bison .output file.')
     parser.add_argument('output_file', type=Path, help='Path to the Bison .output file')
@@ -168,8 +242,22 @@ def main():
 
     terminals, nonterminals, states, max_state = parse_output(args.output_file)
     selected_states = load_state_filter(args.states_file)
-    rows = build_rows(terminals, nonterminals, states, max_state, selected_states)
-    write_csv(args.output_prefix, terminals, nonterminals, rows)
+    
+    # Generate complete table
+    rows_all = build_rows(terminals, nonterminals, states, max_state, None)
+    write_csv(args.output_prefix, terminals, nonterminals, rows_all)
+    write_action_csv(args.output_prefix, terminals, rows_all)
+    write_goto_csv(args.output_prefix, nonterminals, rows_all)
+    write_html(args.output_prefix, terminals, nonterminals, rows_all, 'complete')
+    
+    # Generate important states table if provided
+    if selected_states:
+        rows_imp = build_rows(terminals, nonterminals, states, max_state, selected_states)
+        prefix_imp = args.output_prefix.with_name(args.output_prefix.name + '_important')
+        write_csv(prefix_imp, terminals, nonterminals, rows_imp)
+        write_action_csv(prefix_imp, terminals, rows_imp)
+        write_goto_csv(prefix_imp, nonterminals, rows_imp)
+        write_html(prefix_imp, terminals, nonterminals, rows_imp, 'important')
 
 
 if __name__ == '__main__':
