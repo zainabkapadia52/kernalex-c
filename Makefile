@@ -18,7 +18,7 @@ PARSER_TAB_H = $(PARSER_DIR)/kernalex.tab.h
 
 .PHONY: all clean lexer parser lalr-table lalr-table-full lalr-table-important
 
-all: lexer parser
+all: parser lexer
 
 # Lexer build 
 lexer: $(LEXER)
@@ -27,7 +27,7 @@ $(LEXER_SRC): $(LEXER_DIR)/kernalex.l tokens.h
 	$(FLEX) -o $(LEXER_SRC) $(LEXER_DIR)/kernalex.l
 
 $(LEXER): $(LEXER_SRC)
-	$(CC) $(CFLAGS) -I. -o $(LEXER) $(LEXER_SRC) $(LDFLAGS)
+	$(CC) $(CFLAGS) -I$(PARSER_DIR) -I. -o $(LEXER) $(LEXER_SRC) $(LDFLAGS)
 
 # Parser build 
 parser: $(PARSER)
@@ -38,14 +38,14 @@ lalr-table-full: $(PARSER_DIR)/parsing_table/lalr1_table_full.csv
 
 lalr-table-important: $(PARSER_DIR)/parsing_table/lalr1_table_important.csv
 
-$(PARSER_TAB_C) $(PARSER_TAB_H): $(PARSER_DIR)/kernalex.y
-	$(BISON) -v -d -o $(PARSER_TAB_C) $(PARSER_DIR)/kernalex.y
+$(PARSER_TAB_C) $(PARSER_TAB_H) $(PARSER_OUTPUT): $(PARSER_DIR)/kernalex.y
+	$(BISON) -v --graph=$(PARSER_DIR)/lalr1_automaton.vcg --report=states,lookaheads,solved -d -o $(PARSER_TAB_C) $(PARSER_DIR)/kernalex.y
 
 $(PARSER_LEX_SRC): $(PARSER_LEX_FILE) $(PARSER_TAB_H)
 	$(FLEX) -o $(PARSER_LEX_SRC) $(PARSER_LEX_FILE)
 
 $(PARSER): $(PARSER_TAB_C) $(PARSER_LEX_SRC)
-	$(CC) $(CFLAGS) -DYYDEBUG=1 -DPARSER_MODE -I. -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC)
+	$(CC) $(CFLAGS) -DYYDEBUG=1 -DPARSER_MODE -I$(PARSER_DIR) -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC)
 
 $(PARSER_DIR)/parsing_table/lalr1_table_full.csv: $(PARSER_DIR)/kernalex.output $(PARSER_DIR)/parsing_table/generate_lalr_table.py
 	python3 $(PARSER_DIR)/parsing_table/generate_lalr_table.py $(PARSER_DIR)/kernalex.output $(PARSER_DIR)/parsing_table/lalr1_table_full

@@ -731,7 +731,7 @@ State 18
 State 19
 
    80 declaration_specifiers: storage_class_specifier • declaration_specifiers
-   81                       | storage_class_specifier •
+   81                       | storage_class_specifier •  [TOK_IDENTIFIER, TOK_STAR, TOK_LPAREN, TOK_RPAREN, TOK_LBRACKET, TOK_SEMICOLON, TOK_COMMA]
 
     TOK_INT       shift, and go to state 1
     TOK_SHORT     shift, and go to state 2
@@ -761,7 +761,7 @@ State 19
 State 20
 
    82 declaration_specifiers: type_specifier • declaration_specifiers
-   83                       | type_specifier •
+   83                       | type_specifier •  [TOK_IDENTIFIER, TOK_STAR, TOK_LPAREN, TOK_RPAREN, TOK_LBRACKET, TOK_SEMICOLON, TOK_COMMA]
 
     TOK_INT       shift, and go to state 1
     TOK_SHORT     shift, and go to state 2
@@ -844,7 +844,7 @@ State 24
 State 25
 
   104 struct_specifier: TOK_STRUCT TOK_IDENTIFIER • TOK_BEGIN struct_declaration_list TOK_END
-  105                 | TOK_STRUCT TOK_IDENTIFIER •
+  105                 | TOK_STRUCT TOK_IDENTIFIER •  [TOK_INT, TOK_SHORT, TOK_FLOAT, TOK_CHAR, TOK_VOID, TOK_BOOL, TOK_BOOLEAN, TOK_STRUCT, TOK_INT8_T, TOK_INT16_T, TOK_INT32_T, TOK_INT64_T, TOK_SIGNED, TOK_UNSIGNED, TOK_EXTERN, TOK_STATIC, TOK_IDENTIFIER, TOK_STAR, TOK_LPAREN, TOK_RPAREN, TOK_LBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_BEGIN  shift, and go to state 39
 
@@ -861,7 +861,7 @@ State 26
 State 27
 
   126 pointer: TOK_STAR • pointer
-  127        | TOK_STAR •
+  127        | TOK_STAR •  [TOK_IDENTIFIER, TOK_LPAREN, TOK_RPAREN, TOK_LBRACKET, TOK_COMMA]
 
     TOK_STAR  shift, and go to state 27
 
@@ -909,7 +909,7 @@ State 31
 State 32
 
    86 init_declarator: declarator • TOK_ASSIGN initializer
-   87                | declarator •
+   87                | declarator •  [TOK_SEMICOLON, TOK_COMMA]
   207 function_definition: declaration_specifiers declarator • declaration_list compound_statement
   208                    | declaration_specifiers declarator • compound_statement
 
@@ -945,7 +945,7 @@ State 32
 
 State 33
 
-  118 declarator: direct_declarator •
+  118 declarator: direct_declarator •  [TOK_INT, TOK_SHORT, TOK_FLOAT, TOK_CHAR, TOK_VOID, TOK_BOOL, TOK_BOOLEAN, TOK_STRUCT, TOK_INT8_T, TOK_INT16_T, TOK_INT32_T, TOK_INT64_T, TOK_SIGNED, TOK_UNSIGNED, TOK_EXTERN, TOK_STATIC, TOK_BEGIN, TOK_ASSIGN, TOK_RPAREN, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
   121 direct_declarator: direct_declarator • TOK_LBRACKET TOK_RBRACKET
   122                  | direct_declarator • TOK_LBRACKET assignment_expression TOK_RBRACKET
   123                  | direct_declarator • TOK_LPAREN parameter_type_list TOK_RPAREN
@@ -1335,7 +1335,7 @@ State 51
 
 State 52
 
-  117 declarator: pointer direct_declarator •
+  117 declarator: pointer direct_declarator •  [TOK_INT, TOK_SHORT, TOK_FLOAT, TOK_CHAR, TOK_VOID, TOK_BOOL, TOK_BOOLEAN, TOK_STRUCT, TOK_INT8_T, TOK_INT16_T, TOK_INT32_T, TOK_INT64_T, TOK_SIGNED, TOK_UNSIGNED, TOK_EXTERN, TOK_STATIC, TOK_BEGIN, TOK_ASSIGN, TOK_RPAREN, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
   121 direct_declarator: direct_declarator • TOK_LBRACKET TOK_RBRACKET
   122                  | direct_declarator • TOK_LBRACKET assignment_expression TOK_RBRACKET
   123                  | direct_declarator • TOK_LPAREN parameter_type_list TOK_RPAREN
@@ -1351,7 +1351,7 @@ State 52
 State 53
 
   110 specifier_qualifier_list: type_specifier • specifier_qualifier_list
-  111                         | type_specifier •
+  111                         | type_specifier •  [TOK_IDENTIFIER, TOK_STAR, TOK_LPAREN, TOK_RPAREN, TOK_LBRACKET, TOK_SEMICOLON, TOK_COLON]
 
     TOK_INT       shift, and go to state 1
     TOK_SHORT     shift, and go to state 2
@@ -1444,7 +1444,7 @@ State 58
 State 59
 
    86 init_declarator: declarator • TOK_ASSIGN initializer
-   87                | declarator •
+   87                | declarator •  [TOK_SEMICOLON, TOK_COMMA]
 
     TOK_ASSIGN  shift, and go to state 45
 
@@ -1719,7 +1719,7 @@ State 73
 
 State 74
 
-    1 primary_expression: TOK_IDENTIFIER •
+    1 primary_expression: TOK_IDENTIFIER •  [TOK_PLUS, TOK_MINUS, TOK_MULT, TOK_DIV, TOK_MOD, TOK_ASSIGN, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_INC, TOK_DEC, TOK_PLUSEQ, TOK_MINUSEQ, TOK_MULTEQ, TOK_DIVEQ, TOK_MODEQ, TOK_ARROW, TOK_AMP, TOK_LPAREN, TOK_LBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_DOT]
   176 matched_statement: TOK_IDENTIFIER • TOK_COLON matched_statement
   181 unmatched_statement: TOK_IDENTIFIER • TOK_COLON unmatched_statement
 
@@ -1960,7 +1960,7 @@ State 92
    16                   | postfix_expression • TOK_ARROW TOK_IDENTIFIER
    17                   | postfix_expression • TOK_INC
    18                   | postfix_expression • TOK_DEC
-   23 unary_expression: postfix_expression •
+   23 unary_expression: postfix_expression •  [TOK_END, TOK_PLUS, TOK_MINUS, TOK_MULT, TOK_DIV, TOK_MOD, TOK_ASSIGN, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_PLUSEQ, TOK_MINUSEQ, TOK_MULTEQ, TOK_DIVEQ, TOK_MODEQ, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_INC       shift, and go to state 166
     TOK_DEC       shift, and go to state 167
@@ -1974,7 +1974,7 @@ State 92
 
 State 93
 
-   35 cast_expression: unary_expression •
+   35 cast_expression: unary_expression •  [TOK_END, TOK_PLUS, TOK_MINUS, TOK_MULT, TOK_DIV, TOK_MOD, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA]
    68 assignment_expression: unary_expression • assignment_operator assignment_expression
 
     TOK_ASSIGN   shift, and go to state 172
@@ -2032,7 +2032,7 @@ State 96
    38 multiplicative_expression: multiplicative_expression • TOK_MULT cast_expression
    39                          | multiplicative_expression • TOK_DIV cast_expression
    40                          | multiplicative_expression • TOK_MOD cast_expression
-   41 additive_expression: multiplicative_expression •
+   41 additive_expression: multiplicative_expression •  [TOK_END, TOK_PLUS, TOK_MINUS, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_MULT  shift, and go to state 180
     TOK_DIV   shift, and go to state 181
@@ -2045,7 +2045,7 @@ State 97
 
    42 additive_expression: additive_expression • TOK_PLUS multiplicative_expression
    43                    | additive_expression • TOK_MINUS multiplicative_expression
-   44 shift_expression: additive_expression •
+   44 shift_expression: additive_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_PLUS   shift, and go to state 183
     TOK_MINUS  shift, and go to state 184
@@ -2057,7 +2057,7 @@ State 98
 
    45 shift_expression: shift_expression • TOK_LSHIFT additive_expression
    46                 | shift_expression • TOK_RSHIFT additive_expression
-   47 relational_expression: shift_expression •
+   47 relational_expression: shift_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_LSHIFT  shift, and go to state 185
     TOK_RSHIFT  shift, and go to state 186
@@ -2072,7 +2072,7 @@ State 99
    50                      | relational_expression • TOK_LE shift_expression
    51                      | relational_expression • TOK_GE shift_expression
    52                      | relational_expression • TOK_SPACESHIP shift_expression
-   53 equality_expression: relational_expression •
+   53 equality_expression: relational_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_LT         shift, and go to state 187
     TOK_LE         shift, and go to state 188
@@ -2087,7 +2087,7 @@ State 100
 
    54 equality_expression: equality_expression • TOK_EQ relational_expression
    55                    | equality_expression • TOK_NE relational_expression
-   56 and_expression: equality_expression •
+   56 and_expression: equality_expression •  [TOK_END, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_EQ  shift, and go to state 192
     TOK_NE  shift, and go to state 193
@@ -2098,7 +2098,7 @@ State 100
 State 101
 
    57 and_expression: and_expression • TOK_AMP equality_expression
-   58 exclusive_or_expression: and_expression •
+   58 exclusive_or_expression: and_expression •  [TOK_END, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_AMP  shift, and go to state 194
 
@@ -2108,7 +2108,7 @@ State 101
 State 102
 
    59 exclusive_or_expression: exclusive_or_expression • TOK_XOR and_expression
-   60 inclusive_or_expression: exclusive_or_expression •
+   60 inclusive_or_expression: exclusive_or_expression •  [TOK_END, TOK_AND, TOK_OR, TOK_BITOR, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_XOR  shift, and go to state 195
 
@@ -2118,7 +2118,7 @@ State 102
 State 103
 
    61 inclusive_or_expression: inclusive_or_expression • TOK_BITOR exclusive_or_expression
-   62 logical_and_expression: inclusive_or_expression •
+   62 logical_and_expression: inclusive_or_expression •  [TOK_END, TOK_AND, TOK_OR, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_BITOR  shift, and go to state 196
 
@@ -2128,7 +2128,7 @@ State 103
 State 104
 
    63 logical_and_expression: logical_and_expression • TOK_AND inclusive_or_expression
-   64 logical_or_expression: logical_and_expression •
+   64 logical_or_expression: logical_and_expression •  [TOK_END, TOK_OR, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_AND  shift, and go to state 197
 
@@ -2138,7 +2138,7 @@ State 104
 State 105
 
    65 logical_or_expression: logical_or_expression • TOK_OR logical_and_expression
-   66 conditional_expression: logical_or_expression •
+   66 conditional_expression: logical_or_expression •  [TOK_END, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_OR  shift, and go to state 198
 
@@ -2431,7 +2431,7 @@ State 128
 
   131 parameter_declaration: declaration_specifiers • declarator
   132                      | declaration_specifiers • abstract_declarator
-  133                      | declaration_specifiers •
+  133                      | declaration_specifiers •  [TOK_RPAREN, TOK_COMMA]
 
     TOK_IDENTIFIER  shift, and go to state 26
     TOK_STAR        shift, and go to state 27
@@ -2456,7 +2456,7 @@ State 129
 
 State 130
 
-  128 parameter_type_list: parameter_list •
+  128 parameter_type_list: parameter_list •  [TOK_RPAREN]
   130 parameter_list: parameter_list • TOK_COMMA parameter_declaration
 
     TOK_COMMA  shift, and go to state 217
@@ -2584,7 +2584,7 @@ State 141
 State 142
 
   115 struct_declarator: declarator • TOK_COLON constant_expression
-  116                  | declarator •
+  116                  | declarator •  [TOK_SEMICOLON, TOK_COMMA]
 
     TOK_COLON  shift, and go to state 224
 
@@ -3156,7 +3156,7 @@ State 163
 State 164
 
   136 type_name: specifier_qualifier_list • abstract_declarator
-  137          | specifier_qualifier_list •
+  137          | specifier_qualifier_list •  [TOK_RPAREN]
 
     TOK_STAR      shift, and go to state 27
     TOK_LPAREN    shift, and go to state 241
@@ -4336,7 +4336,7 @@ State 213
 
   117 declarator: pointer • direct_declarator
   138 abstract_declarator: pointer • direct_abstract_declarator
-  139                    | pointer •
+  139                    | pointer •  [TOK_RPAREN, TOK_COMMA]
 
     TOK_IDENTIFIER  shift, and go to state 26
     TOK_LPAREN      shift, and go to state 210
@@ -4357,7 +4357,7 @@ State 214
 
 State 215
 
-  140 abstract_declarator: direct_abstract_declarator •
+  140 abstract_declarator: direct_abstract_declarator •  [TOK_RPAREN, TOK_COMMA]
   144 direct_abstract_declarator: direct_abstract_declarator • TOK_LBRACKET TOK_RBRACKET
   145                           | direct_abstract_declarator • TOK_LBRACKET assignment_expression TOK_RBRACKET
   148                           | direct_abstract_declarator • TOK_LPAREN TOK_RPAREN
@@ -4804,7 +4804,7 @@ State 241
 State 242
 
   138 abstract_declarator: pointer • direct_abstract_declarator
-  139                    | pointer •
+  139                    | pointer •  [TOK_RPAREN]
 
     TOK_LPAREN    shift, and go to state 241
     TOK_LBRACKET  shift, and go to state 211
@@ -4934,7 +4934,7 @@ State 255
    38 multiplicative_expression: multiplicative_expression • TOK_MULT cast_expression
    39                          | multiplicative_expression • TOK_DIV cast_expression
    40                          | multiplicative_expression • TOK_MOD cast_expression
-   42 additive_expression: additive_expression TOK_PLUS multiplicative_expression •
+   42 additive_expression: additive_expression TOK_PLUS multiplicative_expression •  [TOK_END, TOK_PLUS, TOK_MINUS, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_MULT  shift, and go to state 180
     TOK_DIV   shift, and go to state 181
@@ -4948,7 +4948,7 @@ State 256
    38 multiplicative_expression: multiplicative_expression • TOK_MULT cast_expression
    39                          | multiplicative_expression • TOK_DIV cast_expression
    40                          | multiplicative_expression • TOK_MOD cast_expression
-   43 additive_expression: additive_expression TOK_MINUS multiplicative_expression •
+   43 additive_expression: additive_expression TOK_MINUS multiplicative_expression •  [TOK_END, TOK_PLUS, TOK_MINUS, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_MULT  shift, and go to state 180
     TOK_DIV   shift, and go to state 181
@@ -4961,7 +4961,7 @@ State 257
 
    42 additive_expression: additive_expression • TOK_PLUS multiplicative_expression
    43                    | additive_expression • TOK_MINUS multiplicative_expression
-   45 shift_expression: shift_expression TOK_LSHIFT additive_expression •
+   45 shift_expression: shift_expression TOK_LSHIFT additive_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_PLUS   shift, and go to state 183
     TOK_MINUS  shift, and go to state 184
@@ -4973,7 +4973,7 @@ State 258
 
    42 additive_expression: additive_expression • TOK_PLUS multiplicative_expression
    43                    | additive_expression • TOK_MINUS multiplicative_expression
-   46 shift_expression: shift_expression TOK_RSHIFT additive_expression •
+   46 shift_expression: shift_expression TOK_RSHIFT additive_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_PLUS   shift, and go to state 183
     TOK_MINUS  shift, and go to state 184
@@ -4985,7 +4985,7 @@ State 259
 
    45 shift_expression: shift_expression • TOK_LSHIFT additive_expression
    46                 | shift_expression • TOK_RSHIFT additive_expression
-   48 relational_expression: relational_expression TOK_LT shift_expression •
+   48 relational_expression: relational_expression TOK_LT shift_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_LSHIFT  shift, and go to state 185
     TOK_RSHIFT  shift, and go to state 186
@@ -4997,7 +4997,7 @@ State 260
 
    45 shift_expression: shift_expression • TOK_LSHIFT additive_expression
    46                 | shift_expression • TOK_RSHIFT additive_expression
-   50 relational_expression: relational_expression TOK_LE shift_expression •
+   50 relational_expression: relational_expression TOK_LE shift_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_LSHIFT  shift, and go to state 185
     TOK_RSHIFT  shift, and go to state 186
@@ -5009,7 +5009,7 @@ State 261
 
    45 shift_expression: shift_expression • TOK_LSHIFT additive_expression
    46                 | shift_expression • TOK_RSHIFT additive_expression
-   49 relational_expression: relational_expression TOK_GT shift_expression •
+   49 relational_expression: relational_expression TOK_GT shift_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_LSHIFT  shift, and go to state 185
     TOK_RSHIFT  shift, and go to state 186
@@ -5021,7 +5021,7 @@ State 262
 
    45 shift_expression: shift_expression • TOK_LSHIFT additive_expression
    46                 | shift_expression • TOK_RSHIFT additive_expression
-   51 relational_expression: relational_expression TOK_GE shift_expression •
+   51 relational_expression: relational_expression TOK_GE shift_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_LSHIFT  shift, and go to state 185
     TOK_RSHIFT  shift, and go to state 186
@@ -5033,7 +5033,7 @@ State 263
 
    45 shift_expression: shift_expression • TOK_LSHIFT additive_expression
    46                 | shift_expression • TOK_RSHIFT additive_expression
-   52 relational_expression: relational_expression TOK_SPACESHIP shift_expression •
+   52 relational_expression: relational_expression TOK_SPACESHIP shift_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_LSHIFT  shift, and go to state 185
     TOK_RSHIFT  shift, and go to state 186
@@ -5048,7 +5048,7 @@ State 264
    50                      | relational_expression • TOK_LE shift_expression
    51                      | relational_expression • TOK_GE shift_expression
    52                      | relational_expression • TOK_SPACESHIP shift_expression
-   54 equality_expression: equality_expression TOK_EQ relational_expression •
+   54 equality_expression: equality_expression TOK_EQ relational_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_LT         shift, and go to state 187
     TOK_LE         shift, and go to state 188
@@ -5066,7 +5066,7 @@ State 265
    50                      | relational_expression • TOK_LE shift_expression
    51                      | relational_expression • TOK_GE shift_expression
    52                      | relational_expression • TOK_SPACESHIP shift_expression
-   55 equality_expression: equality_expression TOK_NE relational_expression •
+   55 equality_expression: equality_expression TOK_NE relational_expression •  [TOK_END, TOK_EQ, TOK_NE, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_LT         shift, and go to state 187
     TOK_LE         shift, and go to state 188
@@ -5081,7 +5081,7 @@ State 266
 
    54 equality_expression: equality_expression • TOK_EQ relational_expression
    55                    | equality_expression • TOK_NE relational_expression
-   57 and_expression: and_expression TOK_AMP equality_expression •
+   57 and_expression: and_expression TOK_AMP equality_expression •  [TOK_END, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_EQ  shift, and go to state 192
     TOK_NE  shift, and go to state 193
@@ -5092,7 +5092,7 @@ State 266
 State 267
 
    57 and_expression: and_expression • TOK_AMP equality_expression
-   59 exclusive_or_expression: exclusive_or_expression TOK_XOR and_expression •
+   59 exclusive_or_expression: exclusive_or_expression TOK_XOR and_expression •  [TOK_END, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_AMP  shift, and go to state 194
 
@@ -5102,7 +5102,7 @@ State 267
 State 268
 
    59 exclusive_or_expression: exclusive_or_expression • TOK_XOR and_expression
-   61 inclusive_or_expression: inclusive_or_expression TOK_BITOR exclusive_or_expression •
+   61 inclusive_or_expression: inclusive_or_expression TOK_BITOR exclusive_or_expression •  [TOK_END, TOK_AND, TOK_OR, TOK_BITOR, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_XOR  shift, and go to state 195
 
@@ -5112,7 +5112,7 @@ State 268
 State 269
 
    61 inclusive_or_expression: inclusive_or_expression • TOK_BITOR exclusive_or_expression
-   63 logical_and_expression: logical_and_expression TOK_AND inclusive_or_expression •
+   63 logical_and_expression: logical_and_expression TOK_AND inclusive_or_expression •  [TOK_END, TOK_AND, TOK_OR, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_BITOR  shift, and go to state 196
 
@@ -5122,7 +5122,7 @@ State 269
 State 270
 
    63 logical_and_expression: logical_and_expression • TOK_AND inclusive_or_expression
-   65 logical_or_expression: logical_or_expression TOK_OR logical_and_expression •
+   65 logical_or_expression: logical_or_expression TOK_OR logical_and_expression •  [TOK_END, TOK_OR, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_AND  shift, and go to state 197
 
@@ -5268,7 +5268,7 @@ State 283
 
 State 284
 
-  138 abstract_declarator: pointer direct_abstract_declarator •
+  138 abstract_declarator: pointer direct_abstract_declarator •  [TOK_RPAREN, TOK_COMMA]
   144 direct_abstract_declarator: direct_abstract_declarator • TOK_LBRACKET TOK_RBRACKET
   145                           | direct_abstract_declarator • TOK_LBRACKET assignment_expression TOK_RBRACKET
   148                           | direct_abstract_declarator • TOK_LPAREN TOK_RPAREN
@@ -5778,7 +5778,7 @@ State 300
 
    19 postfix_expression: TOK_LPAREN type_name TOK_RPAREN • TOK_BEGIN initializer_list TOK_END
    20                   | TOK_LPAREN type_name TOK_RPAREN • TOK_BEGIN initializer_list TOK_COMMA TOK_END
-   28 unary_expression: TOK_SIZEOF TOK_LPAREN type_name TOK_RPAREN •
+   28 unary_expression: TOK_SIZEOF TOK_LPAREN type_name TOK_RPAREN •  [TOK_END, TOK_PLUS, TOK_MINUS, TOK_MULT, TOK_DIV, TOK_MOD, TOK_ASSIGN, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_PLUSEQ, TOK_MINUSEQ, TOK_MULTEQ, TOK_DIVEQ, TOK_MODEQ, TOK_AMP, TOK_RPAREN, TOK_RBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_COLON]
 
     TOK_BEGIN  shift, and go to state 302
 
@@ -6033,7 +6033,7 @@ State 318
 
 State 319
 
-  162 statement: matched_statement •
+  162 statement: matched_statement •  [TOK_INT, TOK_SHORT, TOK_FLOAT, TOK_CHAR, TOK_VOID, TOK_BOOL, TOK_BOOLEAN, TOK_STRUCT, TOK_INT8_T, TOK_INT16_T, TOK_INT32_T, TOK_INT64_T, TOK_SIGNED, TOK_UNSIGNED, TOK_EXTERN, TOK_STATIC, TOK_IF, TOK_FOR, TOK_WHILE, TOK_REPEAT, TOK_UNTIL, TOK_SWITCH, TOK_CASE, TOK_DEFAULT, TOK_BREAK, TOK_CONTINUE, TOK_RETURN, TOK_SIZEOF, TOK_BEGIN, TOK_END, TOK_TRUE, TOK_FALSE, TOK_IDENTIFIER, TOK_INTEGER, TOK_FLOAT_LIT, TOK_CHAR_LIT, TOK_STRING_LIT, TOK_PLUS, TOK_MINUS, TOK_NOT, TOK_BITNOT, TOK_INC, TOK_DEC, TOK_AMP, TOK_STAR, TOK_LPAREN, TOK_SEMICOLON]
   180 matched_statement: TOK_IF TOK_LPAREN expression TOK_RPAREN matched_statement • TOK_ELSE matched_statement
   186 unmatched_statement: TOK_IF TOK_LPAREN expression TOK_RPAREN matched_statement • TOK_ELSE unmatched_statement
 
@@ -6359,7 +6359,7 @@ State 333
 
 State 334
 
-    1 primary_expression: TOK_IDENTIFIER •
+    1 primary_expression: TOK_IDENTIFIER •  [TOK_PLUS, TOK_MINUS, TOK_MULT, TOK_DIV, TOK_MOD, TOK_ASSIGN, TOK_EQ, TOK_NE, TOK_LT, TOK_LE, TOK_GT, TOK_GE, TOK_SPACESHIP, TOK_AND, TOK_OR, TOK_BITOR, TOK_XOR, TOK_LSHIFT, TOK_RSHIFT, TOK_INC, TOK_DEC, TOK_PLUSEQ, TOK_MINUSEQ, TOK_MULTEQ, TOK_DIVEQ, TOK_MODEQ, TOK_ARROW, TOK_AMP, TOK_LPAREN, TOK_LBRACKET, TOK_SEMICOLON, TOK_COMMA, TOK_DOT]
   176 matched_statement: TOK_IDENTIFIER • TOK_COLON matched_statement
 
     TOK_COLON  shift, and go to state 355

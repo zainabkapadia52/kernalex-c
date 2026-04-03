@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#include "tokens.h"
+#include "kernalex.tab.h"
 
 extern int fileno(FILE *stream);
 
