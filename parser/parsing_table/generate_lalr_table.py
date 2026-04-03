@@ -181,31 +181,27 @@ def write_goto_csv(prefix: Path, nonterminals, rows):
 
 def write_html(prefix: Path, terminals, nonterminals, rows, table_type='complete'):
     html_path = prefix.with_name(prefix.name + '_' + table_type).with_suffix('.html')
-    
-    # Generate action table HTML
-    action_html = '<table border="1" style="border-collapse:collapse"><tr><th>State</th>'
+
+    action_colspan = len(terminals)
+    goto_colspan = len(nonterminals)
+    table_html = '<table class="table"><tr><th rowspan="2">State</th>'
+    table_html += f'<th colspan="{action_colspan}">ACTION</th>'
+    table_html += f'<th colspan="{goto_colspan}">GOTO</th>'
+    table_html += '</tr><tr>'
     for terminal in terminals:
-        action_html += f'<th>{terminal}</th>'
-    action_html += '</tr>'
-    for row in rows:
-        action_html += f'<tr><td>{row["State"]}</td>'
-        for terminal in terminals:
-            action_html += f'<td>{row.get(terminal, "")}</td>'
-        action_html += '</tr>'
-    action_html += '</table>'
-    
-    # Generate goto table HTML
-    goto_html = '<table border="1" style="border-collapse:collapse"><tr><th>State</th>'
+        table_html += f'<th>{terminal}</th>'
     for nonterminal in nonterminals:
-        goto_html += f'<th>{nonterminal}</th>'
-    goto_html += '</tr>'
+        table_html += f'<th>{nonterminal}</th>'
+    table_html += '</tr>'
     for row in rows:
-        goto_html += f'<tr><td>{row["State"]}</td>'
+        table_html += f'<tr><td>{row["State"]}</td>'
+        for terminal in terminals:
+            table_html += f'<td>{row.get(terminal, "")}</td>'
         for nonterminal in nonterminals:
-            goto_html += f'<td>{row.get(nonterminal, "")}</td>'
-        goto_html += '</tr>'
-    goto_html += '</table>'
-    
+            table_html += f'<td>{row.get(nonterminal, "")}</td>'
+        table_html += '</tr>'
+    table_html += '</table>'
+
     html_content = f'''<!DOCTYPE html>
 <html>
 <head>
@@ -213,18 +209,15 @@ def write_html(prefix: Path, terminals, nonterminals, rows, table_type='complete
 <title>LALR(1) Parsing Table - {table_type}</title>
 <style>
 body {{ font-family: Arial, sans-serif; margin: 20px; }}
-h1, h2 {{ color: #333; }}
-table {{ border-collapse: collapse; margin: 20px 0; }}
-th, td {{ border: 1px solid #999; padding: 10px; text-align: center; }}
+h1 {{ color: #333; }}
+table.table {{ border-collapse: collapse; margin: 20px 0; width: 100%; }}
+th, td {{ border: 1px solid #999; padding: 8px 10px; text-align: center; }}
 th {{ background-color: #e0e0e0; font-weight: bold; }}
 </style>
 </head>
 <body>
 <h1>LALR(1) Parsing Table - {table_type.title()}</h1>
-<h2>Action Table</h2>
-{action_html}
-<h2>Goto Table</h2>
-{goto_html}
+{table_html}
 </body>
 </html>'''
     
