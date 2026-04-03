@@ -1,0 +1,4 @@
+[SYNTAX ERROR] Line 1, Col 13: syntax error, unexpected 'if' near 'if'
+      1 | int x = 5 + if 10; // Error: 'if' is unexpected in an expression
+        |             ^^
+  hint: Check the syntax around 'if'.

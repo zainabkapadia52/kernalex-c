@@ -1,1 +1,4 @@
-[SYNTAX ERROR] Line 3, Col 1: syntax error, unexpected TOK_END, expecting TOK_SEMICOLON near 'end'
+[SYNTAX ERROR] Line 3, Col 5: syntax error, unexpected 'int', expecting ';' near 'int'
+      3 |     int y = 10;
+        |     ^^^
+  hint: Did you forget a ';' before 'int'?

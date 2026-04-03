@@ -1,1 +1,4 @@
-[SYNTAX ERROR] Line 4, Col 5: syntax error, unexpected end of file
+[SYNTAX ERROR] Line 6, Col 1: syntax error, unexpected end of input, expecting 'end' near ''
+      6 | 
+        | ^
+  hint: A 'begin' block is not closed. Did you forget 'end'?

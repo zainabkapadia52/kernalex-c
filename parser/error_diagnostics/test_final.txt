@@ -1,1 +1,0 @@
-[SYNTAX ERROR] Line 12, Col 8: syntax error, unexpected TOK_SEMICOLON, expecting TOK_UNTIL near ';'

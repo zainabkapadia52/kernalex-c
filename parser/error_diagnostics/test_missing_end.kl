@@ -1,4 +1,6 @@
-int main() begin
-    if (true) begin
-        return 1;
+int foo() begin
+    int x = 1;
+    if (x > 0) begin
+        return x;
     end
+             /* outer 'end' missing */

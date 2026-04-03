@@ -1,3 +1,4 @@
-int main() begin
+int foo() begin
     int x = ;
+    return x;
 end

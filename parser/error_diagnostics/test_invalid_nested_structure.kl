@@ -1,0 +1,6 @@
+int foo() begin
+    if (;) begin
+        return 1;
+    end
+    return 0;
+end

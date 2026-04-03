@@ -1,1 +1,4 @@
-[SYNTAX ERROR] Line 1, Col 11: syntax error, unexpected TOK_BEGIN near 'begin'
+[SYNTAX ERROR] Line 2, Col 22: syntax error, unexpected ';', expecting ')' or ',' near ';'
+      2 |     int result = bar(1, 2;
+        |                      ^^^^
+  hint: Did you forget a closing ')'?

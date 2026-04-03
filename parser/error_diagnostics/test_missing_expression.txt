@@ -1,1 +1,4 @@
-[SYNTAX ERROR] Line 2, Col 13: syntax error, unexpected TOK_SEMICOLON near ';'
+[SYNTAX ERROR] Line 2, Col 13: syntax error, unexpected ';', expecting expression near ';'
+      2 |     int x = ;
+        |             ^
+  hint: An expression is expected here.

@@ -1,0 +1,4 @@
+int foo() begin
+    int int = 5;
+    return int;
+end

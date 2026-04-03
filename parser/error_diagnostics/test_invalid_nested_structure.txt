@@ -1,0 +1,4 @@
+[SYNTAX ERROR] Line 2, Col 9: syntax error, unexpected ';' near ';'
+      2 |     if (;) begin
+        |         ^
+  hint: Check the syntax around ';'.
