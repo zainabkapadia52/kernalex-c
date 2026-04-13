@@ -44,8 +44,11 @@ $(PARSER_TAB_C) $(PARSER_TAB_H) $(PARSER_OUTPUT): $(PARSER_DIR)/kernalex.y
 $(PARSER_LEX_SRC): $(PARSER_LEX_FILE) $(PARSER_TAB_H)
 	$(FLEX) -o $(PARSER_LEX_SRC) $(PARSER_LEX_FILE)
 
-$(PARSER): $(PARSER_TAB_C) $(PARSER_LEX_SRC)
-	$(CC) $(CFLAGS) -DYYDEBUG=1 -DPARSER_MODE -I$(PARSER_DIR) -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC)
+# $(PARSER): $(PARSER_TAB_C) $(PARSER_LEX_SRC)
+# 	$(CC) $(CFLAGS) -DYYDEBUG=1 -DPARSER_MODE -I$(PARSER_DIR) -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC)
+
+$(PARSER): $(PARSER_TAB_C) $(PARSER_LEX_SRC) $(PARSER_DIR)/ir.c $(PARSER_DIR)/ir.h
+	$(CC) $(CFLAGS) -DYYDEBUG=1 -DPARSER_MODE -I$(PARSER_DIR) -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC) $(PARSER_DIR)/ir.c
 
 $(PARSER_DIR)/parsing_table/lalr1_table_full.csv: $(PARSER_DIR)/kernalex.output $(PARSER_DIR)/parsing_table/generate_lalr_table.py
 	python3 $(PARSER_DIR)/parsing_table/generate_lalr_table.py $(PARSER_DIR)/kernalex.output $(PARSER_DIR)/parsing_table/lalr1_table_full
