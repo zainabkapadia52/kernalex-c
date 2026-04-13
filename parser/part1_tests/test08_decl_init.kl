@@ -1,0 +1,19 @@
+# TEST 8: Declaration With Initializer vs Standalone Assignment
+# Tests that BOTH forms generate IR:
+#   int x = 5;       <- declaration initializer (init_declarator rule)
+#   z = x + y;       <- standalone assignment
+#
+# Expected quads:
+#   1 | =  | 5  | -  | x      <- from: int x = 5  (declaration)
+#   2 | *  | 3  | 4  | t1     <- from: int y = 3^4 (declaration with expr)
+#   3 | =  | t1 | -  | y
+#   4 | +  | x  | y  | t2     <- from: standalone z = x + y
+#   5 | =  | t2 | -  | z
+# If row 1 is missing, the init_declarator fix did not work.
+
+int main() begin
+    int x = 5;
+    int y = 3 ^ 4;
+    int z;
+    z = x + y;
+end

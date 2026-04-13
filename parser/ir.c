@@ -185,23 +185,36 @@ void print_quads(FILE *fp)
 void print_quads_tabular(FILE *fp)
 {
     fprintf(fp, "\n=== Generated Intermediate Code (Quadruple Table) ===\n\n");
-    
+
     /* Print header */
-    fprintf(fp, "%-5s | %-12s | %-12s | %-12s | %-12s\n", 
-            "#", "op", "arg1", "arg2", "result");
-    fprintf(fp, "------+---------------+---------------+---------------+---------------\n");
-    
+    fprintf(fp, "%-22s | %-8s | %-12s | %-12s | %-12s\n",
+            "", "op", "arg1", "arg2", "result");
+    fprintf(fp, "-----------------------+----------+---------------+---------------+---------------\n");
+
     /* Print each quadruple */
     for (int i = 0; i < quad_count; i++) {
         Quadruple *q = &quads[i];
-        
-        const char *op = q->op ? q->op : "-";
-        const char *arg1 = q->arg1 ? q->arg1 : "-";
-        const char *arg2 = q->arg2 ? q->arg2 : "-";
-        const char *result = q->result ? q->result : "-";
-        
-        fprintf(fp, "%-5d | %-12s | %-12s | %-12s | %-12s\n",
-                i + 1, op, arg1, arg2, result);
+
+        const char *op     = q->op     ? q->op     : "-";
+        const char *arg1   = q->arg1   ? q->arg1   : "-";
+        const char *arg2   = q->arg2   ? q->arg2   : "-";
+        const char *result = q->result ? q->result  : "-";
+
+        /* Build human-readable description (leftmost column):
+           assignment:  a=t5
+           unary:       t1= minus c
+           binary:      t2=b*t1           */
+        char desc[64];
+        if (strcmp(op, "=") == 0) {
+            snprintf(desc, sizeof(desc), "%s=%s", result, arg1);
+        } else if (strcmp(arg2, "-") == 0) {
+            snprintf(desc, sizeof(desc), "%s= %s %s", result, op, arg1);
+        } else {
+            snprintf(desc, sizeof(desc), "%s=%s%s%s", result, arg1, op, arg2);
+        }
+
+        fprintf(fp, "%-22s | %-8s | %-12s | %-12s | %-12s\n",
+                desc, op, arg1, arg2, result);
     }
     fprintf(fp, "\n");
 }

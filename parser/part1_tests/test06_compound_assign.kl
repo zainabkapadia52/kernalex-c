@@ -1,0 +1,20 @@
+# TEST 6: Compound Assignment Operators
+# KernaLex uses ^= for multiply-assign (not *=)
+# Expected quads:
+#   1 | =   | 10 | -  | x
+#   2 | +=  | 5  | -  | x      <- x += 5
+#   3 | -=  | 3  | -  | x      <- x -= 3
+#   4 | *=  | 2  | -  | x      <- x ^= 2  (multiply-assign)
+#   5 | /=  | 4  | -  | x      <- x /= 4
+#   6 | %=  | 3  | -  | x      <- x %= 3
+# Key check: result column must be 'x', arg1 is the RHS value
+
+int main() begin
+    int x;
+    x = 10;
+    x += 5;
+    x -= 3;
+    x ^= 2;
+    x /= 4;
+    x %= 3;
+end

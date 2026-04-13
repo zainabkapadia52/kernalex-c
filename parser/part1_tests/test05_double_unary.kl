@@ -1,0 +1,22 @@
+# TEST 5: Double Unary Minus  --  -(-x)
+# y = - -x
+# Expected quads:
+#   1 | minus | x  | -  | t1     <- inner unary
+#   2 | minus | t1 | -  | t2     <- outer unary on t1 (NOT on x again!)
+#   3 | =     | t2 | -  | y
+#
+# Also: z = -(a + b)
+#   4 | +     | a  | b  | t3
+#   5 | minus | t3 | -  | t4
+#   6 | =     | t4 | -  | z
+# Common mistake: only one temp generated, or both minuses point to x
+
+int main() begin
+    int x;
+    int y;
+    int z;
+    int a;
+    int b;
+    y = - -x;
+    z = -(a + b);
+end

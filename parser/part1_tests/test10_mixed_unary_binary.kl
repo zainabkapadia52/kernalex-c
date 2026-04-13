@@ -1,0 +1,23 @@
+# TEST 10: Mixed Unary + Binary (Stress Test)
+# result = -a ^ -b + -(c + d)
+# (^ is multiply in KernaLex)
+#
+# Step-by-step expected:
+#   1 | minus | a  | -  | t1     <- -a
+#   2 | minus | b  | -  | t2     <- -b
+#   3 | *     | t1 | t2 | t3     <- t1 ^ t2  i.e. (-a)^(-b)
+#   4 | +     | c  | d  | t4     <- c + d
+#   5 | minus | t4 | -  | t5     <- -(c+d)
+#   6 | +     | t3 | t5 | t6     <- t3 + t5
+#   7 | =     | t6 | -  | result
+#
+# Hardest single-expression test. All 7 quads must appear in this exact order.
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    int d;
+    int result;
+    result = -a ^ -b + -(c + d);
+end

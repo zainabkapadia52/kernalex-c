@@ -1,0 +1,13 @@
+# TEST 4: Chained Assignment (Right-Associative)
+# a = b = c = 5  evaluates RIGHT to LEFT:
+#   1 | =  | 5  | -  | c      <- c = 5 first
+#   2 | =  | c  | -  | b      <- then b = c
+#   3 | =  | b  | -  | a      <- then a = b
+# If your parser is left-associative on assignment, order will be wrong.
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    a = b = c = 5;
+end

@@ -74,11 +74,11 @@ static int   find_prev_word_before_col(const char *line, int before_col,
 %token TOK_END 31
 %token TOK_TRUE 32
 %token TOK_FALSE 33
-%token TOK_IDENTIFIER 34
-%token TOK_INTEGER 35
-%token TOK_FLOAT_LIT 36
-%token TOK_CHAR_LIT 37
-%token TOK_STRING_LIT 38
+%token <temp> TOK_IDENTIFIER 34
+%token <temp> TOK_INTEGER 35
+%token <temp> TOK_FLOAT_LIT 36
+%token <temp> TOK_CHAR_LIT 37
+%token <temp> TOK_STRING_LIT 38
 %token TOK_PLUS 39
 %token TOK_MINUS 40
 %token TOK_MULT 41
@@ -154,30 +154,33 @@ static int   find_prev_word_before_col(const char *line, int before_col,
 %type <temp> constant_expression
 %type <temp> argument_expression_list
 %type <temp> initializer
+%type <temp> declarator
+%type <temp> direct_declarator
 
 
 %%
 
 primary_expression
-    : TOK_IDENTIFIER
-    | constant
-    | string
+    : TOK_IDENTIFIER { $$ = $1; }
+    | constant { $$ = $1; }
+    | string { $$ = $1; }
     | TOK_TRUE { $$ = (char *)malloc(5); strcpy($$, "true"); }
     | TOK_FALSE { $$ = (char *)malloc(6); strcpy($$, "false"); }
     | TOK_LPAREN expression TOK_RPAREN { $$ = $2; }
     ;
 
 constant
-    : TOK_INTEGER 
+    : TOK_INTEGER
     {
         int_consts++;
+        $$ = $1;
     }
-    | TOK_FLOAT_LIT
-    | TOK_CHAR_LIT
+    | TOK_FLOAT_LIT { $$ = $1; }
+    | TOK_CHAR_LIT  { $$ = $1; }
     ;
 
 string
-    : TOK_STRING_LIT
+    : TOK_STRING_LIT { $$ = $1; }
     ;
 
 
@@ -328,10 +331,6 @@ assignment_expression
     : conditional_expression { $$ = $1; }
     | unary_expression TOK_ASSIGN assignment_expression
     {
-        printf("[TOK_ASSIGN MATCHED] unary_expression done, now at assignment_expression\n");
-        fflush(stdout);
-        printf("[ASSIGN] $1='%s' (len=%zu) $3='%s'\n", 
-               $1 ? $1 : "NULL", $1 ? strlen($1) : 0, $3 ? $3 : "NULL");
         emit_quad("=", $3, NULL, $1);
         $$ = (char *)malloc(strlen($1) + 1);
         strcpy($$, $1);
@@ -405,6 +404,11 @@ init_declarator_list
 
 init_declarator
 	: declarator TOK_ASSIGN initializer
+	{
+	    if ($1 && $3) {
+	        emit_quad("=", $3, NULL, $1);
+	    }
+	}
 	| declarator
 	;
 
@@ -463,18 +467,18 @@ struct_declarator
 
 
 declarator
-	: pointer direct_declarator
-	| direct_declarator
+	: pointer direct_declarator { $$ = $2; }
+	| direct_declarator         { $$ = $1; }
 	;
 
 direct_declarator
-	: TOK_IDENTIFIER
-	| TOK_LPAREN declarator TOK_RPAREN
-	| direct_declarator TOK_LBRACKET TOK_RBRACKET
-	| direct_declarator TOK_LBRACKET assignment_expression TOK_RBRACKET
-	| direct_declarator TOK_LPAREN parameter_type_list TOK_RPAREN
-	| direct_declarator TOK_LPAREN TOK_RPAREN
-	| direct_declarator TOK_LPAREN identifier_list TOK_RPAREN
+	: TOK_IDENTIFIER                                                    { $$ = $1; }
+	| TOK_LPAREN declarator TOK_RPAREN                                  { $$ = $2; }
+	| direct_declarator TOK_LBRACKET TOK_RBRACKET                       { $$ = $1; }
+	| direct_declarator TOK_LBRACKET assignment_expression TOK_RBRACKET { $$ = $1; }
+	| direct_declarator TOK_LPAREN parameter_type_list TOK_RPAREN       { $$ = $1; }
+	| direct_declarator TOK_LPAREN TOK_RPAREN                           { $$ = $1; }
+	| direct_declarator TOK_LPAREN identifier_list TOK_RPAREN          { $$ = $1; }
 	;
 
 pointer
@@ -1507,11 +1511,29 @@ int main(int argc, char **argv)
     printf("#ifs_without_else = %d\n",     ifs_wo_else);
     printf("if-else max-depth = %d\n",     (max < 0) ? 0 : max);
 
-    /* Print generated intermediate code */
+    /* ── (a) Explicitly show: Input Source Program ─────────────────────── */
+    printf("\n=== Input Source Program ===\n\n");
+    rewind(yyin);
+    {
+        char src_line[MAX_LINE_LEN];
+        int  lineno = 1;
+        while (fgets(src_line, sizeof(src_line), yyin)) {
+            /* strip trailing newline for clean display */
+            size_t slen = strlen(src_line);
+            while (slen > 0 && (src_line[slen-1] == '\n' || src_line[slen-1] == '\r'))
+                src_line[--slen] = '\0';
+            printf("  %4d | %s\n", lineno++, src_line);
+        }
+    }
+    printf("\n");
+
+    /* ── (b) Explicitly show: Generated Intermediate Code ──────────────── */
     if (get_quad_count() > 0) {
         print_quads_tabular(stdout);
+    } else {
+        printf("\n(no intermediate code generated)\n\n");
     }
-    
+
     ir_cleanup();
 
     return 0;

@@ -1,0 +1,21 @@
+# TEST 2: Operator Precedence - ^ (multiply) binds tighter than +/-
+# z = a + b ^ c - d / e % f
+# Expected quads (^ and / and % before + and -):
+#   1 | *  | b | c  | t1      <- b^c first
+#   2 | /  | d | e  | t2      <- d/e
+#   3 | %  | t2| f  | t3      <- t2%f
+#   4 | +  | a | t1 | t4      <- a + t1
+#   5 | -  | t4| t3 | t5      <- t4 - t3
+#   6 | =  | t5| -  | z
+# Key check: t1 = b^c must appear BEFORE any addition
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+    int f;
+    int z;
+    z = a + b ^ c - d / e % f;
+end

@@ -1,0 +1,28 @@
+# TEST 9: Deep Nesting - Temp Chain Integrity
+# r = (a + b) ^ (c - d) + (e ^ f) / (g + h)
+# (^ is multiply in KernaLex)
+#
+# Expected quads (8 operations, strict left-to-right):
+#   1 | +  | a  | b  | t1
+#   2 | -  | c  | d  | t2
+#   3 | *  | t1 | t2 | t3     <- t1 ^ t2
+#   4 | *  | e  | f  | t4     <- e ^ f
+#   5 | +  | g  | h  | t5
+#   6 | /  | t4 | t5 | t6
+#   7 | +  | t3 | t6 | t7
+#   8 | =  | t7 | -  | r
+#
+# Key: t3 must use t1,t2 (not raw a,b,c,d). t6 must use t4,t5.
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+    int f;
+    int g;
+    int h;
+    int r;
+    r = (a + b) ^ (c - d) + (e ^ f) / (g + h);
+end

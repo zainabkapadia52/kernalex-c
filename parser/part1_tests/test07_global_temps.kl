@@ -1,0 +1,25 @@
+# TEST 7: Global Temp Counter Across Statements
+# Temps must be globally unique - never reset between statements
+# Expected quads:
+#   1 | *  | a | b  | t1      <- first expression uses t1
+#   2 | =  | t1| -  | x
+#   3 | +  | c | d  | t2      <- second expression uses t2 (NOT t1 again!)
+#   4 | =  | t2| -  | y
+#   5 | -  | e | f  | t3      <- third uses t3 (NOT t1 again!)
+#   6 | =  | t3| -  | z
+# If you see t1, t1, t1 the counter is being reset. WRONG.
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+    int f;
+    int x;
+    int y;
+    int z;
+    x = a ^ b;
+    y = c + d;
+    z = e - f;
+end
