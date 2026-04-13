@@ -1,0 +1,4 @@
+int main() begin
+    x = 5;
+    y = -x;
+end

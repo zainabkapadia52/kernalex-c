@@ -1,0 +1,3 @@
+int main() begin
+    a = b ^ -c + b ^ -c;
+end
