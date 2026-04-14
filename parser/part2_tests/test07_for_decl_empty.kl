@@ -1,0 +1,9 @@
+int main() begin
+    int x;
+    x = 0;
+    for (int i = 0; i < 10; i = i + 1) begin
+        x = x + i;
+    end
+    for (int j = 0; j < 5; j = j + 1) ;
+    return x;
+end

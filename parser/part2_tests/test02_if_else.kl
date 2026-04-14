@@ -1,0 +1,19 @@
+int main() begin
+    int a; int b; int r; int max;
+    a = 10; b = 20; r = 0;
+    if (a >= b) begin
+        max = a;
+    end else begin
+        max = b;
+    end
+    if (a < b) begin
+        r = 1;
+    end
+    if (a == b) begin
+        r = 0;
+    end
+    if (a != b) begin
+        r = 2;
+    end
+    return max;
+end

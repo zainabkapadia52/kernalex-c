@@ -1,0 +1,14 @@
+int main() begin
+    int a; int b; int c; int d; int e;
+    a = 5;
+    if (a > 3) begin
+        a = 10;
+    end
+    if (true) begin
+        a = b;
+    end
+    if (a + b ^ c > d - e) begin
+        a = 1;
+    end
+    return a;
+end

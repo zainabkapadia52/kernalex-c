@@ -1,0 +1,9 @@
+int main() begin
+    int x; int a; int b;
+    x = 1; a = 0; b = 1;
+    if (x) begin
+        a += 1;
+        b ^= 2;
+    end
+    return a;
+end

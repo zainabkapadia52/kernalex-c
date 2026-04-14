@@ -1,4 +1,5 @@
 %{
+#define _POSIX_C_SOURCE 200809L
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -156,6 +157,7 @@ static int   find_prev_word_before_col(const char *line, int before_col,
 %type <temp> initializer
 %type <temp> declarator
 %type <temp> direct_declarator
+%type <temp> expression_statement L_mark M_mark_stmt M_mark_expr if_head if_else_head M_for_body M_for_update M_for_post_expr M_for_post_empty
 
 
 %%
@@ -220,15 +222,6 @@ unary_expression
     | TOK_STAR cast_expression { $$ = $2; }
     ;
 
-unary_operator
-	: TOK_AMP
-	| TOK_STAR
-	| TOK_PLUS
-	| TOK_MINUS
-	| TOK_BITNOT
-	| TOK_NOT
-	;
-
 cast_expression
     : unary_expression { $$ = $1; }
     | TOK_LPAREN type_name TOK_RPAREN cast_expression { $$ = $4; }
@@ -285,17 +278,17 @@ shift_expression
 
 relational_expression
     : shift_expression { $$ = $1; }
-	| relational_expression TOK_LT shift_expression { $$ = $3; }
-	| relational_expression TOK_GT shift_expression { $$ = $3; }
-	| relational_expression TOK_LE shift_expression { $$ = $3; }
-	| relational_expression TOK_GE shift_expression { $$ = $3; }
+	| relational_expression TOK_LT shift_expression { char *t=new_temp(); emit_quad("<", $1, $3, t); $$ = strdup(t); }
+	| relational_expression TOK_GT shift_expression { char *t=new_temp(); emit_quad(">", $1, $3, t); $$ = strdup(t); }
+	| relational_expression TOK_LE shift_expression { char *t=new_temp(); emit_quad("<=", $1, $3, t); $$ = strdup(t); }
+	| relational_expression TOK_GE shift_expression { char *t=new_temp(); emit_quad(">=", $1, $3, t); $$ = strdup(t); }
 	| relational_expression TOK_SPACESHIP shift_expression { $$ = $3; }
     ;
 
 equality_expression
 	: relational_expression { $$ = $1; }
-	| equality_expression TOK_EQ relational_expression { $$ = $3; }
-	| equality_expression TOK_NE relational_expression { $$ = $3; }
+	| equality_expression TOK_EQ relational_expression { char *t=new_temp(); emit_quad("==", $1, $3, t); $$ = strdup(t); }
+	| equality_expression TOK_NE relational_expression { char *t=new_temp(); emit_quad("!=", $1, $3, t); $$ = strdup(t); }
 	;
 
 and_expression
@@ -365,15 +358,6 @@ assignment_expression
         $$ = (char *)malloc(strlen($1) + 1);
         strcpy($$, $1);
     }
-    ;
-
-assignment_operator
-    : TOK_ASSIGN
-    | TOK_MULTEQ
-    | TOK_DIVEQ
-    | TOK_MODEQ
-    | TOK_PLUSEQ
-    | TOK_MINUSEQ
     ;
 
 expression
@@ -582,9 +566,21 @@ block_item
 	;
 
 expression_statement
-	: TOK_SEMICOLON
-	| expression TOK_SEMICOLON
+	: TOK_SEMICOLON { $$ = NULL; }
+	| expression TOK_SEMICOLON { $$ = $1; }
 	;
+
+
+L_mark: /* empty */ { $$ = strdup(new_label()); emit_quad("label", NULL, NULL, $$); } ;
+M_mark_stmt: expression_statement { $$ = strdup(new_label()); emit_quad("ifFalse", $1, NULL, $$); } ;
+M_mark_expr: expression { $$ = strdup(new_label()); emit_quad("ifFalse", $1, NULL, $$); } ;
+if_head: TOK_IF TOK_LPAREN expression TOK_RPAREN { $$ = strdup(new_label()); emit_quad("ifFalse", $3, NULL, $$); } ;
+if_else_head: if_head matched_statement TOK_ELSE { $$ = strdup(new_label()); emit_quad("goto", NULL, NULL, $$); emit_quad("label", NULL, NULL, $1); } ;
+
+M_for_body: /* empty */ { $$ = strdup(new_label()); emit_quad("goto", NULL, NULL, $$); } ;
+M_for_update: /* empty */ { $$ = strdup(new_label()); emit_quad("label", NULL, NULL, $$); } ;
+M_for_post_empty: /* empty */ { emit_quad("goto", NULL, NULL, $<temp>-2); emit_quad("label", NULL, NULL, $<temp>-1); } ;
+M_for_post_expr: /* empty */ { emit_quad("goto", NULL, NULL, $<temp>-5); emit_quad("label", NULL, NULL, $<temp>-3); } ;
 
 matched_statement
 	: compound_statement
@@ -595,7 +591,7 @@ matched_statement
 	| TOK_CASE constant_expression TOK_COLON matched_statement
 	| TOK_DEFAULT TOK_COLON matched_statement
     | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN matched_statement
-	| TOK_IF TOK_LPAREN expression TOK_RPAREN matched_statement TOK_ELSE matched_statement {ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--;}
+	| if_else_head matched_statement { emit_quad("label", NULL, NULL, $1); ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--; }
     ;
 
 unmatched_statement
@@ -603,41 +599,36 @@ unmatched_statement
 	| TOK_CASE constant_expression TOK_COLON unmatched_statement
 	| TOK_DEFAULT TOK_COLON unmatched_statement
     | unmatched_iteration_statement
-	| TOK_IF TOK_LPAREN expression TOK_RPAREN statement {ifs_wo_else++;}
-	| TOK_IF TOK_LPAREN expression TOK_RPAREN matched_statement TOK_ELSE unmatched_statement {ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--;}
+	| if_head statement { emit_quad("label", NULL, NULL, $1); ifs_wo_else++; }
+	| if_else_head unmatched_statement { emit_quad("label", NULL, NULL, $1); ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--; }
     ;
 
 iteration_statement
-	: TOK_WHILE TOK_LPAREN expression TOK_RPAREN matched_statement
-	| TOK_REPEAT matched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement TOK_RPAREN matched_statement
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement expression TOK_RPAREN matched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement TOK_RPAREN matched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement expression TOK_RPAREN matched_statement
+	: TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN matched_statement { emit_quad("goto", NULL, NULL, $2); emit_quad("label", NULL, NULL, $4); }
+	| TOK_REPEAT L_mark matched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON { emit_quad("ifFalse", $6, NULL, $2); }
+	| TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN M_for_post_empty matched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+	| TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr matched_statement { emit_quad("goto", NULL, NULL, $7); emit_quad("label", NULL, NULL, $5); }
+	| TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN M_for_post_empty matched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+	| TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr matched_statement { emit_quad("goto", NULL, NULL, $7); emit_quad("label", NULL, NULL, $5); }
     ;
 
 unmatched_iteration_statement
-	: TOK_WHILE TOK_LPAREN expression TOK_RPAREN unmatched_statement
-	| TOK_REPEAT unmatched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement TOK_RPAREN unmatched_statement
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement expression TOK_RPAREN unmatched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement TOK_RPAREN unmatched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement expression TOK_RPAREN unmatched_statement
+	: TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN unmatched_statement { emit_quad("goto", NULL, NULL, $2); emit_quad("label", NULL, NULL, $4); }
+	| TOK_REPEAT L_mark unmatched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON { emit_quad("ifFalse", $6, NULL, $2); }
+	| TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN M_for_post_empty unmatched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+	| TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr unmatched_statement { emit_quad("goto", NULL, NULL, $7); emit_quad("label", NULL, NULL, $5); }
+	| TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN M_for_post_empty unmatched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+	| TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr unmatched_statement { emit_quad("goto", NULL, NULL, $7); emit_quad("label", NULL, NULL, $5); }
 	;
 
 jump_statement
 	: TOK_CONTINUE TOK_SEMICOLON
 	| TOK_BREAK TOK_SEMICOLON
-	| TOK_RETURN TOK_SEMICOLON
-	| TOK_RETURN expression TOK_SEMICOLON
-	;
+    | TOK_RETURN TOK_SEMICOLON { emit_quad("return", NULL, NULL, NULL); }
+    | TOK_RETURN expression TOK_SEMICOLON { emit_quad("return", $2, NULL, NULL); }
+    ;
 
 translation_unit
-	: external_declaration {global_declarations++;}
-	| translation_unit external_declaration {global_declarations++;}
-	;
-
-external_declaration
 	: function_definition {func_definitions++;}
 	| declaration
 	;
