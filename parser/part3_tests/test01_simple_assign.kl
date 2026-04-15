@@ -1,0 +1,5 @@
+int main() begin
+    int x;
+    x = 5;
+    return x;
+end

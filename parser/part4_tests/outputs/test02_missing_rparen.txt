@@ -1,0 +1,4 @@
+[SYNTAX ERROR] Line 4, Col 15: syntax error, unexpected 'begin' near 'begin'
+      4 |     if (x > 0 begin
+        |               ^^^^^
+  hint: Check the syntax around 'begin'.

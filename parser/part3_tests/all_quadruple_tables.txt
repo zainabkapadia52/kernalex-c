@@ -1,0 +1,296 @@
+\n=== parser/part3_tests/test01_simple_assign.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 5            |              | x           
+2     | return     | x            |              |             
+
+\n=== parser/part3_tests/test02_precedence.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 2            |              | a           
+2     | =          | 3            |              | b           
+3     | =          | 4            |              | c           
+4     | *          | b            | c            | t1          
+5     | +          | a            | t1           | t2          
+6     | =          | t2           |              | z           
+7     | return     | z            |              |             
+
+\n=== parser/part3_tests/test03_unary_chain.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 7            |              | x           
+2     | minus      | x            |              | t1          
+3     | minus      | t1           |              | t2          
+4     | =          | t2           |              | a           
+5     | return     | a            |              |             
+
+\n=== parser/part3_tests/test04_decl_init_expr.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 5            |              | x           
+2     | *          | 3            | 4            | t1          
+3     | =          | t1           |              | y           
+4     | +          | x            | y            | t2          
+5     | =          | t2           |              | z           
+6     | return     | z            |              |             
+
+\n=== parser/part3_tests/test05_if_basic.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 5            |              | a           
+2     | >          | a            | 3            | t1          
+3     | ifFalse    | t1           |              | L1          
+4     | =          | 10           |              | a           
+5     | label      |              |              | L1          
+6     | return     | a            |              |             
+
+\n=== parser/part3_tests/test06_if_else_basic.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 10           |              | a           
+2     | =          | 20           |              | b           
+3     | >=         | a            | b            | t1          
+4     | ifFalse    | t1           |              | L1          
+5     | =          | a            |              | m           
+6     | goto       |              |              | L2          
+7     | label      |              |              | L1          
+8     | =          | b            |              | m           
+9     | label      |              |              | L2          
+10    | return     | m            |              |             
+
+\n=== parser/part3_tests/test07_while_basic.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 0            |              | i           
+2     | label      |              |              | L1          
+3     | <          | i            | 4            | t1          
+4     | ifFalse    | t1           |              | L2          
+5     | +          | i            | 1            | t2          
+6     | =          | t2           |              | i           
+7     | goto       |              |              | L1          
+8     | label      |              |              | L2          
+9     | return     | i            |              |             
+
+\n=== parser/part3_tests/test08_for_basic.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 0            |              | sum         
+2     | =          | 0            |              | i           
+3     | label      |              |              | L1          
+4     | <          | i            | 4            | t1          
+5     | ifFalse    | t1           |              | L2          
+6     | goto       |              |              | L3          
+7     | label      |              |              | L4          
+8     | +          | i            | 1            | t2          
+9     | =          | t2           |              | i           
+10    | goto       |              |              | L1          
+11    | label      |              |              | L3          
+12    | +          | sum          | i            | t3          
+13    | =          | t3           |              | sum         
+14    | goto       |              |              | L4          
+15    | label      |              |              | L2          
+16    | return     | sum          |              |             
+
+\n=== parser/part3_tests/test09_repeat_until_basic.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 0            |              | a           
+2     | label      |              |              | L1          
+3     | +          | a            | 1            | t1          
+4     | =          | t1           |              | a           
+5     | >          | a            | 3            | t2          
+6     | ifFalse    | t2           |              | L1          
+7     | return     | a            |              |             
+
+\n=== parser/part3_tests/test10_mixed_control_expr.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 0            |              | i           
+2     | =          | 0            |              | total       
+3     | label      |              |              | L1          
+4     | <          | i            | 5            | t1          
+5     | ifFalse    | t1           |              | L2          
+6     | !=         | i            | 2            | t2          
+7     | ifFalse    | t2           |              | L3          
+8     | +          | total        | i            | t3          
+9     | =          | t3           |              | total       
+10    | label      |              |              | L3          
+11    | +          | i            | 1            | t4          
+12    | =          | t4           |              | i           
+13    | goto       |              |              | L1          
+14    | label      |              |              | L2          
+15    | return     | total        |              |             
+
+
+=== parser/part3_tests/test01_simple_assign.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 5            |              | x           
+2     | return     | x            |              |             
+
+
+=== parser/part3_tests/test02_precedence.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 2            |              | a           
+2     | =          | 3            |              | b           
+3     | =          | 4            |              | c           
+4     | *          | b            | c            | t1          
+5     | +          | a            | t1           | t2          
+6     | =          | t2           |              | z           
+7     | return     | z            |              |             
+
+
+=== parser/part3_tests/test03_unary_chain.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 7            |              | x           
+2     | minus      | x            |              | t1          
+3     | minus      | t1           |              | t2          
+4     | =          | t2           |              | a           
+5     | return     | a            |              |             
+
+
+=== parser/part3_tests/test04_decl_init_expr.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 5            |              | x           
+2     | *          | 3            | 4            | t1          
+3     | =          | t1           |              | y           
+4     | +          | x            | y            | t2          
+5     | =          | t2           |              | z           
+6     | return     | z            |              |             
+
+
+=== parser/part3_tests/test05_if_basic.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 5            |              | a           
+2     | >          | a            | 3            | t1          
+3     | ifFalse    | t1           |              | L1          
+4     | =          | 10           |              | a           
+5     | label      |              |              | L1          
+6     | return     | a            |              |             
+
+
+=== parser/part3_tests/test06_if_else_basic.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 10           |              | a           
+2     | =          | 20           |              | b           
+3     | >=         | a            | b            | t1          
+4     | ifFalse    | t1           |              | L1          
+5     | =          | a            |              | m           
+6     | goto       |              |              | L2          
+7     | label      |              |              | L1          
+8     | =          | b            |              | m           
+9     | label      |              |              | L2          
+10    | return     | m            |              |             
+
+
+=== parser/part3_tests/test07_while_basic.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 0            |              | i           
+2     | label      |              |              | L1          
+3     | <          | i            | 4            | t1          
+4     | ifFalse    | t1           |              | L2          
+5     | +          | i            | 1            | t2          
+6     | =          | t2           |              | i           
+7     | goto       |              |              | L1          
+8     | label      |              |              | L2          
+9     | return     | i            |              |             
+
+
+=== parser/part3_tests/test08_for_basic.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 0            |              | sum         
+2     | =          | 0            |              | i           
+3     | label      |              |              | L1          
+4     | <          | i            | 4            | t1          
+5     | ifFalse    | t1           |              | L2          
+6     | goto       |              |              | L3          
+7     | label      |              |              | L4          
+8     | +          | i            | 1            | t2          
+9     | =          | t2           |              | i           
+10    | goto       |              |              | L1          
+11    | label      |              |              | L3          
+12    | +          | sum          | i            | t3          
+13    | =          | t3           |              | sum         
+14    | goto       |              |              | L4          
+15    | label      |              |              | L2          
+16    | return     | sum          |              |             
+
+
+=== parser/part3_tests/test09_repeat_until_basic.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 0            |              | a           
+2     | label      |              |              | L1          
+3     | +          | a            | 1            | t1          
+4     | =          | t1           |              | a           
+5     | >          | a            | 3            | t2          
+6     | ifFalse    | t2           |              | L1          
+7     | return     | a            |              |             
+
+
+=== parser/part3_tests/test10_mixed_control_expr.kl ===
+=== Generated Intermediate Code (Quadruple Table) ===
+
+row   | op         | arg1         | arg2         | result      
+------+------------+--------------+--------------+--------------
+1     | =          | 0            |              | i           
+2     | =          | 0            |              | total       
+3     | label      |              |              | L1          
+4     | <          | i            | 5            | t1          
+5     | ifFalse    | t1           |              | L2          
+6     | !=         | i            | 2            | t2          
+7     | ifFalse    | t2           |              | L3          
+8     | +          | total        | i            | t3          
+9     | =          | t3           |              | total       
+10    | label      |              |              | L3          
+11    | +          | i            | 1            | t4          
+12    | =          | t4           |              | i           
+13    | goto       |              |              | L1          
+14    | label      |              |              | L2          
+15    | return     | total        |              |             
+

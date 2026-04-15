@@ -110,8 +110,9 @@ static int   is_control_paren_context(const char *line, int paren_col);
 static int   find_prev_word_before_col(const char *line, int before_col,
 									   char *out, size_t out_sz,
 									   int *start_col, int *word_len);
+static void  codegen_unsupported(const char *construct);
 
-#line 115 "parser/kernalex.tab.c"
+#line 116 "parser/kernalex.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -652,28 +653,28 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   166,   166,   167,   168,   169,   170,   171,   175,   180,
-     181,   185,   190,   191,   192,   193,   194,   195,   196,   197,
-     198,   199,   203,   204,   208,   209,   210,   211,   218,   219,
-     220,   221,   222,   226,   227,   231,   232,   239,   246,   256,
-     257,   264,   274,   275,   276,   280,   281,   282,   283,   284,
-     285,   289,   290,   291,   295,   296,   300,   301,   305,   306,
-     310,   311,   315,   316,   320,   324,   325,   331,   337,   343,
-     349,   355,   364,   365,   369,   373,   374,   378,   379,   380,
-     381,   385,   386,   390,   396,   400,   401,   405,   406,   407,
-     408,   409,   410,   411,   412,   413,   414,   415,   416,   417,
-     418,   422,   423,   427,   428,   432,   433,   437,   438,   442,
-     443,   447,   448,   449,   454,   455,   459,   460,   461,   462,
-     463,   464,   465,   469,   470,   476,   480,   481,   485,   486,
-     487,   491,   492,   496,   497,   501,   502,   503,   507,   508,
-     509,   510,   511,   512,   513,   514,   515,   519,   520,   521,
-     528,   529,   530,   531,   535,   539,   540,   544,   545,   549,
-     550,   554,   555,   559,   560,   564,   565,   569,   570,   574,
-     575,   576,   577,   578,   580,   581,   582,   583,   586,   587,
-     588,   589,   590,   591,   592,   593,   594,   598,   599,   600,
-     601,   602,   603,   607,   608,   609,   610,   611,   612,   616,
-     617,   618,   619,   620,   621,   625,   626,   627,   628,   632,
-     633,   637,   638,   642,   643
+       0,   167,   167,   168,   169,   170,   171,   172,   176,   181,
+     182,   186,   191,   192,   193,   194,   195,   196,   197,   198,
+     199,   200,   204,   205,   209,   210,   211,   212,   219,   220,
+     221,   222,   223,   227,   228,   232,   233,   240,   247,   257,
+     258,   265,   275,   276,   277,   281,   282,   283,   284,   285,
+     286,   290,   291,   292,   296,   297,   301,   302,   306,   307,
+     311,   312,   316,   317,   321,   325,   326,   332,   338,   344,
+     350,   356,   365,   366,   370,   374,   375,   379,   380,   381,
+     382,   386,   387,   391,   397,   401,   402,   406,   407,   408,
+     409,   410,   411,   412,   413,   414,   415,   416,   417,   418,
+     419,   423,   424,   428,   429,   433,   434,   438,   439,   443,
+     444,   448,   449,   450,   455,   456,   460,   461,   462,   463,
+     464,   465,   466,   470,   471,   477,   481,   482,   486,   487,
+     488,   492,   493,   497,   498,   502,   503,   504,   508,   509,
+     510,   511,   512,   513,   514,   515,   516,   520,   521,   522,
+     529,   530,   531,   532,   536,   540,   541,   545,   546,   550,
+     551,   555,   556,   560,   561,   565,   566,   570,   571,   575,
+     576,   577,   578,   579,   581,   582,   583,   584,   587,   588,
+     589,   590,   591,   592,   593,   594,   595,   599,   600,   601,
+     602,   603,   604,   608,   609,   610,   611,   612,   613,   617,
+     618,   619,   620,   621,   622,   626,   627,   628,   629,   633,
+     634,   638,   639,   643,   644
 };
 #endif
 
@@ -2221,772 +2222,814 @@ yyreduce:
     switch (yyn)
       {
   case 2: /* primary_expression: TOK_IDENTIFIER  */
-#line 166 "parser/kernalex.y"
+#line 167 "parser/kernalex.y"
                      { (yyval.temp) = (yyvsp[0].temp); }
-#line 2227 "parser/kernalex.tab.c"
+#line 2228 "parser/kernalex.tab.c"
     break;
 
   case 3: /* primary_expression: constant  */
-#line 167 "parser/kernalex.y"
+#line 168 "parser/kernalex.y"
                { (yyval.temp) = (yyvsp[0].temp); }
-#line 2233 "parser/kernalex.tab.c"
+#line 2234 "parser/kernalex.tab.c"
     break;
 
   case 4: /* primary_expression: string  */
-#line 168 "parser/kernalex.y"
+#line 169 "parser/kernalex.y"
              { (yyval.temp) = (yyvsp[0].temp); }
-#line 2239 "parser/kernalex.tab.c"
+#line 2240 "parser/kernalex.tab.c"
     break;
 
   case 5: /* primary_expression: TOK_TRUE  */
-#line 169 "parser/kernalex.y"
+#line 170 "parser/kernalex.y"
                { (yyval.temp) = (char *)malloc(5); strcpy((yyval.temp), "true"); }
-#line 2245 "parser/kernalex.tab.c"
+#line 2246 "parser/kernalex.tab.c"
     break;
 
   case 6: /* primary_expression: TOK_FALSE  */
-#line 170 "parser/kernalex.y"
+#line 171 "parser/kernalex.y"
                 { (yyval.temp) = (char *)malloc(6); strcpy((yyval.temp), "false"); }
-#line 2251 "parser/kernalex.tab.c"
+#line 2252 "parser/kernalex.tab.c"
     break;
 
   case 7: /* primary_expression: TOK_LPAREN expression TOK_RPAREN  */
-#line 171 "parser/kernalex.y"
+#line 172 "parser/kernalex.y"
                                        { (yyval.temp) = (yyvsp[-1].temp); }
-#line 2257 "parser/kernalex.tab.c"
+#line 2258 "parser/kernalex.tab.c"
     break;
 
   case 8: /* constant: TOK_INTEGER  */
-#line 176 "parser/kernalex.y"
+#line 177 "parser/kernalex.y"
     {
         int_consts++;
         (yyval.temp) = (yyvsp[0].temp);
     }
-#line 2266 "parser/kernalex.tab.c"
+#line 2267 "parser/kernalex.tab.c"
     break;
 
   case 9: /* constant: TOK_FLOAT_LIT  */
-#line 180 "parser/kernalex.y"
+#line 181 "parser/kernalex.y"
                     { (yyval.temp) = (yyvsp[0].temp); }
-#line 2272 "parser/kernalex.tab.c"
+#line 2273 "parser/kernalex.tab.c"
     break;
 
   case 10: /* constant: TOK_CHAR_LIT  */
-#line 181 "parser/kernalex.y"
+#line 182 "parser/kernalex.y"
                     { (yyval.temp) = (yyvsp[0].temp); }
-#line 2278 "parser/kernalex.tab.c"
+#line 2279 "parser/kernalex.tab.c"
     break;
 
   case 11: /* string: TOK_STRING_LIT  */
-#line 185 "parser/kernalex.y"
+#line 186 "parser/kernalex.y"
                      { (yyval.temp) = (yyvsp[0].temp); }
-#line 2284 "parser/kernalex.tab.c"
+#line 2285 "parser/kernalex.tab.c"
     break;
 
   case 12: /* postfix_expression: primary_expression  */
-#line 190 "parser/kernalex.y"
+#line 191 "parser/kernalex.y"
                          { (yyval.temp) = (yyvsp[0].temp); }
-#line 2290 "parser/kernalex.tab.c"
+#line 2291 "parser/kernalex.tab.c"
     break;
 
   case 13: /* postfix_expression: postfix_expression TOK_LBRACKET expression TOK_RBRACKET  */
-#line 191 "parser/kernalex.y"
+#line 192 "parser/kernalex.y"
                                                               { (yyval.temp) = (yyvsp[-3].temp); }
-#line 2296 "parser/kernalex.tab.c"
+#line 2297 "parser/kernalex.tab.c"
     break;
 
   case 14: /* postfix_expression: postfix_expression TOK_LPAREN TOK_RPAREN  */
-#line 192 "parser/kernalex.y"
+#line 193 "parser/kernalex.y"
                                                { (yyval.temp) = (yyvsp[-2].temp); }
-#line 2302 "parser/kernalex.tab.c"
+#line 2303 "parser/kernalex.tab.c"
     break;
 
   case 15: /* postfix_expression: postfix_expression TOK_LPAREN argument_expression_list TOK_RPAREN  */
-#line 193 "parser/kernalex.y"
+#line 194 "parser/kernalex.y"
                                                                         { (yyval.temp) = (yyvsp[-3].temp); }
-#line 2308 "parser/kernalex.tab.c"
+#line 2309 "parser/kernalex.tab.c"
     break;
 
   case 16: /* postfix_expression: postfix_expression TOK_DOT TOK_IDENTIFIER  */
-#line 194 "parser/kernalex.y"
+#line 195 "parser/kernalex.y"
                                                 { (yyval.temp) = (yyvsp[-2].temp); }
-#line 2314 "parser/kernalex.tab.c"
+#line 2315 "parser/kernalex.tab.c"
     break;
 
   case 17: /* postfix_expression: postfix_expression TOK_ARROW TOK_IDENTIFIER  */
-#line 195 "parser/kernalex.y"
+#line 196 "parser/kernalex.y"
                                                   { (yyval.temp) = (yyvsp[-2].temp); }
-#line 2320 "parser/kernalex.tab.c"
+#line 2321 "parser/kernalex.tab.c"
     break;
 
   case 18: /* postfix_expression: postfix_expression TOK_INC  */
-#line 196 "parser/kernalex.y"
-                                 { (yyval.temp) = (yyvsp[-1].temp); }
-#line 2326 "parser/kernalex.tab.c"
+#line 197 "parser/kernalex.y"
+                                     { codegen_unsupported("postfix increment (x++)"); (yyval.temp) = (yyvsp[-1].temp); }
+#line 2327 "parser/kernalex.tab.c"
     break;
 
   case 19: /* postfix_expression: postfix_expression TOK_DEC  */
-#line 197 "parser/kernalex.y"
-                                 { (yyval.temp) = (yyvsp[-1].temp); }
-#line 2332 "parser/kernalex.tab.c"
+#line 198 "parser/kernalex.y"
+                                     { codegen_unsupported("postfix decrement (x--)"); (yyval.temp) = (yyvsp[-1].temp); }
+#line 2333 "parser/kernalex.tab.c"
     break;
 
   case 20: /* postfix_expression: TOK_LPAREN type_name TOK_RPAREN TOK_BEGIN initializer_list TOK_END  */
-#line 198 "parser/kernalex.y"
+#line 199 "parser/kernalex.y"
                                                                          { (yyval.temp) = (char *)malloc(20); strcpy((yyval.temp), "init_result"); }
-#line 2338 "parser/kernalex.tab.c"
+#line 2339 "parser/kernalex.tab.c"
     break;
 
   case 21: /* postfix_expression: TOK_LPAREN type_name TOK_RPAREN TOK_BEGIN initializer_list TOK_COMMA TOK_END  */
-#line 199 "parser/kernalex.y"
+#line 200 "parser/kernalex.y"
                                                                                    { (yyval.temp) = (char *)malloc(20); strcpy((yyval.temp), "init_result"); }
-#line 2344 "parser/kernalex.tab.c"
+#line 2345 "parser/kernalex.tab.c"
     break;
 
   case 22: /* argument_expression_list: assignment_expression  */
-#line 203 "parser/kernalex.y"
+#line 204 "parser/kernalex.y"
                             { (yyval.temp) = (yyvsp[0].temp); }
-#line 2350 "parser/kernalex.tab.c"
+#line 2351 "parser/kernalex.tab.c"
     break;
 
   case 23: /* argument_expression_list: argument_expression_list TOK_COMMA assignment_expression  */
-#line 204 "parser/kernalex.y"
+#line 205 "parser/kernalex.y"
                                                                { (yyval.temp) = (yyvsp[0].temp); }
-#line 2356 "parser/kernalex.tab.c"
+#line 2357 "parser/kernalex.tab.c"
     break;
 
   case 24: /* unary_expression: postfix_expression  */
-#line 208 "parser/kernalex.y"
+#line 209 "parser/kernalex.y"
                          { (yyval.temp) = (yyvsp[0].temp); }
-#line 2362 "parser/kernalex.tab.c"
+#line 2363 "parser/kernalex.tab.c"
     break;
 
   case 25: /* unary_expression: TOK_INC unary_expression  */
-#line 209 "parser/kernalex.y"
-                               { (yyval.temp) = (yyvsp[0].temp); }
-#line 2368 "parser/kernalex.tab.c"
+#line 210 "parser/kernalex.y"
+                                   { codegen_unsupported("prefix increment (++x)"); (yyval.temp) = (yyvsp[0].temp); }
+#line 2369 "parser/kernalex.tab.c"
     break;
 
   case 26: /* unary_expression: TOK_DEC unary_expression  */
-#line 210 "parser/kernalex.y"
-                               { (yyval.temp) = (yyvsp[0].temp); }
-#line 2374 "parser/kernalex.tab.c"
+#line 211 "parser/kernalex.y"
+                                   { codegen_unsupported("prefix decrement (--x)"); (yyval.temp) = (yyvsp[0].temp); }
+#line 2375 "parser/kernalex.tab.c"
     break;
 
   case 27: /* unary_expression: TOK_MINUS cast_expression  */
-#line 212 "parser/kernalex.y"
+#line 213 "parser/kernalex.y"
     {
         char *temp = new_temp();
         emit_quad("minus", (yyvsp[0].temp), NULL, temp);
         (yyval.temp) = (char *)malloc(strlen(temp) + 1);
         strcpy((yyval.temp), temp);
     }
-#line 2385 "parser/kernalex.tab.c"
+#line 2386 "parser/kernalex.tab.c"
     break;
 
   case 28: /* unary_expression: TOK_PLUS cast_expression  */
-#line 218 "parser/kernalex.y"
+#line 219 "parser/kernalex.y"
                                { (yyval.temp) = (yyvsp[0].temp); }
-#line 2391 "parser/kernalex.tab.c"
+#line 2392 "parser/kernalex.tab.c"
     break;
 
   case 29: /* unary_expression: TOK_NOT cast_expression  */
-#line 219 "parser/kernalex.y"
+#line 220 "parser/kernalex.y"
                               { (yyval.temp) = (yyvsp[0].temp); }
-#line 2397 "parser/kernalex.tab.c"
+#line 2398 "parser/kernalex.tab.c"
     break;
 
   case 30: /* unary_expression: TOK_BITNOT cast_expression  */
-#line 220 "parser/kernalex.y"
+#line 221 "parser/kernalex.y"
                                  { (yyval.temp) = (yyvsp[0].temp); }
-#line 2403 "parser/kernalex.tab.c"
+#line 2404 "parser/kernalex.tab.c"
     break;
 
   case 31: /* unary_expression: TOK_AMP cast_expression  */
-#line 221 "parser/kernalex.y"
+#line 222 "parser/kernalex.y"
                               { (yyval.temp) = (yyvsp[0].temp); }
-#line 2409 "parser/kernalex.tab.c"
+#line 2410 "parser/kernalex.tab.c"
     break;
 
   case 32: /* unary_expression: TOK_STAR cast_expression  */
-#line 222 "parser/kernalex.y"
+#line 223 "parser/kernalex.y"
                                { (yyval.temp) = (yyvsp[0].temp); }
-#line 2415 "parser/kernalex.tab.c"
+#line 2416 "parser/kernalex.tab.c"
     break;
 
   case 33: /* cast_expression: unary_expression  */
-#line 226 "parser/kernalex.y"
+#line 227 "parser/kernalex.y"
                        { (yyval.temp) = (yyvsp[0].temp); }
-#line 2421 "parser/kernalex.tab.c"
+#line 2422 "parser/kernalex.tab.c"
     break;
 
   case 34: /* cast_expression: TOK_LPAREN type_name TOK_RPAREN cast_expression  */
-#line 227 "parser/kernalex.y"
+#line 228 "parser/kernalex.y"
                                                       { (yyval.temp) = (yyvsp[0].temp); }
-#line 2427 "parser/kernalex.tab.c"
+#line 2428 "parser/kernalex.tab.c"
     break;
 
   case 35: /* multiplicative_expression: cast_expression  */
-#line 231 "parser/kernalex.y"
+#line 232 "parser/kernalex.y"
                       { (yyval.temp) = (yyvsp[0].temp); }
-#line 2433 "parser/kernalex.tab.c"
+#line 2434 "parser/kernalex.tab.c"
     break;
 
   case 36: /* multiplicative_expression: multiplicative_expression TOK_MULT cast_expression  */
-#line 233 "parser/kernalex.y"
+#line 234 "parser/kernalex.y"
     {
         char *temp = new_temp();
         emit_quad("*", (yyvsp[-2].temp), (yyvsp[0].temp), temp);
         (yyval.temp) = (char *)malloc(strlen(temp) + 1);
         strcpy((yyval.temp), temp);
     }
-#line 2444 "parser/kernalex.tab.c"
+#line 2445 "parser/kernalex.tab.c"
     break;
 
   case 37: /* multiplicative_expression: multiplicative_expression TOK_DIV cast_expression  */
-#line 240 "parser/kernalex.y"
+#line 241 "parser/kernalex.y"
     {
         char *temp = new_temp();
         emit_quad("/", (yyvsp[-2].temp), (yyvsp[0].temp), temp);
         (yyval.temp) = (char *)malloc(strlen(temp) + 1);
         strcpy((yyval.temp), temp);
     }
-#line 2455 "parser/kernalex.tab.c"
+#line 2456 "parser/kernalex.tab.c"
     break;
 
   case 38: /* multiplicative_expression: multiplicative_expression TOK_MOD cast_expression  */
-#line 247 "parser/kernalex.y"
+#line 248 "parser/kernalex.y"
     {
         char *temp = new_temp();
         emit_quad("%", (yyvsp[-2].temp), (yyvsp[0].temp), temp);
         (yyval.temp) = (char *)malloc(strlen(temp) + 1);
         strcpy((yyval.temp), temp);
     }
-#line 2466 "parser/kernalex.tab.c"
+#line 2467 "parser/kernalex.tab.c"
     break;
 
   case 39: /* additive_expression: multiplicative_expression  */
-#line 256 "parser/kernalex.y"
+#line 257 "parser/kernalex.y"
                                 { (yyval.temp) = (yyvsp[0].temp); }
-#line 2472 "parser/kernalex.tab.c"
+#line 2473 "parser/kernalex.tab.c"
     break;
 
   case 40: /* additive_expression: additive_expression TOK_PLUS multiplicative_expression  */
-#line 258 "parser/kernalex.y"
+#line 259 "parser/kernalex.y"
     {
         char *temp = new_temp();
         emit_quad("+", (yyvsp[-2].temp), (yyvsp[0].temp), temp);
         (yyval.temp) = (char *)malloc(strlen(temp) + 1);
         strcpy((yyval.temp), temp);
     }
-#line 2483 "parser/kernalex.tab.c"
+#line 2484 "parser/kernalex.tab.c"
     break;
 
   case 41: /* additive_expression: additive_expression TOK_MINUS multiplicative_expression  */
-#line 265 "parser/kernalex.y"
+#line 266 "parser/kernalex.y"
     {
         char *temp = new_temp();
         emit_quad("-", (yyvsp[-2].temp), (yyvsp[0].temp), temp);
         (yyval.temp) = (char *)malloc(strlen(temp) + 1);
         strcpy((yyval.temp), temp);
     }
-#line 2494 "parser/kernalex.tab.c"
+#line 2495 "parser/kernalex.tab.c"
     break;
 
   case 42: /* shift_expression: additive_expression  */
-#line 274 "parser/kernalex.y"
+#line 275 "parser/kernalex.y"
                               { (yyval.temp) = (yyvsp[0].temp); }
-#line 2500 "parser/kernalex.tab.c"
+#line 2501 "parser/kernalex.tab.c"
     break;
 
   case 43: /* shift_expression: shift_expression TOK_LSHIFT additive_expression  */
-#line 275 "parser/kernalex.y"
+#line 276 "parser/kernalex.y"
                                                           { (yyval.temp) = (yyvsp[0].temp); }
-#line 2506 "parser/kernalex.tab.c"
+#line 2507 "parser/kernalex.tab.c"
     break;
 
   case 44: /* shift_expression: shift_expression TOK_RSHIFT additive_expression  */
-#line 276 "parser/kernalex.y"
+#line 277 "parser/kernalex.y"
                                                           { (yyval.temp) = (yyvsp[0].temp); }
-#line 2512 "parser/kernalex.tab.c"
+#line 2513 "parser/kernalex.tab.c"
     break;
 
   case 45: /* relational_expression: shift_expression  */
-#line 280 "parser/kernalex.y"
+#line 281 "parser/kernalex.y"
                        { (yyval.temp) = (yyvsp[0].temp); }
-#line 2518 "parser/kernalex.tab.c"
+#line 2519 "parser/kernalex.tab.c"
     break;
 
   case 46: /* relational_expression: relational_expression TOK_LT shift_expression  */
-#line 281 "parser/kernalex.y"
+#line 282 "parser/kernalex.y"
                                                         { char *t=new_temp(); emit_quad("<", (yyvsp[-2].temp), (yyvsp[0].temp), t); (yyval.temp) = strdup(t); }
-#line 2524 "parser/kernalex.tab.c"
+#line 2525 "parser/kernalex.tab.c"
     break;
 
   case 47: /* relational_expression: relational_expression TOK_GT shift_expression  */
-#line 282 "parser/kernalex.y"
+#line 283 "parser/kernalex.y"
                                                         { char *t=new_temp(); emit_quad(">", (yyvsp[-2].temp), (yyvsp[0].temp), t); (yyval.temp) = strdup(t); }
-#line 2530 "parser/kernalex.tab.c"
+#line 2531 "parser/kernalex.tab.c"
     break;
 
   case 48: /* relational_expression: relational_expression TOK_LE shift_expression  */
-#line 283 "parser/kernalex.y"
+#line 284 "parser/kernalex.y"
                                                         { char *t=new_temp(); emit_quad("<=", (yyvsp[-2].temp), (yyvsp[0].temp), t); (yyval.temp) = strdup(t); }
-#line 2536 "parser/kernalex.tab.c"
+#line 2537 "parser/kernalex.tab.c"
     break;
 
   case 49: /* relational_expression: relational_expression TOK_GE shift_expression  */
-#line 284 "parser/kernalex.y"
+#line 285 "parser/kernalex.y"
                                                         { char *t=new_temp(); emit_quad(">=", (yyvsp[-2].temp), (yyvsp[0].temp), t); (yyval.temp) = strdup(t); }
-#line 2542 "parser/kernalex.tab.c"
+#line 2543 "parser/kernalex.tab.c"
     break;
 
   case 50: /* relational_expression: relational_expression TOK_SPACESHIP shift_expression  */
-#line 285 "parser/kernalex.y"
+#line 286 "parser/kernalex.y"
                                                                { (yyval.temp) = (yyvsp[0].temp); }
-#line 2548 "parser/kernalex.tab.c"
+#line 2549 "parser/kernalex.tab.c"
     break;
 
   case 51: /* equality_expression: relational_expression  */
-#line 289 "parser/kernalex.y"
+#line 290 "parser/kernalex.y"
                                 { (yyval.temp) = (yyvsp[0].temp); }
-#line 2554 "parser/kernalex.tab.c"
+#line 2555 "parser/kernalex.tab.c"
     break;
 
   case 52: /* equality_expression: equality_expression TOK_EQ relational_expression  */
-#line 290 "parser/kernalex.y"
+#line 291 "parser/kernalex.y"
                                                            { char *t=new_temp(); emit_quad("==", (yyvsp[-2].temp), (yyvsp[0].temp), t); (yyval.temp) = strdup(t); }
-#line 2560 "parser/kernalex.tab.c"
+#line 2561 "parser/kernalex.tab.c"
     break;
 
   case 53: /* equality_expression: equality_expression TOK_NE relational_expression  */
-#line 291 "parser/kernalex.y"
+#line 292 "parser/kernalex.y"
                                                            { char *t=new_temp(); emit_quad("!=", (yyvsp[-2].temp), (yyvsp[0].temp), t); (yyval.temp) = strdup(t); }
-#line 2566 "parser/kernalex.tab.c"
+#line 2567 "parser/kernalex.tab.c"
     break;
 
   case 54: /* and_expression: equality_expression  */
-#line 295 "parser/kernalex.y"
+#line 296 "parser/kernalex.y"
                               { (yyval.temp) = (yyvsp[0].temp); }
-#line 2572 "parser/kernalex.tab.c"
+#line 2573 "parser/kernalex.tab.c"
     break;
 
   case 55: /* and_expression: and_expression TOK_AMP equality_expression  */
-#line 296 "parser/kernalex.y"
+#line 297 "parser/kernalex.y"
                                                      { (yyval.temp) = (yyvsp[0].temp); }
-#line 2578 "parser/kernalex.tab.c"
+#line 2579 "parser/kernalex.tab.c"
     break;
 
   case 56: /* exclusive_or_expression: and_expression  */
-#line 300 "parser/kernalex.y"
+#line 301 "parser/kernalex.y"
                      { (yyval.temp) = (yyvsp[0].temp); }
-#line 2584 "parser/kernalex.tab.c"
+#line 2585 "parser/kernalex.tab.c"
     break;
 
   case 57: /* exclusive_or_expression: exclusive_or_expression TOK_XOR and_expression  */
-#line 301 "parser/kernalex.y"
+#line 302 "parser/kernalex.y"
                                                          { (yyval.temp) = (yyvsp[0].temp); }
-#line 2590 "parser/kernalex.tab.c"
+#line 2591 "parser/kernalex.tab.c"
     break;
 
   case 58: /* inclusive_or_expression: exclusive_or_expression  */
-#line 305 "parser/kernalex.y"
+#line 306 "parser/kernalex.y"
                                   { (yyval.temp) = (yyvsp[0].temp); }
-#line 2596 "parser/kernalex.tab.c"
+#line 2597 "parser/kernalex.tab.c"
     break;
 
   case 59: /* inclusive_or_expression: inclusive_or_expression TOK_BITOR exclusive_or_expression  */
-#line 306 "parser/kernalex.y"
+#line 307 "parser/kernalex.y"
                                                                     { (yyval.temp) = (yyvsp[0].temp); }
-#line 2602 "parser/kernalex.tab.c"
+#line 2603 "parser/kernalex.tab.c"
     break;
 
   case 60: /* logical_and_expression: inclusive_or_expression  */
-#line 310 "parser/kernalex.y"
+#line 311 "parser/kernalex.y"
                                   { (yyval.temp) = (yyvsp[0].temp); }
-#line 2608 "parser/kernalex.tab.c"
+#line 2609 "parser/kernalex.tab.c"
     break;
 
   case 61: /* logical_and_expression: logical_and_expression TOK_AND inclusive_or_expression  */
-#line 311 "parser/kernalex.y"
+#line 312 "parser/kernalex.y"
                                                                  { (yyval.temp) = (yyvsp[0].temp); }
-#line 2614 "parser/kernalex.tab.c"
+#line 2615 "parser/kernalex.tab.c"
     break;
 
   case 62: /* logical_or_expression: logical_and_expression  */
-#line 315 "parser/kernalex.y"
+#line 316 "parser/kernalex.y"
                                  { (yyval.temp) = (yyvsp[0].temp); }
-#line 2620 "parser/kernalex.tab.c"
+#line 2621 "parser/kernalex.tab.c"
     break;
 
   case 63: /* logical_or_expression: logical_or_expression TOK_OR logical_and_expression  */
-#line 316 "parser/kernalex.y"
+#line 317 "parser/kernalex.y"
                                                               { (yyval.temp) = (yyvsp[0].temp); }
-#line 2626 "parser/kernalex.tab.c"
+#line 2627 "parser/kernalex.tab.c"
     break;
 
   case 64: /* conditional_expression: logical_or_expression  */
-#line 320 "parser/kernalex.y"
+#line 321 "parser/kernalex.y"
                                 { (yyval.temp) = (yyvsp[0].temp); }
-#line 2632 "parser/kernalex.tab.c"
+#line 2633 "parser/kernalex.tab.c"
     break;
 
   case 65: /* assignment_expression: conditional_expression  */
-#line 324 "parser/kernalex.y"
+#line 325 "parser/kernalex.y"
                              { (yyval.temp) = (yyvsp[0].temp); }
-#line 2638 "parser/kernalex.tab.c"
+#line 2639 "parser/kernalex.tab.c"
     break;
 
   case 66: /* assignment_expression: unary_expression TOK_ASSIGN assignment_expression  */
-#line 326 "parser/kernalex.y"
+#line 327 "parser/kernalex.y"
     {
         emit_quad("=", (yyvsp[0].temp), NULL, (yyvsp[-2].temp));
         (yyval.temp) = (char *)malloc(strlen((yyvsp[-2].temp)) + 1);
         strcpy((yyval.temp), (yyvsp[-2].temp));
     }
-#line 2648 "parser/kernalex.tab.c"
+#line 2649 "parser/kernalex.tab.c"
     break;
 
   case 67: /* assignment_expression: unary_expression TOK_PLUSEQ assignment_expression  */
-#line 332 "parser/kernalex.y"
+#line 333 "parser/kernalex.y"
     {
         emit_quad("+=", (yyvsp[0].temp), NULL, (yyvsp[-2].temp));
         (yyval.temp) = (char *)malloc(strlen((yyvsp[-2].temp)) + 1);
         strcpy((yyval.temp), (yyvsp[-2].temp));
     }
-#line 2658 "parser/kernalex.tab.c"
+#line 2659 "parser/kernalex.tab.c"
     break;
 
   case 68: /* assignment_expression: unary_expression TOK_MINUSEQ assignment_expression  */
-#line 338 "parser/kernalex.y"
+#line 339 "parser/kernalex.y"
     {
         emit_quad("-=", (yyvsp[0].temp), NULL, (yyvsp[-2].temp));
         (yyval.temp) = (char *)malloc(strlen((yyvsp[-2].temp)) + 1);
         strcpy((yyval.temp), (yyvsp[-2].temp));
     }
-#line 2668 "parser/kernalex.tab.c"
+#line 2669 "parser/kernalex.tab.c"
     break;
 
   case 69: /* assignment_expression: unary_expression TOK_MULTEQ assignment_expression  */
-#line 344 "parser/kernalex.y"
+#line 345 "parser/kernalex.y"
     {
         emit_quad("*=", (yyvsp[0].temp), NULL, (yyvsp[-2].temp));
         (yyval.temp) = (char *)malloc(strlen((yyvsp[-2].temp)) + 1);
         strcpy((yyval.temp), (yyvsp[-2].temp));
     }
-#line 2678 "parser/kernalex.tab.c"
+#line 2679 "parser/kernalex.tab.c"
     break;
 
   case 70: /* assignment_expression: unary_expression TOK_DIVEQ assignment_expression  */
-#line 350 "parser/kernalex.y"
+#line 351 "parser/kernalex.y"
     {
         emit_quad("/=", (yyvsp[0].temp), NULL, (yyvsp[-2].temp));
         (yyval.temp) = (char *)malloc(strlen((yyvsp[-2].temp)) + 1);
         strcpy((yyval.temp), (yyvsp[-2].temp));
     }
-#line 2688 "parser/kernalex.tab.c"
+#line 2689 "parser/kernalex.tab.c"
     break;
 
   case 71: /* assignment_expression: unary_expression TOK_MODEQ assignment_expression  */
-#line 356 "parser/kernalex.y"
+#line 357 "parser/kernalex.y"
     {
         emit_quad("%=", (yyvsp[0].temp), NULL, (yyvsp[-2].temp));
         (yyval.temp) = (char *)malloc(strlen((yyvsp[-2].temp)) + 1);
         strcpy((yyval.temp), (yyvsp[-2].temp));
     }
-#line 2698 "parser/kernalex.tab.c"
+#line 2699 "parser/kernalex.tab.c"
     break;
 
   case 72: /* expression: assignment_expression  */
-#line 364 "parser/kernalex.y"
+#line 365 "parser/kernalex.y"
                             { (yyval.temp) = (yyvsp[0].temp); }
-#line 2704 "parser/kernalex.tab.c"
+#line 2705 "parser/kernalex.tab.c"
     break;
 
   case 73: /* expression: expression TOK_COMMA assignment_expression  */
-#line 365 "parser/kernalex.y"
+#line 366 "parser/kernalex.y"
                                                  { (yyval.temp) = (yyvsp[0].temp); }
-#line 2710 "parser/kernalex.tab.c"
+#line 2711 "parser/kernalex.tab.c"
     break;
 
   case 74: /* constant_expression: conditional_expression  */
-#line 369 "parser/kernalex.y"
+#line 370 "parser/kernalex.y"
                              { (yyval.temp) = (yyvsp[0].temp); }
-#line 2716 "parser/kernalex.tab.c"
+#line 2717 "parser/kernalex.tab.c"
     break;
 
   case 83: /* init_declarator: declarator TOK_ASSIGN initializer  */
-#line 391 "parser/kernalex.y"
+#line 392 "parser/kernalex.y"
         {
 	    if ((yyvsp[-2].temp) && (yyvsp[0].temp)) {
 	        emit_quad("=", (yyvsp[0].temp), NULL, (yyvsp[-2].temp));
 	    }
 	}
-#line 2726 "parser/kernalex.tab.c"
+#line 2727 "parser/kernalex.tab.c"
     break;
 
   case 114: /* declarator: pointer direct_declarator  */
-#line 454 "parser/kernalex.y"
+#line 455 "parser/kernalex.y"
                                     { (yyval.temp) = (yyvsp[0].temp); }
-#line 2732 "parser/kernalex.tab.c"
+#line 2733 "parser/kernalex.tab.c"
     break;
 
   case 115: /* declarator: direct_declarator  */
-#line 455 "parser/kernalex.y"
+#line 456 "parser/kernalex.y"
                                     { (yyval.temp) = (yyvsp[0].temp); }
-#line 2738 "parser/kernalex.tab.c"
+#line 2739 "parser/kernalex.tab.c"
     break;
 
   case 116: /* direct_declarator: TOK_IDENTIFIER  */
-#line 459 "parser/kernalex.y"
+#line 460 "parser/kernalex.y"
                                                                             { (yyval.temp) = (yyvsp[0].temp); }
-#line 2744 "parser/kernalex.tab.c"
+#line 2745 "parser/kernalex.tab.c"
     break;
 
   case 117: /* direct_declarator: TOK_LPAREN declarator TOK_RPAREN  */
-#line 460 "parser/kernalex.y"
+#line 461 "parser/kernalex.y"
                                                                             { (yyval.temp) = (yyvsp[-1].temp); }
-#line 2750 "parser/kernalex.tab.c"
+#line 2751 "parser/kernalex.tab.c"
     break;
 
   case 118: /* direct_declarator: direct_declarator TOK_LBRACKET TOK_RBRACKET  */
-#line 461 "parser/kernalex.y"
+#line 462 "parser/kernalex.y"
                                                                             { (yyval.temp) = (yyvsp[-2].temp); }
-#line 2756 "parser/kernalex.tab.c"
+#line 2757 "parser/kernalex.tab.c"
     break;
 
   case 119: /* direct_declarator: direct_declarator TOK_LBRACKET assignment_expression TOK_RBRACKET  */
-#line 462 "parser/kernalex.y"
+#line 463 "parser/kernalex.y"
                                                                             { (yyval.temp) = (yyvsp[-3].temp); }
-#line 2762 "parser/kernalex.tab.c"
+#line 2763 "parser/kernalex.tab.c"
     break;
 
   case 120: /* direct_declarator: direct_declarator TOK_LPAREN parameter_type_list TOK_RPAREN  */
-#line 463 "parser/kernalex.y"
+#line 464 "parser/kernalex.y"
                                                                             { (yyval.temp) = (yyvsp[-3].temp); }
-#line 2768 "parser/kernalex.tab.c"
+#line 2769 "parser/kernalex.tab.c"
     break;
 
   case 121: /* direct_declarator: direct_declarator TOK_LPAREN TOK_RPAREN  */
-#line 464 "parser/kernalex.y"
+#line 465 "parser/kernalex.y"
                                                                             { (yyval.temp) = (yyvsp[-2].temp); }
-#line 2774 "parser/kernalex.tab.c"
+#line 2775 "parser/kernalex.tab.c"
     break;
 
   case 122: /* direct_declarator: direct_declarator TOK_LPAREN identifier_list TOK_RPAREN  */
-#line 465 "parser/kernalex.y"
+#line 466 "parser/kernalex.y"
                                                                            { (yyval.temp) = (yyvsp[-3].temp); }
-#line 2780 "parser/kernalex.tab.c"
+#line 2781 "parser/kernalex.tab.c"
     break;
 
   case 123: /* pointer: TOK_STAR pointer  */
-#line 469 "parser/kernalex.y"
+#line 470 "parser/kernalex.y"
                            {pointer_decls++;}
-#line 2786 "parser/kernalex.tab.c"
+#line 2787 "parser/kernalex.tab.c"
     break;
 
   case 124: /* pointer: TOK_STAR  */
-#line 470 "parser/kernalex.y"
+#line 471 "parser/kernalex.y"
                    {pointer_decls++;}
-#line 2792 "parser/kernalex.tab.c"
+#line 2793 "parser/kernalex.tab.c"
     break;
 
   case 147: /* initializer: TOK_BEGIN initializer_list TOK_END  */
-#line 519 "parser/kernalex.y"
+#line 520 "parser/kernalex.y"
                                          { (yyval.temp) = (char *)malloc(20); strcpy((yyval.temp), "init"); }
-#line 2798 "parser/kernalex.tab.c"
+#line 2799 "parser/kernalex.tab.c"
     break;
 
   case 148: /* initializer: TOK_BEGIN initializer_list TOK_COMMA TOK_END  */
-#line 520 "parser/kernalex.y"
+#line 521 "parser/kernalex.y"
                                                    { (yyval.temp) = (char *)malloc(20); strcpy((yyval.temp), "init"); }
-#line 2804 "parser/kernalex.tab.c"
+#line 2805 "parser/kernalex.tab.c"
     break;
 
   case 149: /* initializer: assignment_expression  */
-#line 522 "parser/kernalex.y"
+#line 523 "parser/kernalex.y"
     {
         (yyval.temp) = (yyvsp[0].temp);
     }
-#line 2812 "parser/kernalex.tab.c"
+#line 2813 "parser/kernalex.tab.c"
     break;
 
   case 167: /* expression_statement: TOK_SEMICOLON  */
-#line 569 "parser/kernalex.y"
+#line 570 "parser/kernalex.y"
                         { (yyval.temp) = NULL; }
-#line 2818 "parser/kernalex.tab.c"
+#line 2819 "parser/kernalex.tab.c"
     break;
 
   case 168: /* expression_statement: expression TOK_SEMICOLON  */
-#line 570 "parser/kernalex.y"
+#line 571 "parser/kernalex.y"
                                    { (yyval.temp) = (yyvsp[-1].temp); }
-#line 2824 "parser/kernalex.tab.c"
+#line 2825 "parser/kernalex.tab.c"
     break;
 
   case 169: /* L_mark: %empty  */
-#line 574 "parser/kernalex.y"
+#line 575 "parser/kernalex.y"
                     { (yyval.temp) = strdup(new_label()); emit_quad("label", NULL, NULL, (yyval.temp)); }
-#line 2830 "parser/kernalex.tab.c"
+#line 2831 "parser/kernalex.tab.c"
     break;
 
   case 170: /* M_mark_stmt: expression_statement  */
-#line 575 "parser/kernalex.y"
+#line 576 "parser/kernalex.y"
                                   { (yyval.temp) = strdup(new_label()); emit_quad("ifFalse", (yyvsp[0].temp), NULL, (yyval.temp)); }
-#line 2836 "parser/kernalex.tab.c"
+#line 2837 "parser/kernalex.tab.c"
     break;
 
   case 171: /* M_mark_expr: expression  */
-#line 576 "parser/kernalex.y"
+#line 577 "parser/kernalex.y"
                         { (yyval.temp) = strdup(new_label()); emit_quad("ifFalse", (yyvsp[0].temp), NULL, (yyval.temp)); }
-#line 2842 "parser/kernalex.tab.c"
+#line 2843 "parser/kernalex.tab.c"
     break;
 
   case 172: /* if_head: TOK_IF TOK_LPAREN expression TOK_RPAREN  */
-#line 577 "parser/kernalex.y"
+#line 578 "parser/kernalex.y"
                                                  { (yyval.temp) = strdup(new_label()); emit_quad("ifFalse", (yyvsp[-1].temp), NULL, (yyval.temp)); }
-#line 2848 "parser/kernalex.tab.c"
+#line 2849 "parser/kernalex.tab.c"
     break;
 
   case 173: /* if_else_head: if_head matched_statement TOK_ELSE  */
-#line 578 "parser/kernalex.y"
+#line 579 "parser/kernalex.y"
                                                  { (yyval.temp) = strdup(new_label()); emit_quad("goto", NULL, NULL, (yyval.temp)); emit_quad("label", NULL, NULL, (yyvsp[-2].temp)); }
-#line 2854 "parser/kernalex.tab.c"
+#line 2855 "parser/kernalex.tab.c"
     break;
 
   case 174: /* M_for_body: %empty  */
-#line 580 "parser/kernalex.y"
+#line 581 "parser/kernalex.y"
                         { (yyval.temp) = strdup(new_label()); emit_quad("goto", NULL, NULL, (yyval.temp)); }
-#line 2860 "parser/kernalex.tab.c"
+#line 2861 "parser/kernalex.tab.c"
     break;
 
   case 175: /* M_for_update: %empty  */
-#line 581 "parser/kernalex.y"
+#line 582 "parser/kernalex.y"
                           { (yyval.temp) = strdup(new_label()); emit_quad("label", NULL, NULL, (yyval.temp)); }
-#line 2866 "parser/kernalex.tab.c"
+#line 2867 "parser/kernalex.tab.c"
     break;
 
   case 176: /* M_for_post_empty: %empty  */
-#line 582 "parser/kernalex.y"
+#line 583 "parser/kernalex.y"
                               { emit_quad("goto", NULL, NULL, (yyvsp[(-2) - (0)].temp)); emit_quad("label", NULL, NULL, (yyvsp[(-1) - (0)].temp)); }
-#line 2872 "parser/kernalex.tab.c"
+#line 2873 "parser/kernalex.tab.c"
     break;
 
   case 177: /* M_for_post_expr: %empty  */
-#line 583 "parser/kernalex.y"
+#line 584 "parser/kernalex.y"
                              { emit_quad("goto", NULL, NULL, (yyvsp[(-5) - (0)].temp)); emit_quad("label", NULL, NULL, (yyvsp[(-3) - (0)].temp)); }
-#line 2878 "parser/kernalex.tab.c"
+#line 2879 "parser/kernalex.tab.c"
+    break;
+
+  case 183: /* matched_statement: TOK_CASE constant_expression TOK_COLON matched_statement  */
+#line 592 "parser/kernalex.y"
+                                                                   { codegen_unsupported("case label"); }
+#line 2885 "parser/kernalex.tab.c"
+    break;
+
+  case 184: /* matched_statement: TOK_DEFAULT TOK_COLON matched_statement  */
+#line 593 "parser/kernalex.y"
+                                                  { codegen_unsupported("default label"); }
+#line 2891 "parser/kernalex.tab.c"
+    break;
+
+  case 185: /* matched_statement: TOK_SWITCH TOK_LPAREN expression TOK_RPAREN matched_statement  */
+#line 594 "parser/kernalex.y"
+                                                                    { codegen_unsupported("switch statement"); }
+#line 2897 "parser/kernalex.tab.c"
     break;
 
   case 186: /* matched_statement: if_else_head matched_statement  */
-#line 594 "parser/kernalex.y"
+#line 595 "parser/kernalex.y"
                                          { emit_quad("label", NULL, NULL, (yyvsp[-1].temp)); ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--; }
-#line 2884 "parser/kernalex.tab.c"
+#line 2903 "parser/kernalex.tab.c"
+    break;
+
+  case 188: /* unmatched_statement: TOK_CASE constant_expression TOK_COLON unmatched_statement  */
+#line 600 "parser/kernalex.y"
+                                                                     { codegen_unsupported("case label"); }
+#line 2909 "parser/kernalex.tab.c"
+    break;
+
+  case 189: /* unmatched_statement: TOK_DEFAULT TOK_COLON unmatched_statement  */
+#line 601 "parser/kernalex.y"
+                                                    { codegen_unsupported("default label"); }
+#line 2915 "parser/kernalex.tab.c"
     break;
 
   case 191: /* unmatched_statement: if_head statement  */
-#line 602 "parser/kernalex.y"
+#line 603 "parser/kernalex.y"
                             { emit_quad("label", NULL, NULL, (yyvsp[-1].temp)); ifs_wo_else++; }
-#line 2890 "parser/kernalex.tab.c"
+#line 2921 "parser/kernalex.tab.c"
     break;
 
   case 192: /* unmatched_statement: if_else_head unmatched_statement  */
-#line 603 "parser/kernalex.y"
+#line 604 "parser/kernalex.y"
                                            { emit_quad("label", NULL, NULL, (yyvsp[-1].temp)); ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--; }
-#line 2896 "parser/kernalex.tab.c"
+#line 2927 "parser/kernalex.tab.c"
     break;
 
   case 193: /* iteration_statement: TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN matched_statement  */
-#line 607 "parser/kernalex.y"
+#line 608 "parser/kernalex.y"
                                                                                { emit_quad("goto", NULL, NULL, (yyvsp[-4].temp)); emit_quad("label", NULL, NULL, (yyvsp[-2].temp)); }
-#line 2902 "parser/kernalex.tab.c"
+#line 2933 "parser/kernalex.tab.c"
     break;
 
   case 194: /* iteration_statement: TOK_REPEAT L_mark matched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON  */
-#line 608 "parser/kernalex.y"
+#line 609 "parser/kernalex.y"
                                                                                                        { emit_quad("ifFalse", (yyvsp[-2].temp), NULL, (yyvsp[-6].temp)); }
-#line 2908 "parser/kernalex.tab.c"
+#line 2939 "parser/kernalex.tab.c"
     break;
 
   case 195: /* iteration_statement: TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN M_for_post_empty matched_statement  */
-#line 609 "parser/kernalex.y"
+#line 610 "parser/kernalex.y"
                                                                                                                    { emit_quad("goto", NULL, NULL, (yyvsp[-4].temp)); emit_quad("label", NULL, NULL, (yyvsp[-3].temp)); }
-#line 2914 "parser/kernalex.tab.c"
+#line 2945 "parser/kernalex.tab.c"
     break;
 
   case 196: /* iteration_statement: TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr matched_statement  */
-#line 610 "parser/kernalex.y"
+#line 611 "parser/kernalex.y"
                                                                                                                                                      { emit_quad("goto", NULL, NULL, (yyvsp[-4].temp)); emit_quad("label", NULL, NULL, (yyvsp[-6].temp)); }
-#line 2920 "parser/kernalex.tab.c"
+#line 2951 "parser/kernalex.tab.c"
     break;
 
   case 197: /* iteration_statement: TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN M_for_post_empty matched_statement  */
-#line 611 "parser/kernalex.y"
+#line 612 "parser/kernalex.y"
                                                                                                           { emit_quad("goto", NULL, NULL, (yyvsp[-4].temp)); emit_quad("label", NULL, NULL, (yyvsp[-3].temp)); }
-#line 2926 "parser/kernalex.tab.c"
+#line 2957 "parser/kernalex.tab.c"
     break;
 
   case 198: /* iteration_statement: TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr matched_statement  */
-#line 612 "parser/kernalex.y"
+#line 613 "parser/kernalex.y"
                                                                                                                                             { emit_quad("goto", NULL, NULL, (yyvsp[-4].temp)); emit_quad("label", NULL, NULL, (yyvsp[-6].temp)); }
-#line 2932 "parser/kernalex.tab.c"
+#line 2963 "parser/kernalex.tab.c"
     break;
 
   case 199: /* unmatched_iteration_statement: TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN unmatched_statement  */
-#line 616 "parser/kernalex.y"
+#line 617 "parser/kernalex.y"
                                                                                  { emit_quad("goto", NULL, NULL, (yyvsp[-4].temp)); emit_quad("label", NULL, NULL, (yyvsp[-2].temp)); }
-#line 2938 "parser/kernalex.tab.c"
+#line 2969 "parser/kernalex.tab.c"
     break;
 
   case 200: /* unmatched_iteration_statement: TOK_REPEAT L_mark unmatched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON  */
-#line 617 "parser/kernalex.y"
+#line 618 "parser/kernalex.y"
                                                                                                          { emit_quad("ifFalse", (yyvsp[-2].temp), NULL, (yyvsp[-6].temp)); }
-#line 2944 "parser/kernalex.tab.c"
+#line 2975 "parser/kernalex.tab.c"
     break;
 
   case 201: /* unmatched_iteration_statement: TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN M_for_post_empty unmatched_statement  */
-#line 618 "parser/kernalex.y"
+#line 619 "parser/kernalex.y"
                                                                                                                      { emit_quad("goto", NULL, NULL, (yyvsp[-4].temp)); emit_quad("label", NULL, NULL, (yyvsp[-3].temp)); }
-#line 2950 "parser/kernalex.tab.c"
+#line 2981 "parser/kernalex.tab.c"
     break;
 
   case 202: /* unmatched_iteration_statement: TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr unmatched_statement  */
-#line 619 "parser/kernalex.y"
+#line 620 "parser/kernalex.y"
                                                                                                                                                        { emit_quad("goto", NULL, NULL, (yyvsp[-4].temp)); emit_quad("label", NULL, NULL, (yyvsp[-6].temp)); }
-#line 2956 "parser/kernalex.tab.c"
+#line 2987 "parser/kernalex.tab.c"
     break;
 
   case 203: /* unmatched_iteration_statement: TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN M_for_post_empty unmatched_statement  */
-#line 620 "parser/kernalex.y"
+#line 621 "parser/kernalex.y"
                                                                                                             { emit_quad("goto", NULL, NULL, (yyvsp[-4].temp)); emit_quad("label", NULL, NULL, (yyvsp[-3].temp)); }
-#line 2962 "parser/kernalex.tab.c"
+#line 2993 "parser/kernalex.tab.c"
     break;
 
   case 204: /* unmatched_iteration_statement: TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr unmatched_statement  */
-#line 621 "parser/kernalex.y"
+#line 622 "parser/kernalex.y"
                                                                                                                                               { emit_quad("goto", NULL, NULL, (yyvsp[-4].temp)); emit_quad("label", NULL, NULL, (yyvsp[-6].temp)); }
-#line 2968 "parser/kernalex.tab.c"
+#line 2999 "parser/kernalex.tab.c"
+    break;
+
+  case 205: /* jump_statement: TOK_CONTINUE TOK_SEMICOLON  */
+#line 626 "parser/kernalex.y"
+                                     { codegen_unsupported("continue statement"); }
+#line 3005 "parser/kernalex.tab.c"
+    break;
+
+  case 206: /* jump_statement: TOK_BREAK TOK_SEMICOLON  */
+#line 627 "parser/kernalex.y"
+                                  { codegen_unsupported("break statement"); }
+#line 3011 "parser/kernalex.tab.c"
     break;
 
   case 207: /* jump_statement: TOK_RETURN TOK_SEMICOLON  */
-#line 627 "parser/kernalex.y"
+#line 628 "parser/kernalex.y"
                                { emit_quad("return", NULL, NULL, NULL); }
-#line 2974 "parser/kernalex.tab.c"
+#line 3017 "parser/kernalex.tab.c"
     break;
 
   case 208: /* jump_statement: TOK_RETURN expression TOK_SEMICOLON  */
-#line 628 "parser/kernalex.y"
+#line 629 "parser/kernalex.y"
                                           { emit_quad("return", (yyvsp[-1].temp), NULL, NULL); }
-#line 2980 "parser/kernalex.tab.c"
+#line 3023 "parser/kernalex.tab.c"
     break;
 
   case 209: /* translation_unit: function_definition  */
-#line 632 "parser/kernalex.y"
+#line 633 "parser/kernalex.y"
                               {func_definitions++;}
-#line 2986 "parser/kernalex.tab.c"
+#line 3029 "parser/kernalex.tab.c"
     break;
 
 
-#line 2990 "parser/kernalex.tab.c"
+#line 3033 "parser/kernalex.tab.c"
 
         default: break;
       }
@@ -3221,7 +3264,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 646 "parser/kernalex.y"
+#line 647 "parser/kernalex.y"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -3229,6 +3272,18 @@ yyreturnlab:
 #include <unistd.h>
 
 extern int fileno(FILE *stream);
+
+static void codegen_unsupported(const char *construct)
+{
+	fprintf(stdout,
+			"[IR ERROR] Unsupported construct during code generation: %s at line %d, col %d near '%s'\n",
+			construct ? construct : "unknown",
+			token_start_line,
+			token_start_col,
+			(yytext && yytext[0] != '\0') ? yytext : "end of input");
+	fflush(stdout);
+	exit(2);
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
  *  SECTION 1 – Human-friendly token name translation

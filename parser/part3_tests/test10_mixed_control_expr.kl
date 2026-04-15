@@ -1,0 +1,12 @@
+int main() begin
+    int i; int total;
+    i = 0;
+    total = 0;
+    while (i < 5) begin
+        if (i != 2) begin
+            total = total + i;
+        end
+        i = i + 1;
+    end
+    return total;
+end

@@ -1,0 +1,8 @@
+int main() begin
+    int a; int b; int c; int z;
+    a = 2;
+    b = 3;
+    c = 4;
+    z = a + b ^ c;
+    return z;
+end

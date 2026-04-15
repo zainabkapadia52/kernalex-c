@@ -40,6 +40,7 @@ static int   is_control_paren_context(const char *line, int paren_col);
 static int   find_prev_word_before_col(const char *line, int before_col,
 									   char *out, size_t out_sz,
 									   int *start_col, int *word_len);
+static void  codegen_unsupported(const char *construct);
 %}
 
 %token TOK_INT 1
@@ -193,8 +194,8 @@ postfix_expression
     | postfix_expression TOK_LPAREN argument_expression_list TOK_RPAREN { $$ = $1; }
     | postfix_expression TOK_DOT TOK_IDENTIFIER { $$ = $1; }
     | postfix_expression TOK_ARROW TOK_IDENTIFIER { $$ = $1; }
-    | postfix_expression TOK_INC { $$ = $1; }
-    | postfix_expression TOK_DEC { $$ = $1; }
+	| postfix_expression TOK_INC { codegen_unsupported("postfix increment (x++)"); $$ = $1; }
+	| postfix_expression TOK_DEC { codegen_unsupported("postfix decrement (x--)"); $$ = $1; }
     | TOK_LPAREN type_name TOK_RPAREN TOK_BEGIN initializer_list TOK_END { $$ = (char *)malloc(20); strcpy($$, "init_result"); }
     | TOK_LPAREN type_name TOK_RPAREN TOK_BEGIN initializer_list TOK_COMMA TOK_END { $$ = (char *)malloc(20); strcpy($$, "init_result"); }
     ;
@@ -206,8 +207,8 @@ argument_expression_list
 
 unary_expression
     : postfix_expression { $$ = $1; }
-    | TOK_INC unary_expression { $$ = $2; }
-    | TOK_DEC unary_expression { $$ = $2; }
+	| TOK_INC unary_expression { codegen_unsupported("prefix increment (++x)"); $$ = $2; }
+	| TOK_DEC unary_expression { codegen_unsupported("prefix decrement (--x)"); $$ = $2; }
     | TOK_MINUS cast_expression
     {
         char *temp = new_temp();
@@ -588,16 +589,16 @@ matched_statement
     | iteration_statement
     | jump_statement
 	| TOK_IDENTIFIER TOK_COLON matched_statement
-	| TOK_CASE constant_expression TOK_COLON matched_statement
-	| TOK_DEFAULT TOK_COLON matched_statement
-    | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN matched_statement
+	| TOK_CASE constant_expression TOK_COLON matched_statement { codegen_unsupported("case label"); }
+	| TOK_DEFAULT TOK_COLON matched_statement { codegen_unsupported("default label"); }
+    | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN matched_statement { codegen_unsupported("switch statement"); }
 	| if_else_head matched_statement { emit_quad("label", NULL, NULL, $1); ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--; }
     ;
 
 unmatched_statement
 	: TOK_IDENTIFIER TOK_COLON unmatched_statement
-	| TOK_CASE constant_expression TOK_COLON unmatched_statement
-	| TOK_DEFAULT TOK_COLON unmatched_statement
+	| TOK_CASE constant_expression TOK_COLON unmatched_statement { codegen_unsupported("case label"); }
+	| TOK_DEFAULT TOK_COLON unmatched_statement { codegen_unsupported("default label"); }
     | unmatched_iteration_statement
 	| if_head statement { emit_quad("label", NULL, NULL, $1); ifs_wo_else++; }
 	| if_else_head unmatched_statement { emit_quad("label", NULL, NULL, $1); ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--; }
@@ -622,8 +623,8 @@ unmatched_iteration_statement
 	;
 
 jump_statement
-	: TOK_CONTINUE TOK_SEMICOLON
-	| TOK_BREAK TOK_SEMICOLON
+	: TOK_CONTINUE TOK_SEMICOLON { codegen_unsupported("continue statement"); }
+	| TOK_BREAK TOK_SEMICOLON { codegen_unsupported("break statement"); }
     | TOK_RETURN TOK_SEMICOLON { emit_quad("return", NULL, NULL, NULL); }
     | TOK_RETURN expression TOK_SEMICOLON { emit_quad("return", $2, NULL, NULL); }
     ;
@@ -650,6 +651,18 @@ declaration_list
 #include <unistd.h>
 
 extern int fileno(FILE *stream);
+
+static void codegen_unsupported(const char *construct)
+{
+	fprintf(stdout,
+			"[IR ERROR] Unsupported construct during code generation: %s at line %d, col %d near '%s'\n",
+			construct ? construct : "unknown",
+			token_start_line,
+			token_start_col,
+			(yytext && yytext[0] != '\0') ? yytext : "end of input");
+	fflush(stdout);
+	exit(2);
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
  *  SECTION 1 – Human-friendly token name translation

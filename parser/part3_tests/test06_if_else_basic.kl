@@ -1,0 +1,11 @@
+int main() begin
+    int a; int b; int m;
+    a = 10;
+    b = 20;
+    if (a >= b) begin
+        m = a;
+    end else begin
+        m = b;
+    end
+    return m;
+end

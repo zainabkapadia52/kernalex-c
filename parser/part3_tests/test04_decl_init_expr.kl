@@ -1,0 +1,7 @@
+int main() begin
+    int x = 5;
+    int y = 3 ^ 4;
+    int z;
+    z = x + y;
+    return z;
+end

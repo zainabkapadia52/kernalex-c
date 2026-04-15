@@ -1,0 +1,8 @@
+int main() begin
+    int i;
+    i = 0;
+    while (i < 4) begin
+        i = i + 1;
+    end
+    return i;
+end

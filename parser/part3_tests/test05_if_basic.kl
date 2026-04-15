@@ -1,0 +1,8 @@
+int main() begin
+    int a;
+    a = 5;
+    if (a > 3) begin
+        a = 10;
+    end
+    return a;
+end

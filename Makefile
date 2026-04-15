@@ -16,7 +16,7 @@ PARSER_LEX_FILE = $(LEXER_DIR)/kernalex.l
 PARSER_TAB_C = $(PARSER_DIR)/kernalex.tab.c
 PARSER_TAB_H = $(PARSER_DIR)/kernalex.tab.h
 
-.PHONY: all clean lexer parser lalr-table lalr-table-full lalr-table-important
+.PHONY: all clean lexer parser part3-tests part4-tests lalr-table lalr-table-full lalr-table-important
 
 all: parser lexer
 
@@ -31,6 +31,12 @@ $(LEXER): $(LEXER_SRC)
 
 # Parser build 
 parser: $(PARSER)
+
+part3-tests: parser
+	bash parser/run_part3_tests.sh
+
+part4-tests: parser
+	bash parser/run_part4_tests.sh
 
 lalr-table: lalr-table-full lalr-table-important
 

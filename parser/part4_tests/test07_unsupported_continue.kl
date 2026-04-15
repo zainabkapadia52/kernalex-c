@@ -1,0 +1,9 @@
+int main() begin
+    int x;
+    x = 0;
+    while (x < 2) begin
+        x = x + 1;
+        continue;
+    end
+    return x;
+end
