@@ -64,6 +64,9 @@ Quadruple* get_quad(int index);
 /* Get current quad count */
 int get_quad_count(void);
 
+/* Defer update expression quadruples to the end of the looping blocks */
+void ir_defer_update(int start_idx, int end_idx, int current_idx);
+
 /* Output operations */
 void print_quads(FILE *fp);
 void print_quads_tabular(FILE *fp);

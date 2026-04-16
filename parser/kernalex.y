@@ -158,7 +158,7 @@ static void  codegen_unsupported(const char *construct);
 %type <temp> initializer
 %type <temp> declarator
 %type <temp> direct_declarator
-%type <temp> expression_statement L_mark M_mark_stmt M_mark_expr if_head if_else_head M_for_body M_for_update M_for_post_expr M_for_post_empty
+%type <temp> expression_statement L_mark M_mark_stmt M_mark_expr if_head if_else_head
 
 
 %%
@@ -217,10 +217,34 @@ unary_expression
         strcpy($$, temp);
     }
     | TOK_PLUS cast_expression { $$ = $2; }
-    | TOK_NOT cast_expression { $$ = $2; }
-    | TOK_BITNOT cast_expression { $$ = $2; }
-    | TOK_AMP cast_expression { $$ = $2; }
-    | TOK_STAR cast_expression { $$ = $2; }
+    | TOK_NOT cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("not", $2, NULL, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    | TOK_BITNOT cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("~", $2, NULL, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    | TOK_AMP cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("&", $2, NULL, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    | TOK_STAR cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("*", $2, NULL, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
     ;
 
 cast_expression
@@ -273,8 +297,20 @@ additive_expression
 
 shift_expression
 	: additive_expression { $$ = $1; }
-	| shift_expression TOK_LSHIFT additive_expression { $$ = $3; }
-	| shift_expression TOK_RSHIFT additive_expression { $$ = $3; }
+	| shift_expression TOK_LSHIFT additive_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("<<", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
+	| shift_expression TOK_RSHIFT additive_expression
+	{
+	    char *t = new_temp();
+	    emit_quad(">>", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	;
 
 relational_expression
@@ -294,27 +330,57 @@ equality_expression
 
 and_expression
 	: equality_expression { $$ = $1; }
-	| and_expression TOK_AMP equality_expression { $$ = $3; }
+	| and_expression TOK_AMP equality_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("&", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	;
 
 exclusive_or_expression
     : and_expression { $$ = $1; }
-	| exclusive_or_expression TOK_XOR and_expression { $$ = $3; }
+	| exclusive_or_expression TOK_XOR and_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("^", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
     ;
 
 inclusive_or_expression
 	: exclusive_or_expression { $$ = $1; }
-	| inclusive_or_expression TOK_BITOR exclusive_or_expression { $$ = $3; }
+	| inclusive_or_expression TOK_BITOR exclusive_or_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("|", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	;
 
 logical_and_expression
 	: inclusive_or_expression { $$ = $1; }
-	| logical_and_expression TOK_AND inclusive_or_expression { $$ = $3; }
+	| logical_and_expression TOK_AND inclusive_or_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("&&", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	;
 
 logical_or_expression
 	: logical_and_expression { $$ = $1; }
-	| logical_or_expression TOK_OR logical_and_expression { $$ = $3; }
+	| logical_or_expression TOK_OR logical_and_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("||", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	;
 
 conditional_expression
@@ -331,31 +397,41 @@ assignment_expression
     }
     | unary_expression TOK_PLUSEQ assignment_expression
     {
-        emit_quad("+=", $3, NULL, $1);
+        char *t = new_temp();
+        emit_quad("+", $1, $3, t);
+        emit_quad("=", t, NULL, $1);
         $$ = (char *)malloc(strlen($1) + 1);
         strcpy($$, $1);
     }
     | unary_expression TOK_MINUSEQ assignment_expression
     {
-        emit_quad("-=", $3, NULL, $1);
+        char *t = new_temp();
+        emit_quad("-", $1, $3, t);
+        emit_quad("=", t, NULL, $1);
         $$ = (char *)malloc(strlen($1) + 1);
         strcpy($$, $1);
     }
     | unary_expression TOK_MULTEQ assignment_expression
     {
-        emit_quad("*=", $3, NULL, $1);
+        char *t = new_temp();
+        emit_quad("*", $1, $3, t);
+        emit_quad("=", t, NULL, $1);
         $$ = (char *)malloc(strlen($1) + 1);
         strcpy($$, $1);
     }
     | unary_expression TOK_DIVEQ assignment_expression
     {
-        emit_quad("/=", $3, NULL, $1);
+        char *t = new_temp();
+        emit_quad("/", $1, $3, t);
+        emit_quad("=", t, NULL, $1);
         $$ = (char *)malloc(strlen($1) + 1);
         strcpy($$, $1);
     }
     | unary_expression TOK_MODEQ assignment_expression
     {
-        emit_quad("%=", $3, NULL, $1);
+        char *t = new_temp();
+        emit_quad("%", $1, $3, t);
+        emit_quad("=", t, NULL, $1);
         $$ = (char *)malloc(strlen($1) + 1);
         strcpy($$, $1);
     }
@@ -578,11 +654,6 @@ M_mark_expr: expression { $$ = strdup(new_label()); emit_quad("ifFalse", $1, NUL
 if_head: TOK_IF TOK_LPAREN expression TOK_RPAREN { $$ = strdup(new_label()); emit_quad("ifFalse", $3, NULL, $$); } ;
 if_else_head: if_head matched_statement TOK_ELSE { $$ = strdup(new_label()); emit_quad("goto", NULL, NULL, $$); emit_quad("label", NULL, NULL, $1); } ;
 
-M_for_body: /* empty */ { $$ = strdup(new_label()); emit_quad("goto", NULL, NULL, $$); } ;
-M_for_update: /* empty */ { $$ = strdup(new_label()); emit_quad("label", NULL, NULL, $$); } ;
-M_for_post_empty: /* empty */ { emit_quad("goto", NULL, NULL, $<temp>-2); emit_quad("label", NULL, NULL, $<temp>-1); } ;
-M_for_post_expr: /* empty */ { emit_quad("goto", NULL, NULL, $<temp>-5); emit_quad("label", NULL, NULL, $<temp>-3); } ;
-
 matched_statement
 	: compound_statement
     | expression_statement
@@ -607,29 +678,86 @@ unmatched_statement
 iteration_statement
 	: TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN matched_statement { emit_quad("goto", NULL, NULL, $2); emit_quad("label", NULL, NULL, $4); }
 	| TOK_REPEAT L_mark matched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON { emit_quad("ifFalse", $6, NULL, $2); }
-	| TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN M_for_post_empty matched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
-	| TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr matched_statement { emit_quad("goto", NULL, NULL, $7); emit_quad("label", NULL, NULL, $5); }
-	| TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN M_for_post_empty matched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
-	| TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr matched_statement { emit_quad("goto", NULL, NULL, $7); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN matched_statement
+          {
+              emit_quad("goto", NULL, NULL, $4);
+              emit_quad("label", NULL, NULL, $5);
+          }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt
+          { $<val>$ = get_quad_count(); }
+          expression TOK_RPAREN
+          { $<val>$ = get_quad_count(); }
+          matched_statement
+          {
+              ir_defer_update($<val>6, $<val>9, get_quad_count());
+              emit_quad("goto", NULL, NULL, $4);
+              emit_quad("label", NULL, NULL, $5);
+          }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN matched_statement
+          {
+              emit_quad("goto", NULL, NULL, $4);
+              emit_quad("label", NULL, NULL, $5);
+          }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt
+          { $<val>$ = get_quad_count(); }
+          expression TOK_RPAREN
+          { $<val>$ = get_quad_count(); }
+          matched_statement
+          {
+              ir_defer_update($<val>6, $<val>9, get_quad_count());
+              emit_quad("goto", NULL, NULL, $4);
+              emit_quad("label", NULL, NULL, $5);
+          }
     ;
 
 unmatched_iteration_statement
-	: TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN unmatched_statement { emit_quad("goto", NULL, NULL, $2); emit_quad("label", NULL, NULL, $4); }
-	| TOK_REPEAT L_mark unmatched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON { emit_quad("ifFalse", $6, NULL, $2); }
-	| TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN M_for_post_empty unmatched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
-	| TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr unmatched_statement { emit_quad("goto", NULL, NULL, $7); emit_quad("label", NULL, NULL, $5); }
-	| TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN M_for_post_empty unmatched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
-	| TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt M_for_body M_for_update expression TOK_RPAREN M_for_post_expr unmatched_statement { emit_quad("goto", NULL, NULL, $7); emit_quad("label", NULL, NULL, $5); }
-	;
+        : TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN unmatched_statement { emit_quad("goto", NULL, NULL, $2); emit_quad("label", NULL, NULL, $4); }
+        | TOK_REPEAT L_mark unmatched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON { emit_quad("ifFalse", $6, NULL, $2); }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN unmatched_statement
+          {
+              emit_quad("goto", NULL, NULL, $4);
+              emit_quad("label", NULL, NULL, $5);
+          }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt
+          { $<val>$ = get_quad_count(); }
+          expression TOK_RPAREN
+          { $<val>$ = get_quad_count(); }
+          unmatched_statement
+          {
+              ir_defer_update($<val>6, $<val>9, get_quad_count());
+              emit_quad("goto", NULL, NULL, $4);
+              emit_quad("label", NULL, NULL, $5);
+          }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN unmatched_statement
+          {
+              emit_quad("goto", NULL, NULL, $4);
+              emit_quad("label", NULL, NULL, $5);
+          }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt
+          { $<val>$ = get_quad_count(); }
+          expression TOK_RPAREN
+          { $<val>$ = get_quad_count(); }
+          unmatched_statement
+          {
+              ir_defer_update($<val>6, $<val>9, get_quad_count());
+              emit_quad("goto", NULL, NULL, $4);
+              emit_quad("label", NULL, NULL, $5);
+          }
+;
 
 jump_statement
-	: TOK_CONTINUE TOK_SEMICOLON { codegen_unsupported("continue statement"); }
+        : TOK_CONTINUE TOK_SEMICOLON { codegen_unsupported("continue statement"); }
 	| TOK_BREAK TOK_SEMICOLON { codegen_unsupported("break statement"); }
     | TOK_RETURN TOK_SEMICOLON { emit_quad("return", NULL, NULL, NULL); }
     | TOK_RETURN expression TOK_SEMICOLON { emit_quad("return", $2, NULL, NULL); }
     ;
 
 translation_unit
+	: external_declaration
+	| translation_unit external_declaration
+	;
+
+external_declaration
 	: function_definition {func_definitions++;}
 	| declaration
 	;
@@ -1246,7 +1374,7 @@ void yyerror(const char *s)
         printf("%s\n", s);
     }
 
-    exit(-1);
+    exit(1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1489,7 +1617,7 @@ int main(int argc, char **argv)
 	load_source_lines(yyin);
     ir_init();  /* Initialize IR subsystem */
 
-    do { yyparse(); } while(!feof(yyin));
+    yyparse();
 
 	if(trace_capture && stderr_copy != -1)
 	{

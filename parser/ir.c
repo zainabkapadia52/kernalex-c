@@ -87,8 +87,14 @@ void sym_pop_scope(void)
 {
     /* Remove all symbols at current scope level */
     while (sym_count > 0 && symtab[sym_count - 1].scope_level == scope_level) {
-        if (symtab[sym_count - 1].name) free(symtab[sym_count - 1].name);
-        if (symtab[sym_count - 1].type) free(symtab[sym_count - 1].type);
+        if (symtab[sym_count - 1].name) {
+            free(symtab[sym_count - 1].name);
+            symtab[sym_count - 1].name = NULL;
+        }
+        if (symtab[sym_count - 1].type) {
+            free(symtab[sym_count - 1].type);
+            symtab[sym_count - 1].type = NULL;
+        }
         sym_count--;
     }
     
@@ -101,20 +107,24 @@ void sym_pop_scope(void)
 
 char* new_temp(void)
 {
-    static char buf[MAX_TEMP_NAME];
+    char buf[MAX_TEMP_NAME];
     snprintf(buf, MAX_TEMP_NAME, "t%d", ++temp_counter);
     
     /* Add to symbol table as temporary */
     sym_insert(buf, "temp", 1);
     
-    return buf;
+    char *res = (char *)malloc(strlen(buf) + 1);
+    if (res) strcpy(res, buf);
+    return res;
 }
 
 char* new_label(void)
 {
-    static char buf[MAX_LABEL_NAME];
+    char buf[MAX_LABEL_NAME];
     snprintf(buf, MAX_LABEL_NAME, "L%d", ++label_counter);
-    return buf;
+    char *res = (char *)malloc(strlen(buf) + 1);
+    if (res) strcpy(res, buf);
+    return res;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -149,7 +159,7 @@ void emit_quad(const char *op, const char *arg1, const char *arg2, const char *r
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Quadruple Access
+   Quadruple Access and Manipulation
    ───────────────────────────────────────────────────────────────────────── */
 
 Quadruple* get_quad(int index)
@@ -163,6 +173,27 @@ Quadruple* get_quad(int index)
 int get_quad_count(void)
 {
     return quad_count;
+}
+
+void ir_defer_update(int start_idx, int end_idx, int current_idx)
+{
+    int len1 = end_idx - start_idx;
+    int len2 = current_idx - end_idx;
+    if (len1 <= 0 || len2 <= 0) return;
+    
+    Quadruple *temp = (Quadruple*)malloc(len1 * sizeof(Quadruple));
+    if (!temp) return;
+    
+    for (int i = 0; i < len1; i++) {
+        temp[i] = quads[start_idx + i];
+    }
+    for (int i = 0; i < len2; i++) {
+        quads[start_idx + i] = quads[end_idx + i];
+    }
+    for (int i = 0; i < len1; i++) {
+        quads[start_idx + len2 + i] = temp[i];
+    }
+    free(temp);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -191,10 +222,10 @@ void print_quads_tabular(FILE *fp)
 {
     fprintf(fp, "\n=== Generated Intermediate Code (Quadruple Table) ===\n\n");
 
-    /* Strict quadruple format: row, op, arg1, arg2, result */
-    fprintf(fp, "%-5s | %-10s | %-12s | %-12s | %-12s\n",
-            "row", "op", "arg1", "arg2", "result");
-    fprintf(fp, "------+------------+--------------+--------------+--------------\n");
+    /* Strict quadruple format: pseudo-code, op, arg1, arg2, result */
+    fprintf(fp, "%-22s | %-8s | %-13s | %-13s | %-13s\n",
+            "", "op", "arg1", "arg2", "result");
+    fprintf(fp, "-----------------------+----------+---------------+---------------+---------------\n");
 
     /* Print each quadruple */
     for (int i = 0; i < quad_count; i++) {
@@ -205,8 +236,25 @@ void print_quads_tabular(FILE *fp)
         const char *arg2   = q->arg2   ? q->arg2   : "";
         const char *result = q->result ? q->result  : "";
 
-        fprintf(fp, "%-5d | %-10s | %-12s | %-12s | %-12s\n",
-                i + 1, op, arg1, arg2, result);
+        char expr[64];
+        if (strcmp(op, "label") == 0) snprintf(expr, sizeof(expr), "label %s:", result);
+        else if (strcmp(op, "goto") == 0) snprintf(expr, sizeof(expr), "goto %s", result);
+        else if (strcmp(op, "ifFalse") == 0) snprintf(expr, sizeof(expr), "ifFalse %s goto %s", arg1, result);
+        else if (strcmp(op, "ifTrue") == 0) snprintf(expr, sizeof(expr), "ifTrue %s goto %s", arg1, result);
+        else if (strcmp(op, "return") == 0) {
+            if (arg1[0]) snprintf(expr, sizeof(expr), "return %s", arg1);
+            else snprintf(expr, sizeof(expr), "return");
+        } else if (strcmp(op, "=") == 0) snprintf(expr, sizeof(expr), "%s=%s", result, arg1);
+        else if (strcmp(op, "minus") == 0) snprintf(expr, sizeof(expr), "%s=minus %s", result, arg1);
+        else if (strcmp(op, "not") == 0) snprintf(expr, sizeof(expr), "%s=not %s", result, arg1);
+        else if (strcmp(op, "~") == 0) snprintf(expr, sizeof(expr), "%s=~%s", result, arg1);
+        else if (strcmp(op, "&") == 0 && arg2[0] == '\0') snprintf(expr, sizeof(expr), "%s=&%s", result, arg1);
+        else if (strcmp(op, "*") == 0 && arg2[0] == '\0') snprintf(expr, sizeof(expr), "%s=*%s", result, arg1);
+        else if (arg1[0] && arg2[0] && result[0]) snprintf(expr, sizeof(expr), "%s=%s%s%s", result, arg1, op, arg2);
+        else snprintf(expr, sizeof(expr), "%s=%s %s %s", result, op, arg1, arg2);
+
+        fprintf(fp, "%-22s | %-8s | %-13s | %-13s | %-13s\n",
+                expr, op, arg1, arg2, result);
     }
     fprintf(fp, "\n");
 }
@@ -219,16 +267,34 @@ void ir_cleanup(void)
 {
     /* Free quadruple strings */
     for (int i = 0; i < quad_count; i++) {
-        if (quads[i].op) free(quads[i].op);
-        if (quads[i].arg1) free(quads[i].arg1);
-        if (quads[i].arg2) free(quads[i].arg2);
-        if (quads[i].result) free(quads[i].result);
+        if (quads[i].op) {
+            free(quads[i].op);
+            quads[i].op = NULL;
+        }
+        if (quads[i].arg1) {
+            free(quads[i].arg1);
+            quads[i].arg1 = NULL;
+        }
+        if (quads[i].arg2) {
+            free(quads[i].arg2);
+            quads[i].arg2 = NULL;
+        }
+        if (quads[i].result) {
+            free(quads[i].result);
+            quads[i].result = NULL;
+        }
     }
     
     /* Free symbol table strings */
     for (int i = 0; i < sym_count; i++) {
-        if (symtab[i].name) free(symtab[i].name);
-        if (symtab[i].type) free(symtab[i].type);
+        if (symtab[i].name) {
+            free(symtab[i].name);
+            symtab[i].name = NULL;
+        }
+        if (symtab[i].type) {
+            free(symtab[i].type);
+            symtab[i].type = NULL;
+        }
     }
     
     quad_count = 0;
