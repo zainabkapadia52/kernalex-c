@@ -159,7 +159,7 @@ void emit_quad(const char *op, const char *arg1, const char *arg2, const char *r
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Quadruple Access and Manipulation
+   Quadruple Access
    ───────────────────────────────────────────────────────────────────────── */
 
 Quadruple* get_quad(int index)
@@ -175,25 +175,29 @@ int get_quad_count(void)
     return quad_count;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Defer Update Expression
+   ───────────────────────────────────────────────────────────────────────── */
+
 void ir_defer_update(int start_idx, int end_idx, int current_idx)
 {
-    int len1 = end_idx - start_idx;
-    int len2 = current_idx - end_idx;
-    if (len1 <= 0 || len2 <= 0) return;
+    if (start_idx >= end_idx || end_idx >= current_idx) return;
     
-    Quadruple *temp = (Quadruple*)malloc(len1 * sizeof(Quadruple));
-    if (!temp) return;
+    int update_len = end_idx - start_idx;
+    Quadruple *temp_buf = (Quadruple *)malloc(update_len * sizeof(Quadruple));
+    if (!temp_buf) return;
     
-    for (int i = 0; i < len1; i++) {
-        temp[i] = quads[start_idx + i];
-    }
-    for (int i = 0; i < len2; i++) {
-        quads[start_idx + i] = quads[end_idx + i];
-    }
-    for (int i = 0; i < len1; i++) {
-        quads[start_idx + len2 + i] = temp[i];
-    }
-    free(temp);
+    /* 1. Copy update quads to temp_buf */
+    memcpy(temp_buf, &quads[start_idx], update_len * sizeof(Quadruple));
+    
+    /* 2. Shift body quads left by update_len */
+    int body_len = current_idx - end_idx;
+    memmove(&quads[start_idx], &quads[end_idx], body_len * sizeof(Quadruple));
+    
+    /* 3. Copy update quads back after body */
+    memcpy(&quads[start_idx + body_len], temp_buf, update_len * sizeof(Quadruple));
+    
+    free(temp_buf);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -222,9 +226,8 @@ void print_quads_tabular(FILE *fp)
 {
     fprintf(fp, "\n=== Generated Intermediate Code (Quadruple Table) ===\n\n");
 
-    /* Strict quadruple format: pseudo-code, op, arg1, arg2, result */
-    fprintf(fp, "%-22s | %-8s | %-13s | %-13s | %-13s\n",
-            "", "op", "arg1", "arg2", "result");
+    /* Strict quadruple format as requested */
+    fprintf(fp, "%-22s | %-8s | %-13s | %-13s | %-14s\n", "", "op", "arg1", "arg2", "result");
     fprintf(fp, "-----------------------+----------+---------------+---------------+---------------\n");
 
     /* Print each quadruple */
@@ -235,25 +238,36 @@ void print_quads_tabular(FILE *fp)
         const char *arg1   = q->arg1   ? q->arg1   : "";
         const char *arg2   = q->arg2   ? q->arg2   : "";
         const char *result = q->result ? q->result  : "";
-
-        char expr[64];
-        if (strcmp(op, "label") == 0) snprintf(expr, sizeof(expr), "label %s:", result);
-        else if (strcmp(op, "goto") == 0) snprintf(expr, sizeof(expr), "goto %s", result);
-        else if (strcmp(op, "ifFalse") == 0) snprintf(expr, sizeof(expr), "ifFalse %s goto %s", arg1, result);
-        else if (strcmp(op, "ifTrue") == 0) snprintf(expr, sizeof(expr), "ifTrue %s goto %s", arg1, result);
-        else if (strcmp(op, "return") == 0) {
-            if (arg1[0]) snprintf(expr, sizeof(expr), "return %s", arg1);
+        
+        char expr[64] = {0};
+        if (strcmp(op, "=") == 0) {
+            snprintf(expr, sizeof(expr), "%s=%s", result, arg1);
+        } else if (strcmp(op, "minus") == 0 || strcmp(op, "not") == 0 || strcmp(op, "!") == 0 || strcmp(op, "~") == 0 || strcmp(op, "&") == 0 || strcmp(op, "*") == 0) {
+            if (arg2[0] == '\0') {
+                if (strcmp(op, "minus") == 0) {
+                    snprintf(expr, sizeof(expr), "%s=minus %s", result, arg1);
+                } else if (strcmp(op, "not") == 0) {
+                    snprintf(expr, sizeof(expr), "%s=not %s", result, arg1);
+                } else {
+                    snprintf(expr, sizeof(expr), "%s=%s%s", result, op, arg1);
+                }
+            } else {
+                snprintf(expr, sizeof(expr), "%s=%s%s%s", result, arg1, op, arg2);
+            }
+        } else if (strcmp(op, "ifFalse") == 0) {
+            snprintf(expr, sizeof(expr), "ifFalse %s goto %s", arg1, result);
+        } else if (strcmp(op, "goto") == 0) {
+            snprintf(expr, sizeof(expr), "goto %s", result);
+        } else if (strcmp(op, "label") == 0) {
+            snprintf(expr, sizeof(expr), "label %s:", result);
+        } else if (strcmp(op, "return") == 0) {
+            if (arg1[0] != '\0') snprintf(expr, sizeof(expr), "return %s", arg1);
             else snprintf(expr, sizeof(expr), "return");
-        } else if (strcmp(op, "=") == 0) snprintf(expr, sizeof(expr), "%s=%s", result, arg1);
-        else if (strcmp(op, "minus") == 0) snprintf(expr, sizeof(expr), "%s=minus %s", result, arg1);
-        else if (strcmp(op, "not") == 0) snprintf(expr, sizeof(expr), "%s=not %s", result, arg1);
-        else if (strcmp(op, "~") == 0) snprintf(expr, sizeof(expr), "%s=~%s", result, arg1);
-        else if (strcmp(op, "&") == 0 && arg2[0] == '\0') snprintf(expr, sizeof(expr), "%s=&%s", result, arg1);
-        else if (strcmp(op, "*") == 0 && arg2[0] == '\0') snprintf(expr, sizeof(expr), "%s=*%s", result, arg1);
-        else if (arg1[0] && arg2[0] && result[0]) snprintf(expr, sizeof(expr), "%s=%s%s%s", result, arg1, op, arg2);
-        else snprintf(expr, sizeof(expr), "%s=%s %s %s", result, op, arg1, arg2);
+        } else {
+            snprintf(expr, sizeof(expr), "%s=%s%s%s", result, arg1, op, arg2);
+        }
 
-        fprintf(fp, "%-22s | %-8s | %-13s | %-13s | %-13s\n",
+        fprintf(fp, "%-22s | %-8s | %-13s | %-13s | %-14s\n",
                 expr, op, arg1, arg2, result);
     }
     fprintf(fp, "\n");

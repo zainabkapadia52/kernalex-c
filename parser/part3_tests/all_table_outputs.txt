@@ -1,0 +1,169 @@
+================================================================================
+FILE: parser/part3_tests/test01_simple_assign.kl
+================================================================================
+=== Generated Intermediate Code (Quadruple Table) ===
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+x=5                    | =        | 5             |               | x             
+return x               | return   | x             |               |               
+
+
+================================================================================
+FILE: parser/part3_tests/test02_precedence.kl
+================================================================================
+=== Generated Intermediate Code (Quadruple Table) ===
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+a=2                    | =        | 2             |               | a             
+b=3                    | =        | 3             |               | b             
+c=4                    | =        | 4             |               | c             
+t1=b*c                 | *        | b             | c             | t1            
+t2=a+t1                | +        | a             | t1            | t2            
+z=t2                   | =        | t2            |               | z             
+return z               | return   | z             |               |               
+
+
+================================================================================
+FILE: parser/part3_tests/test03_unary_chain.kl
+================================================================================
+=== Generated Intermediate Code (Quadruple Table) ===
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+x=7                    | =        | 7             |               | x             
+t1=minus x             | minus    | x             |               | t1            
+t2=minus t1            | minus    | t1            |               | t2            
+a=t2                   | =        | t2            |               | a             
+return a               | return   | a             |               |               
+
+
+================================================================================
+FILE: parser/part3_tests/test04_decl_init_expr.kl
+================================================================================
+=== Generated Intermediate Code (Quadruple Table) ===
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+x=5                    | =        | 5             |               | x             
+t1=3*4                 | *        | 3             | 4             | t1            
+y=t1                   | =        | t1            |               | y             
+t2=x+y                 | +        | x             | y             | t2            
+z=t2                   | =        | t2            |               | z             
+return z               | return   | z             |               |               
+
+
+================================================================================
+FILE: parser/part3_tests/test05_if_basic.kl
+================================================================================
+=== Generated Intermediate Code (Quadruple Table) ===
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+a=5                    | =        | 5             |               | a             
+t1=a>3                 | >        | a             | 3             | t1            
+ifFalse t1 goto L1     | ifFalse  | t1            |               | L1            
+a=10                   | =        | 10            |               | a             
+label L1:              | label    |               |               | L1            
+return a               | return   | a             |               |               
+
+
+================================================================================
+FILE: parser/part3_tests/test06_if_else_basic.kl
+================================================================================
+=== Generated Intermediate Code (Quadruple Table) ===
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+a=10                   | =        | 10            |               | a             
+b=20                   | =        | 20            |               | b             
+t1=a>=b                | >=       | a             | b             | t1            
+ifFalse t1 goto L1     | ifFalse  | t1            |               | L1            
+m=a                    | =        | a             |               | m             
+goto L2                | goto     |               |               | L2            
+label L1:              | label    |               |               | L1            
+m=b                    | =        | b             |               | m             
+label L2:              | label    |               |               | L2            
+return m               | return   | m             |               |               
+
+
+================================================================================
+FILE: parser/part3_tests/test07_while_basic.kl
+================================================================================
+=== Generated Intermediate Code (Quadruple Table) ===
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+i=0                    | =        | 0             |               | i             
+label L1:              | label    |               |               | L1            
+t1=i<4                 | <        | i             | 4             | t1            
+ifFalse t1 goto L2     | ifFalse  | t1            |               | L2            
+t2=i+1                 | +        | i             | 1             | t2            
+i=t2                   | =        | t2            |               | i             
+goto L1                | goto     |               |               | L1            
+label L2:              | label    |               |               | L2            
+return i               | return   | i             |               |               
+
+
+================================================================================
+FILE: parser/part3_tests/test08_for_basic.kl
+================================================================================
+=== Generated Intermediate Code (Quadruple Table) ===
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+sum=0                  | =        | 0             |               | sum           
+i=0                    | =        | 0             |               | i             
+label L1:              | label    |               |               | L1            
+t1=i<4                 | <        | i             | 4             | t1            
+ifFalse t1 goto L2     | ifFalse  | t1            |               | L2            
+t3=sum+i               | +        | sum           | i             | t3            
+sum=t3                 | =        | t3            |               | sum           
+t2=i+1                 | +        | i             | 1             | t2            
+i=t2                   | =        | t2            |               | i             
+goto L1                | goto     |               |               | L1            
+label L2:              | label    |               |               | L2            
+return sum             | return   | sum           |               |               
+
+
+================================================================================
+FILE: parser/part3_tests/test09_repeat_until_basic.kl
+================================================================================
+=== Generated Intermediate Code (Quadruple Table) ===
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+a=0                    | =        | 0             |               | a             
+label L1:              | label    |               |               | L1            
+t1=a+1                 | +        | a             | 1             | t1            
+a=t1                   | =        | t1            |               | a             
+t2=a>3                 | >        | a             | 3             | t2            
+ifFalse t2 goto L1     | ifFalse  | t2            |               | L1            
+return a               | return   | a             |               |               
+
+
+================================================================================
+FILE: parser/part3_tests/test10_mixed_control_expr.kl
+================================================================================
+=== Generated Intermediate Code (Quadruple Table) ===
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+i=0                    | =        | 0             |               | i             
+total=0                | =        | 0             |               | total         
+label L1:              | label    |               |               | L1            
+t1=i<5                 | <        | i             | 5             | t1            
+ifFalse t1 goto L2     | ifFalse  | t1            |               | L2            
+t2=i!=2                | !=       | i             | 2             | t2            
+ifFalse t2 goto L3     | ifFalse  | t2            |               | L3            
+t3=total+i             | +        | total         | i             | t3            
+total=t3               | =        | t3            |               | total         
+label L3:              | label    |               |               | L3            
+t4=i+1                 | +        | i             | 1             | t4            
+i=t4                   | =        | t4            |               | i             
+goto L1                | goto     |               |               | L1            
+label L2:              | label    |               |               | L2            
+return total           | return   | total         |               |               
+
+

@@ -1,18 +1,18 @@
 === parser/part4_tests/test01_missing_semicolon.kl ===
-exit=255 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test01_missing_semicolon.txt
+exit=1 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test01_missing_semicolon.txt
 === parser/part4_tests/test02_missing_rparen.kl ===
-exit=255 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test02_missing_rparen.txt
+exit=1 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test02_missing_rparen.txt
 === parser/part4_tests/test03_missing_expression.kl ===
-exit=255 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test03_missing_expression.txt
+exit=1 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test03_missing_expression.txt
 === parser/part4_tests/test04_missing_end.kl ===
-exit=255 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test04_missing_end.txt
+exit=1 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test04_missing_end.txt
 === parser/part4_tests/test05_unsupported_switch.kl ===
-exit=2 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test05_unsupported_switch.txt
+exit=1 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test05_unsupported_switch.txt
 === parser/part4_tests/test06_unsupported_break.kl ===
-exit=2 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test06_unsupported_break.txt
+exit=1 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test06_unsupported_break.txt
 === parser/part4_tests/test07_unsupported_continue.kl ===
-exit=2 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test07_unsupported_continue.txt
+exit=1 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test07_unsupported_continue.txt
 === parser/part4_tests/test08_unsupported_prefix_inc.kl ===
-exit=2 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test08_unsupported_prefix_inc.txt
+exit=1 status=OK_DIAGNOSTIC output=parser/part4_tests/outputs/test08_unsupported_prefix_inc.txt
 
 RESULT: 8/8 tests emitted expected diagnostics

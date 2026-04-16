@@ -159,6 +159,7 @@ static void  codegen_unsupported(const char *construct);
 %type <temp> declarator
 %type <temp> direct_declarator
 %type <temp> expression_statement L_mark M_mark_stmt M_mark_expr if_head if_else_head
+%type <val> M_quad_count
 
 
 %%
@@ -625,6 +626,7 @@ designator
 statement
     : matched_statement
     | unmatched_statement
+    | error TOK_SEMICOLON { yyerrok; }
     ;
 
 compound_statement
@@ -654,6 +656,8 @@ M_mark_expr: expression { $$ = strdup(new_label()); emit_quad("ifFalse", $1, NUL
 if_head: TOK_IF TOK_LPAREN expression TOK_RPAREN { $$ = strdup(new_label()); emit_quad("ifFalse", $3, NULL, $$); } ;
 if_else_head: if_head matched_statement TOK_ELSE { $$ = strdup(new_label()); emit_quad("goto", NULL, NULL, $$); emit_quad("label", NULL, NULL, $1); } ;
 
+M_quad_count: /* empty */ { $$ = get_quad_count(); } ;
+
 matched_statement
 	: compound_statement
     | expression_statement
@@ -678,75 +682,23 @@ unmatched_statement
 iteration_statement
 	: TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN matched_statement { emit_quad("goto", NULL, NULL, $2); emit_quad("label", NULL, NULL, $4); }
 	| TOK_REPEAT L_mark matched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON { emit_quad("ifFalse", $6, NULL, $2); }
-        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN matched_statement
-          {
-              emit_quad("goto", NULL, NULL, $4);
-              emit_quad("label", NULL, NULL, $5);
-          }
-        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt
-          { $<val>$ = get_quad_count(); }
-          expression TOK_RPAREN
-          { $<val>$ = get_quad_count(); }
-          matched_statement
-          {
-              ir_defer_update($<val>6, $<val>9, get_quad_count());
-              emit_quad("goto", NULL, NULL, $4);
-              emit_quad("label", NULL, NULL, $5);
-          }
-        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN matched_statement
-          {
-              emit_quad("goto", NULL, NULL, $4);
-              emit_quad("label", NULL, NULL, $5);
-          }
-        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt
-          { $<val>$ = get_quad_count(); }
-          expression TOK_RPAREN
-          { $<val>$ = get_quad_count(); }
-          matched_statement
-          {
-              ir_defer_update($<val>6, $<val>9, get_quad_count());
-              emit_quad("goto", NULL, NULL, $4);
-              emit_quad("label", NULL, NULL, $5);
-          }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN matched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt M_quad_count expression M_quad_count TOK_RPAREN matched_statement { ir_defer_update($6, $8, get_quad_count()); emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN matched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt M_quad_count expression M_quad_count TOK_RPAREN matched_statement { ir_defer_update($6, $8, get_quad_count()); emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
     ;
 
 unmatched_iteration_statement
         : TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN unmatched_statement { emit_quad("goto", NULL, NULL, $2); emit_quad("label", NULL, NULL, $4); }
         | TOK_REPEAT L_mark unmatched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON { emit_quad("ifFalse", $6, NULL, $2); }
-        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN unmatched_statement
-          {
-              emit_quad("goto", NULL, NULL, $4);
-              emit_quad("label", NULL, NULL, $5);
-          }
-        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt
-          { $<val>$ = get_quad_count(); }
-          expression TOK_RPAREN
-          { $<val>$ = get_quad_count(); }
-          unmatched_statement
-          {
-              ir_defer_update($<val>6, $<val>9, get_quad_count());
-              emit_quad("goto", NULL, NULL, $4);
-              emit_quad("label", NULL, NULL, $5);
-          }
-        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN unmatched_statement
-          {
-              emit_quad("goto", NULL, NULL, $4);
-              emit_quad("label", NULL, NULL, $5);
-          }
-        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt
-          { $<val>$ = get_quad_count(); }
-          expression TOK_RPAREN
-          { $<val>$ = get_quad_count(); }
-          unmatched_statement
-          {
-              ir_defer_update($<val>6, $<val>9, get_quad_count());
-              emit_quad("goto", NULL, NULL, $4);
-              emit_quad("label", NULL, NULL, $5);
-          }
-;
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN unmatched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt M_quad_count expression M_quad_count TOK_RPAREN unmatched_statement { ir_defer_update($6, $8, get_quad_count()); emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN unmatched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt M_quad_count expression M_quad_count TOK_RPAREN unmatched_statement { ir_defer_update($6, $8, get_quad_count()); emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+    ;
 
 jump_statement
-        : TOK_CONTINUE TOK_SEMICOLON { codegen_unsupported("continue statement"); }
+	: TOK_CONTINUE TOK_SEMICOLON { codegen_unsupported("continue statement"); }
 	| TOK_BREAK TOK_SEMICOLON { codegen_unsupported("break statement"); }
     | TOK_RETURN TOK_SEMICOLON { emit_quad("return", NULL, NULL, NULL); }
     | TOK_RETURN expression TOK_SEMICOLON { emit_quad("return", $2, NULL, NULL); }
@@ -789,7 +741,7 @@ static void codegen_unsupported(const char *construct)
 			token_start_col,
 			(yytext && yytext[0] != '\0') ? yytext : "end of input");
 	fflush(stdout);
-	exit(2);
+	exit(1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1210,8 +1162,6 @@ static int find_prev_word_before_col(const char *line, int before_col,
  *    (c) contextual hint
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-char buff[2048];
-
 int yylex(void);
 int mode = -1;
 
@@ -1595,9 +1545,10 @@ int main(int argc, char **argv)
 
 	if(argc < 2)
 	{
+		char buff[2048];
 		sprintf(buff,
-		        "***process terminated*** [input error]: "
-		        "invalid number of command-line arguments");
+				"***process terminated*** [input error]: "
+				"invalid number of command-line arguments");
 		mode = 1;
 		yyerror(buff);
 		exit(1);
@@ -1606,18 +1557,19 @@ int main(int argc, char **argv)
 	yyin = fopen(argv[1], "r");
 	if(!yyin)
 	{
-		sprintf(buff,
-		        "***process terminated*** [input error]: "
-		        "no such file \"%s\" exists", argv[1]);
-		mode = 1;
-		yyerror(buff);
-		exit(1);
+		char buff[2048];
+                sprintf(buff,
+                        "***process terminated*** [input error]: "
+                        "no such file \"%s\" exists", argv[1]);
+                mode = 1;
+                yyerror(buff);
+                exit(1);
 	}
 
 	load_source_lines(yyin);
-    ir_init();  /* Initialize IR subsystem */
+	ir_init();
 
-    yyparse();
+	yyparse();
 
 	if(trace_capture && stderr_copy != -1)
 	{
