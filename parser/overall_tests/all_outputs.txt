@@ -1,0 +1,326 @@
+================================================================================
+FILE: parser/overall_tests/test01_spec_example.kl
+
+--- Source Code ---
+# TEST 1: Exact example from assignment spec
+# Input:  a = b ^ -c + b ^ -c   (^ is multiply in KernaLex)
+# Expected quads:
+#   1 | minus | c  | -  | t1
+#   2 | *     | b  | t1 | t2
+#   3 | minus | c  | -  | t3
+#   4 | *     | b  | t3 | t4
+#   5 | +     | t2 | t4 | t5
+#   6 | =     | t5 | -  | a
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    a = b ^ -c + b ^ -c;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+t1=minus c             | minus    | c             |               | t1            
+t2=b*t1                | *        | b             | t1            | t2            
+t3=minus c             | minus    | c             |               | t3            
+t4=b*t3                | *        | b             | t3            | t4            
+t5=t2+t4               | +        | t2            | t4            | t5            
+a=t5                   | =        | t5            |               | a             
+
+
+
+
+================================================================================
+FILE: parser/overall_tests/test02_precedence.kl
+
+--- Source Code ---
+# TEST 2: Operator Precedence - ^ (multiply) binds tighter than +/-
+# z = a + b ^ c - d / e % f
+# Expected quads (^ and / and % before + and -):
+#   1 | *  | b | c  | t1      <- b^c first
+#   2 | /  | d | e  | t2      <- d/e
+#   3 | %  | t2| f  | t3      <- t2%f
+#   4 | +  | a | t1 | t4      <- a + t1
+#   5 | -  | t4| t3 | t5      <- t4 - t3
+#   6 | =  | t5| -  | z
+# Key check: t1 = b^c must appear BEFORE any addition
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+    int f;
+    int z;
+    z = a + b ^ c - d / e % f;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+t1=b*c                 | *        | b             | c             | t1            
+t2=a+t1                | +        | a             | t1            | t2            
+t3=d/e                 | /        | d             | e             | t3            
+t4=t3%f                | %        | t3            | f             | t4            
+t5=t2-t4               | -        | t2            | t4            | t5            
+z=t5                   | =        | t5            |               | z             
+
+
+
+
+================================================================================
+FILE: parser/overall_tests/test03_chained_assign.kl
+
+--- Source Code ---
+# TEST 3: Chained Assignment (Right-Associative)
+# a = b = c = 5  evaluates RIGHT to LEFT:
+#   1 | =  | 5  | -  | c      <- c = 5 first
+#   2 | =  | c  | -  | b      <- then b = c
+#   3 | =  | b  | -  | a      <- then a = b
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    a = b = c = 5;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+c=5                    | =        | 5             |               | c             
+b=c                    | =        | c             |               | b             
+a=b                    | =        | b             |               | a             
+
+
+
+
+================================================================================
+FILE: parser/overall_tests/test04_if_else.kl
+
+--- Source Code ---
+int main() begin
+    int a; int b; int r; int max;
+    a = 10; b = 20; r = 0;
+    if (a >= b) begin
+        max = a;
+    end else begin
+        max = b;
+    end
+    if (a < b) begin
+        r = 1;
+    end
+    if (a == b) begin
+        r = 0;
+    end
+    if (a != b) begin
+        r = 2;
+    end
+    return max;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+a=10                   | =        | 10            |               | a             
+b=20                   | =        | 20            |               | b             
+r=0                    | =        | 0             |               | r             
+t1=a>=b                | >=       | a             | b             | t1            
+ifFalse t1 goto L1     | ifFalse  | t1            |               | L1            
+max=a                  | =        | a             |               | max           
+goto L2                | goto     |               |               | L2            
+label L1:              | label    |               |               | L1            
+max=b                  | =        | b             |               | max           
+label L2:              | label    |               |               | L2            
+t2=a<b                 | <        | a             | b             | t2            
+ifFalse t2 goto L3     | ifFalse  | t2            |               | L3            
+r=1                    | =        | 1             |               | r             
+label L3:              | label    |               |               | L3            
+t3=a==b                | ==       | a             | b             | t3            
+ifFalse t3 goto L4     | ifFalse  | t3            |               | L4            
+r=0                    | =        | 0             |               | r             
+label L4:              | label    |               |               | L4            
+t4=a!=b                | !=       | a             | b             | t4            
+ifFalse t4 goto L5     | ifFalse  | t4            |               | L5            
+r=2                    | =        | 2             |               | r             
+label L5:              | label    |               |               | L5            
+return max             | return   | max           |               |               
+
+
+
+
+================================================================================
+FILE: parser/overall_tests/test05_while.kl
+
+--- Source Code ---
+int main() begin
+    int i;
+    i = 0;
+    while (i < 10) begin
+        i = i + 1;
+    end
+    return i;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+i=0                    | =        | 0             |               | i             
+label L1:              | label    |               |               | L1            
+t1=i<10                | <        | i             | 10            | t1            
+ifFalse t1 goto L2     | ifFalse  | t1            |               | L2            
+t2=i+1                 | +        | i             | 1             | t2            
+i=t2                   | =        | t2            |               | i             
+goto L1                | goto     |               |               | L1            
+label L2:              | label    |               |               | L2            
+return i               | return   | i             |               |               
+
+
+
+
+================================================================================
+FILE: parser/overall_tests/test06_nested_loops.kl
+
+--- Source Code ---
+int main() begin
+    int i; int j; int sum;
+    sum = 0; i = 0;
+    while (i < 10) begin
+        for (j = 0; j < 5; j = j + 1) begin
+            sum = sum + 1;
+        end
+        i = i + 1;
+    end
+    return sum;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+sum=0                  | =        | 0             |               | sum           
+i=0                    | =        | 0             |               | i             
+label L1:              | label    |               |               | L1            
+t1=i<10                | <        | i             | 10            | t1            
+ifFalse t1 goto L2     | ifFalse  | t1            |               | L2            
+j=0                    | =        | 0             |               | j             
+label L3:              | label    |               |               | L3            
+t2=j<5                 | <        | j             | 5             | t2            
+ifFalse t2 goto L4     | ifFalse  | t2            |               | L4            
+t4=sum+1               | +        | sum           | 1             | t4            
+sum=t4                 | =        | t4            |               | sum           
+t3=j+1                 | +        | j             | 1             | t3            
+j=t3                   | =        | t3            |               | j             
+goto L3                | goto     |               |               | L3            
+label L4:              | label    |               |               | L4            
+t5=i+1                 | +        | i             | 1             | t5            
+i=t5                   | =        | t5            |               | i             
+goto L1                | goto     |               |               | L1            
+label L2:              | label    |               |               | L2            
+return sum             | return   | sum           |               |               
+
+
+
+
+================================================================================
+FILE: parser/overall_tests/test07_decl_init_expr.kl
+
+--- Source Code ---
+int main() begin
+    int x = 5;
+    int y = 3 ^ 4;
+    int z;
+    z = x + y;
+    return z;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+x=5                    | =        | 5             |               | x             
+t1=3*4                 | *        | 3             | 4             | t1            
+y=t1                   | =        | t1            |               | y             
+t2=x+y                 | +        | x             | y             | t2            
+z=t2                   | =        | t2            |               | z             
+return z               | return   | z             |               |               
+
+
+
+
+================================================================================
+FILE: parser/overall_tests/test08_repeat_until_basic.kl
+
+--- Source Code ---
+int main() begin
+    int a;
+    a = 0;
+    repeat begin
+        a = a + 1;
+    end until (a > 3);
+    return a;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+a=0                    | =        | 0             |               | a             
+label L1:              | label    |               |               | L1            
+t1=a+1                 | +        | a             | 1             | t1            
+a=t1                   | =        | t1            |               | a             
+t2=a>3                 | >        | a             | 3             | t2            
+ifFalse t2 goto L1     | ifFalse  | t2            |               | L1            
+return a               | return   | a             |               |               
+
+
+
+
+================================================================================
+FILE: parser/overall_tests/test09_missing_semicolon.kl
+
+--- Source Code ---
+int main() begin
+    int x
+    x = 1;
+    return x;
+end
+
+--- Error Diagnostics ---
+exit=1 status=OK_DIAGNOSTIC
+
+  [SYNTAX ERROR] Line 3, Col 5: syntax error, unexpected identifier near 'x'
+        3 |     x = 1;
+          |     ^
+    hint: Check the syntax around 'x'.
+
+
+
+================================================================================
+FILE: parser/overall_tests/test10_unsupported_switch.kl
+
+--- Source Code ---
+int main() begin
+    int x;
+    x = 1;
+    switch (x) begin
+        x = 2;
+    end
+    return x;
+end
+
+--- Error Diagnostics ---
+exit=1 status=OK_DIAGNOSTIC
+
+  [IR ERROR] Unsupported construct during code generation: switch statement at line 6, col 5 near 'end'
+
+
+

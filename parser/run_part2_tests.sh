@@ -22,10 +22,13 @@ for f in parser/part2_tests/*.kl; do
   
   echo "================================================================================" >> "$OUT_FILE"
   echo "FILE: $f" >> "$OUT_FILE"
-  echo "================================================================================" >> "$OUT_FILE"
+  echo "" >> "$OUT_FILE"
+  echo "--- Source Code ---" >> "$OUT_FILE"
+  cat "$f" >> "$OUT_FILE"
+  echo "" >> "$OUT_FILE"
   
   # Run the parser, grab stderr & stdout, and use sed to extract just the Quadruple Table
-  ./parser/kernalex_parser "$f" 2>&1 | sed -n '/=== Generated Intermediate Code (Quadruple Table) ===/,$p' >> "$OUT_FILE"
+  ./parser/kernalex_parser "$f" 2>&1 | sed -n '/=== Generated Intermediate Code (Quadruple Table) ===/,$p' | sed 's/=== Generated Intermediate Code (Quadruple Table) ===/---Generated Intermediate Code (Quadruple Table) ---/' >> "$OUT_FILE"
   ec=${PIPESTATUS[0]} # Grab the exit code of kernalex_parser, before the pipe
 
   if [ $ec -eq 0 ]; then
@@ -34,6 +37,8 @@ for f in parser/part2_tests/*.kl; do
     echo "[WARNING] $f returned non-zero exit code ($ec)" >> "$OUT_FILE"
   fi
   
+  echo "" >> "$OUT_FILE"
+  echo "" >> "$OUT_FILE"
   echo "" >> "$OUT_FILE"
 done
 

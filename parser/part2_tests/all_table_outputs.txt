@@ -1,7 +1,23 @@
 ================================================================================
 FILE: parser/part2_tests/test01_if.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    int a; int b; int c; int d; int e;
+    a = 5;
+    if (a > 3) begin
+        a = 10;
+    end
+    if (true) begin
+        a = b;
+    end
+    if (a + b ^ c > d - e) begin
+        a = 1;
+    end
+    return a;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -23,10 +39,33 @@ label L3:              | label    |               |               | L3
 return a               | return   | a             |               |               
 
 
+
+
 ================================================================================
 FILE: parser/part2_tests/test02_if_else.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    int a; int b; int r; int max;
+    a = 10; b = 20; r = 0;
+    if (a >= b) begin
+        max = a;
+    end else begin
+        max = b;
+    end
+    if (a < b) begin
+        r = 1;
+    end
+    if (a == b) begin
+        r = 0;
+    end
+    if (a != b) begin
+        r = 2;
+    end
+    return max;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -55,10 +94,24 @@ label L5:              | label    |               |               | L5
 return max             | return   | max           |               |               
 
 
+
+
 ================================================================================
 FILE: parser/part2_tests/test03_dangling_else.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    int x; int y; int a;
+    x = 1; y = 0;
+    if (x)
+        if (y)
+            a = 1;
+        else
+            a = 2;
+    return a;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -75,10 +128,23 @@ label L1:              | label    |               |               | L1
 return a               | return   | a             |               |               
 
 
+
+
 ================================================================================
 FILE: parser/part2_tests/test04_compound_assign.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    int x; int a; int b;
+    x = 1; a = 0; b = 1;
+    if (x) begin
+        a += 1;
+        b ^= 2;
+    end
+    return a;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -94,10 +160,22 @@ label L1:              | label    |               |               | L1
 return a               | return   | a             |               |               
 
 
+
+
 ================================================================================
 FILE: parser/part2_tests/test05_while.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    int i;
+    i = 0;
+    while (i < 10) begin
+        i = i + 1;
+    end
+    return i;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -112,10 +190,22 @@ label L2:              | label    |               |               | L2
 return i               | return   | i             |               |               
 
 
+
+
 ================================================================================
 FILE: parser/part2_tests/test06_for.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    int i; int sum;
+    sum = 0;
+    for (i = 0; i < 5; i = i + 1) begin
+        sum = sum + i;
+    end
+    return sum;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -133,10 +223,23 @@ label L2:              | label    |               |               | L2
 return sum             | return   | sum           |               |               
 
 
+
+
 ================================================================================
 FILE: parser/part2_tests/test07_for_decl_empty.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    int x;
+    x = 0;
+    for (int i = 0; i < 10; i = i + 1) begin
+        x = x + i;
+    end
+    for (int j = 0; j < 5; j = j + 1) ;
+    return x;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -162,10 +265,22 @@ label L4:              | label    |               |               | L4
 return x               | return   | x             |               |               
 
 
+
+
 ================================================================================
 FILE: parser/part2_tests/test08_repeat_until.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    int a;
+    a = 0;
+    repeat begin
+        a = a + 1;
+    end until (a > 10);
+    return a;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -178,10 +293,25 @@ ifFalse t2 goto L1     | ifFalse  | t2            |               | L1
 return a               | return   | a             |               |               
 
 
+
+
 ================================================================================
 FILE: parser/part2_tests/test09_nested_loops.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    int i; int j; int sum;
+    sum = 0; i = 0;
+    while (i < 10) begin
+        for (j = 0; j < 5; j = j + 1) begin
+            sum = sum + 1;
+        end
+        i = i + 1;
+    end
+    return sum;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -207,10 +337,26 @@ label L2:              | label    |               |               | L2
 return sum             | return   | sum           |               |               
 
 
+
+
 ================================================================================
 FILE: parser/part2_tests/test10_comprehensive.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    int sum; int i;
+    sum = 0;
+    for (i = 0; i < 10; i = i + 1) begin
+        if (a == b) begin
+            sum = sum + i;
+        end else begin
+            sum = sum + 1;
+        end
+    end
+    return sum;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -233,5 +379,7 @@ i=t2                   | =        | t2            |               | i
 goto L1                | goto     |               |               | L1            
 label L2:              | label    |               |               | L2            
 return sum             | return   | sum           |               |               
+
+
 
 

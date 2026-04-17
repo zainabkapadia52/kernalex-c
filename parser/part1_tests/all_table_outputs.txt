@@ -1,7 +1,25 @@
 ================================================================================
 FILE: parser/part1_tests/test01_spec_example.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+# TEST 1: Exact example from assignment spec
+# Input:  a = b ^ -c + b ^ -c   (^ is multiply in KernaLex)
+# Expected quads:
+#   1 | minus | c  | -  | t1
+#   2 | *     | b  | t1 | t2
+#   3 | minus | c  | -  | t3
+#   4 | *     | b  | t3 | t4
+#   5 | +     | t2 | t4 | t5
+#   6 | =     | t5 | -  | a
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    a = b ^ -c + b ^ -c;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -13,10 +31,35 @@ t5=t2+t4               | +        | t2            | t4            | t5
 a=t5                   | =        | t5            |               | a             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test02_precedence.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+# TEST 2: Operator Precedence - ^ (multiply) binds tighter than +/-
+# z = a + b ^ c - d / e % f
+# Expected quads (^ and / and % before + and -):
+#   1 | *  | b | c  | t1      <- b^c first
+#   2 | /  | d | e  | t2      <- d/e
+#   3 | %  | t2| f  | t3      <- t2%f
+#   4 | +  | a | t1 | t4      <- a + t1
+#   5 | -  | t4| t3 | t5      <- t4 - t3
+#   6 | =  | t5| -  | z
+# Key check: t1 = b^c must appear BEFORE any addition
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+    int f;
+    int z;
+    z = a + b ^ c - d / e % f;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -28,10 +71,34 @@ t5=t2-t4               | -        | t2            | t4            | t5
 z=t5                   | =        | t5            |               | z             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test03_parens.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+# TEST 3: Parentheses Override Precedence
+# Without parens: a + b^c  -> t1=b^c, t2=a+t1   (multiply first)
+# With parens:  (a + b)^c  -> t1=a+b, t2=t1^c   (addition first)
+# Expected quads:
+#   1 | +  | a  | b  | t1     <- addition FIRST (parenthesised)
+#   2 | *  | t1 | c  | t2     <- then multiply
+#   3 | =  | t2 | -  | x
+#   4 | *  | b  | c  | t3     <- multiply FIRST (no parens)
+#   5 | +  | a  | t3 | t4     <- then addition
+#   6 | =  | t4 | -  | y
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    int x;
+    int y;
+    x = (a + b) ^ c;
+    y = a + b ^ c;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -43,10 +110,27 @@ t4=a+t3                | +        | a             | t3            | t4
 y=t4                   | =        | t4            |               | y             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test04_chained_assign.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+# TEST 4: Chained Assignment (Right-Associative)
+# a = b = c = 5  evaluates RIGHT to LEFT:
+#   1 | =  | 5  | -  | c      <- c = 5 first
+#   2 | =  | c  | -  | b      <- then b = c
+#   3 | =  | b  | -  | a      <- then a = b
+# If your parser is left-associative on assignment, order will be wrong.
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    a = b = c = 5;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -55,10 +139,36 @@ b=c                    | =        | c             |               | b
 a=b                    | =        | b             |               | a             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test05_double_unary.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+# TEST 5: Double Unary Minus  --  -(-x)
+# y = - -x
+# Expected quads:
+#   1 | minus | x  | -  | t1     <- inner unary
+#   2 | minus | t1 | -  | t2     <- outer unary on t1 (NOT on x again!)
+#   3 | =     | t2 | -  | y
+#
+# Also: z = -(a + b)
+#   4 | +     | a  | b  | t3
+#   5 | minus | t3 | -  | t4
+#   6 | =     | t4 | -  | z
+# Common mistake: only one temp generated, or both minuses point to x
+
+int main() begin
+    int x;
+    int y;
+    int z;
+    int a;
+    int b;
+    y = - -x;
+    z = -(a + b);
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -70,10 +180,34 @@ t4=minus t3            | minus    | t3            |               | t4
 z=t4                   | =        | t4            |               | z             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test06_compound_assign.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+# TEST 6: Compound Assignment Operators
+# KernaLex uses ^= for multiply-assign (not *=)
+# Expected quads:
+#   1 | =   | 10 | -  | x
+#   2 | +=  | 5  | -  | x      <- x += 5
+#   3 | -=  | 3  | -  | x      <- x -= 3
+#   4 | *=  | 2  | -  | x      <- x ^= 2  (multiply-assign)
+#   5 | /=  | 4  | -  | x      <- x /= 4
+#   6 | %=  | 3  | -  | x      <- x %= 3
+# Key check: result column must be 'x', arg1 is the RHS value
+
+int main() begin
+    int x;
+    x = 10;
+    x += 5;
+    x -= 3;
+    x ^= 2;
+    x /= 4;
+    x %= 3;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -90,10 +224,39 @@ t5=x%3                 | %        | x             | 3             | t5
 x=t5                   | =        | t5            |               | x             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test07_global_temps.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+# TEST 7: Global Temp Counter Across Statements
+# Temps must be globally unique - never reset between statements
+# Expected quads:
+#   1 | *  | a | b  | t1      <- first expression uses t1
+#   2 | =  | t1| -  | x
+#   3 | +  | c | d  | t2      <- second expression uses t2 (NOT t1 again!)
+#   4 | =  | t2| -  | y
+#   5 | -  | e | f  | t3      <- third uses t3 (NOT t1 again!)
+#   6 | =  | t3| -  | z
+# If you see t1, t1, t1 the counter is being reset. WRONG.
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+    int f;
+    int x;
+    int y;
+    int z;
+    x = a ^ b;
+    y = c + d;
+    z = e - f;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -105,10 +268,33 @@ t3=e-f                 | -        | e             | f             | t3
 z=t3                   | =        | t3            |               | z             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test08_decl_init.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+# TEST 8: Declaration With Initializer vs Standalone Assignment
+# Tests that BOTH forms generate IR:
+#   int x = 5;       <- declaration initializer (init_declarator rule)
+#   z = x + y;       <- standalone assignment
+#
+# Expected quads:
+#   1 | =  | 5  | -  | x      <- from: int x = 5  (declaration)
+#   2 | *  | 3  | 4  | t1     <- from: int y = 3^4 (declaration with expr)
+#   3 | =  | t1 | -  | y
+#   4 | +  | x  | y  | t2     <- from: standalone z = x + y
+#   5 | =  | t2 | -  | z
+# If row 1 is missing, the init_declarator fix did not work.
+
+int main() begin
+    int x = 5;
+    int y = 3 ^ 4;
+    int z;
+    z = x + y;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -119,10 +305,42 @@ t2=x+y                 | +        | x             | y             | t2
 z=t2                   | =        | t2            |               | z             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test09_deep_nesting.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+# TEST 9: Deep Nesting - Temp Chain Integrity
+# r = (a + b) ^ (c - d) + (e ^ f) / (g + h)
+# (^ is multiply in KernaLex)
+#
+# Expected quads (8 operations, strict left-to-right):
+#   1 | +  | a  | b  | t1
+#   2 | -  | c  | d  | t2
+#   3 | *  | t1 | t2 | t3     <- t1 ^ t2
+#   4 | *  | e  | f  | t4     <- e ^ f
+#   5 | +  | g  | h  | t5
+#   6 | /  | t4 | t5 | t6
+#   7 | +  | t3 | t6 | t7
+#   8 | =  | t7 | -  | r
+#
+# Key: t3 must use t1,t2 (not raw a,b,c,d). t6 must use t4,t5.
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+    int f;
+    int g;
+    int h;
+    int r;
+    r = (a + b) ^ (c - d) + (e ^ f) / (g + h);
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -136,10 +354,37 @@ t7=t3+t6               | +        | t3            | t6            | t7
 r=t7                   | =        | t7            |               | r             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test10_mixed_unary_binary.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+# TEST 10: Mixed Unary + Binary (Stress Test)
+# result = -a ^ -b + -(c + d)
+# (^ is multiply in KernaLex)
+#
+# Step-by-step expected:
+#   1 | minus | a  | -  | t1     <- -a
+#   2 | minus | b  | -  | t2     <- -b
+#   3 | *     | t1 | t2 | t3     <- t1 ^ t2  i.e. (-a)^(-b)
+#   4 | +     | c  | d  | t4     <- c + d
+#   5 | minus | t4 | -  | t5     <- -(c+d)
+#   6 | +     | t3 | t5 | t6     <- t3 + t5
+#   7 | =     | t6 | -  | result
+#
+# Hardest single-expression test. All 7 quads must appear in this exact order.
+
+int main() begin
+    int a;
+    int b;
+    int c;
+    int d;
+    int result;
+    result = -a ^ -b + -(c + d);
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -152,10 +397,17 @@ t6=t3+t5               | +        | t3            | t5            | t6
 result=t6              | =        | t6            |               | result        
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_assignment_example.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    a = b ^ -c + b ^ -c;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -167,10 +419,19 @@ t5=t2+t4               | +        | t2            | t4            | t5
 a=t5                   | =        | t5            |               | a             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_bare_expr.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    x;
+    x + 3;
+    y ^ 2;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -178,10 +439,19 @@ t1=x+3                 | +        | x             | 3             | t1
 t2=y*2                 | *        | y             | 2             | t2            
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_expr_only.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    x = 5;
+    y = x + 3;
+    z = y ^ 2;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -192,20 +462,38 @@ t2=y*2                 | *        | y             | 2             | t2
 z=t2                   | =        | t2            |               | z             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_minimal.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    x = 5;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
 x=5                    | =        | 5             |               | x             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_part1_verify.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    a = 5;
+    b = 10;
+    c = 3;
+    d = b + c;
+    e = a ^ d;
+    result = e + a;
+end
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -220,10 +508,23 @@ t3=e+a                 | +        | e             | a             | t3
 result=t3              | =        | t3            |               | result        
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_regression_all_ops.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    a = 10;
+    b = 3;
+    c = a + b;
+    d = a - b;
+    e = a ^ b;
+    f = a / b;
+    g = a % b;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -241,10 +542,21 @@ t5=a%b                 | %        | a             | b             | t5
 g=t5                   | =        | t5            |               | g             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_regression_binops.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    a = 2;
+    b = 3;
+    c = 4;
+    d = a + b ^ c;
+    e = (a + b) ^ c;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -259,10 +571,20 @@ t4=t3*c                | *        | t3            | c             | t4
 e=t4                   | =        | t4            |               | e             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_regression_nested.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    a = 2;
+    b = 3;
+    c = 5;
+    result = (a + b) ^ (c - a) + b;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -276,10 +598,19 @@ t4=t3+b                | +        | t3            | b             | t4
 result=t4              | =        | t4            |               | result        
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_regression_simple.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    x = 5;
+    y = 10;
+    z = x;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -288,10 +619,18 @@ y=10                   | =        | 10            |               | y
 z=x                    | =        | x             |               | z             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_regression_unary.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    x = 5;
+    y = -x;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -300,10 +639,18 @@ t1=minus x             | minus    | x             |               | t1
 y=t1                   | =        | t1            |               | y             
 
 
+
+
 ================================================================================
 FILE: parser/part1_tests/test_simple_expr.kl
-================================================================================
-=== Generated Intermediate Code (Quadruple Table) ===
+
+--- Source Code ---
+int main() begin
+    x = 5;
+    y = x + 3;
+    z = y ^ 2;
+end
+---Generated Intermediate Code (Quadruple Table) ---
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
@@ -312,5 +659,7 @@ t1=x+3                 | +        | x             | 3             | t1
 y=t1                   | =        | t1            |               | y             
 t2=y*2                 | *        | y             | 2             | t2            
 z=t2                   | =        | t2            |               | z             
+
+
 
 

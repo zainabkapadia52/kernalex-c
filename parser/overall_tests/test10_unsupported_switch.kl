@@ -1,0 +1,8 @@
+int main() begin
+    int x;
+    x = 1;
+    switch (x) begin
+        x = 2;
+    end
+    return x;
+end
