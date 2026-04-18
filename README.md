@@ -11,25 +11,33 @@ KernaLex is a Flex/Bison-based lexical and syntax analyzer for the KernaLex prog
 
 ## Project Structure
 
-```
-lexer/                Lexer component
-  kernalex.l          Flex source
-  kernalex            Lexer executable
-  tests/              Lexer test inputs
-  README.md           Lexer documentation
+```text
+Makefile                      Build configuration
+README.md                     
+tokens.h                      Shared token definitions
 
-parser/               Parser component
-  kernalex.y          Bison grammar
-  kernalex_parser      Parser executable
-  tests/               Parser test inputs
-  error_diagnostics/   Parser error examples and saved outputs
-  parsing_table/       Generated LALR(1) tables
-  reverse_derivation_tree/  Reverse derivation tree outputs
-  comparison_outputs/  Conflict comparison artifacts
-  README.md           Parser documentation
+lexer/                        Lexer component
+  kernalex.l                  Flex source
+  README.md                   Lexer documentation
+  tests/                      Lexer test inputs
 
-transition_diagrams/   Lexer DFA/state diagrams
-tokens.h               Shared token definitions
+parser/                       Parser component
+  kernalex.y                  Bison grammar
+  kernalex_before.y           Original Bison grammar before conflict resolution
+  ir.h, ir.c                  IR structures and functions
+  run_*.sh                    Various bash scripts for running tests
+  compare_conflicts.sh        Script to compare grammar conflicts
+  save_reverse_derivation.sh  Script to save AST/derivation trees
+  README.md                   Parser documentation
+  tests/                      Parser basic test inputs
+  part[1-4]_tests/            Specialized tests for different project parts
+  overall_tests/              Comprehensive integration tests
+  error_diagnostics/          Parser error examples and saved outputs
+  parsing_table/              Generated LALR(1) tables and generation scripts
+  reverse_derivation_tree/    Reverse derivation tree outputs
+  comparison_outputs/         Conflict comparison artifacts
+
+transition_diagrams/          Lexer DFA/state diagrams
 ```
 
 ## Build
@@ -38,7 +46,6 @@ tokens.h               Shared token definitions
 make all            # Build lexer and parser
 make lexer          # Build lexer only
 make parser         # Build parser only
-make lalr-table     # Generate parser table CSV outputs
 make clean          # Remove generated files
 ```
 
