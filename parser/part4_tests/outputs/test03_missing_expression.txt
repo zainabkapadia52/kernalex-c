@@ -1,0 +1,4 @@
+[SYNTAX ERROR] Line 3, Col 9: syntax error, unexpected ';' near ';'
+      3 |     x = ;
+        |         ^
+  hint: Check the syntax around ';'.

@@ -1,6 +1,6 @@
-#line 1 "parser/lex_parser.yy.c"
+#line 2 "parser/lex_parser.yy.c"
 
-#line 3 "parser/lex_parser.yy.c"
+#line 4 "parser/lex_parser.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -694,10 +694,10 @@ void advance_col() {
     current_col += yyleng;
 }
 
-#line 697 "parser/lex_parser.yy.c"
+#line 698 "parser/lex_parser.yy.c"
 #define YY_NO_INPUT 1
 
-#line 700 "parser/lex_parser.yy.c"
+#line 701 "parser/lex_parser.yy.c"
 
 #define INITIAL 0
 #define COMMENT_ML 1
@@ -920,7 +920,7 @@ YY_DECL
 
 #line 50 "lexer/kernalex.l"
     /* --- LINE BUFFERING LOGIC --- */
-#line 923 "parser/lex_parser.yy.c"
+#line 924 "parser/lex_parser.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1055,32 +1055,32 @@ YY_RULE_SETUP
 case 9:
 YY_RULE_SETUP
 #line 83 "lexer/kernalex.l"
-{ RECORD_TOKEN(); advance_col(); return TOK_FLOAT_LIT; }
+{ RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_FLOAT_LIT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 84 "lexer/kernalex.l"
-{ RECORD_TOKEN(); advance_col(); return TOK_FLOAT_LIT; }
+{ RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_FLOAT_LIT; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 86 "lexer/kernalex.l"
-{ RECORD_TOKEN(); advance_col(); return TOK_INTEGER; }
+{ RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_INTEGER; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 87 "lexer/kernalex.l"
-{ RECORD_TOKEN(); advance_col(); return TOK_INTEGER; }
+{ RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_INTEGER; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 88 "lexer/kernalex.l"
-{ RECORD_TOKEN(); advance_col(); return TOK_INTEGER; }
+{ RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_INTEGER; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 89 "lexer/kernalex.l"
-{ RECORD_TOKEN(); advance_col(); return TOK_INTEGER; }
+{ RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_INTEGER; }
 	YY_BREAK
 /* --- STRINGS --- */
 case 15:
@@ -1537,13 +1537,17 @@ YY_RULE_SETUP
 {
     RECORD_TOKEN();
     advance_col();
-    if (yyleng <= 255) return TOK_IDENTIFIER;
+    if (yyleng <= 255) {
+        yylval.temp = (char *)malloc(yyleng + 1);
+        strcpy(yylval.temp, yytext);
+        return TOK_IDENTIFIER;
+    }
     else fprintf(stderr, "[ERROR: Line %d, Col %d: Identifier too long]\n", yylineno, token_start_col);
 }
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 219 "lexer/kernalex.l"
+#line 223 "lexer/kernalex.l"
 { 
     fprintf(stderr, "[ERROR: Line %d, Col %d: Invalid character '%s']\n", yylineno, current_col, yytext);
     current_col++; 
@@ -1552,7 +1556,7 @@ YY_RULE_SETUP
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(STRING_STATE):
 case YY_STATE_EOF(CHAR_STATE):
-#line 224 "lexer/kernalex.l"
+#line 228 "lexer/kernalex.l"
 {
     token_start_line = yylineno;
     token_start_col = current_col;
@@ -1561,10 +1565,10 @@ case YY_STATE_EOF(CHAR_STATE):
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 230 "lexer/kernalex.l"
+#line 234 "lexer/kernalex.l"
 ECHO;
 	YY_BREAK
-#line 1567 "parser/lex_parser.yy.c"
+#line 1572 "parser/lex_parser.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2538,7 +2542,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 230 "lexer/kernalex.l"
+#line 234 "lexer/kernalex.l"
 
 
 #ifndef PARSER_MODE

@@ -79,13 +79,13 @@ void advance_col() {
 "#".* { advance_col(); }
 
     /* --- LITERALS --- */
-[0-9]+\.[0-9]*([eE][+-]?[0-9]+)?  { RECORD_TOKEN(); advance_col(); return TOK_FLOAT_LIT; }
-[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?  { RECORD_TOKEN(); advance_col(); return TOK_FLOAT_LIT; }
+[0-9]+\.[0-9]*([eE][+-]?[0-9]+)?  { RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_FLOAT_LIT; }
+[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?  { RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_FLOAT_LIT; }
 
-0b[01]+           { RECORD_TOKEN(); advance_col(); return TOK_INTEGER; }
-0o[0-7]+          { RECORD_TOKEN(); advance_col(); return TOK_INTEGER; }
-0x[0-9a-fA-F]+    { RECORD_TOKEN(); advance_col(); return TOK_INTEGER; }
-[0-9]+            { RECORD_TOKEN(); advance_col(); return TOK_INTEGER; }
+0b[01]+           { RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_INTEGER; }
+0o[0-7]+          { RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_INTEGER; }
+0x[0-9a-fA-F]+    { RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_INTEGER; }
+[0-9]+            { RECORD_TOKEN(); advance_col(); yylval.temp = (char *)malloc(yyleng + 1); strcpy(yylval.temp, yytext); return TOK_INTEGER; }
 
     /* --- STRINGS --- */
 \" {
@@ -211,7 +211,11 @@ void advance_col() {
 [a-zA-Z_][a-zA-Z0-9_]* {
     RECORD_TOKEN();
     advance_col();
-    if (yyleng <= 255) return TOK_IDENTIFIER;
+    if (yyleng <= 255) {
+        yylval.temp = (char *)malloc(yyleng + 1);
+        strcpy(yylval.temp, yytext);
+        return TOK_IDENTIFIER;
+    }
     else fprintf(stderr, "[ERROR: Line %d, Col %d: Identifier too long]\n", yylineno, token_start_col);
 }
 

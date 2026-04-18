@@ -1,7 +1,9 @@
 %{
+#define _POSIX_C_SOURCE 200809L
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include "ir.h"
 
 extern char *yytext;
 extern int token_start_line;
@@ -38,6 +40,7 @@ static int   is_control_paren_context(const char *line, int paren_col);
 static int   find_prev_word_before_col(const char *line, int before_col,
 									   char *out, size_t out_sz,
 									   int *start_col, int *word_len);
+static void  codegen_unsupported(const char *construct);
 %}
 
 %token TOK_INT 1
@@ -73,11 +76,11 @@ static int   find_prev_word_before_col(const char *line, int before_col,
 %token TOK_END 31
 %token TOK_TRUE 32
 %token TOK_FALSE 33
-%token TOK_IDENTIFIER 34
-%token TOK_INTEGER 35
-%token TOK_FLOAT_LIT 36
-%token TOK_CHAR_LIT 37
-%token TOK_STRING_LIT 38
+%token <temp> TOK_IDENTIFIER 34
+%token <temp> TOK_INTEGER 35
+%token <temp> TOK_FLOAT_LIT 36
+%token <temp> TOK_CHAR_LIT 37
+%token <temp> TOK_STRING_LIT 38
 %token TOK_PLUS 39
 %token TOK_MINUS 40
 %token TOK_MULT 41
@@ -125,158 +128,324 @@ static int   find_prev_word_before_col(const char *line, int before_col,
 
 %union
 {
-	int val;
-	struct symtab *symp;
+    int val;
+    struct symtab *symp;
+    char *temp;  /* temporary variable or result name from expression */
 }
+
+/* Type declarations for non-terminals that return values */
+%type <temp> primary_expression
+%type <temp> constant
+%type <temp> string
+%type <temp> postfix_expression
+%type <temp> unary_expression
+%type <temp> cast_expression
+%type <temp> multiplicative_expression
+%type <temp> additive_expression
+%type <temp> shift_expression
+%type <temp> relational_expression
+%type <temp> equality_expression
+%type <temp> and_expression
+%type <temp> exclusive_or_expression
+%type <temp> inclusive_or_expression
+%type <temp> logical_and_expression
+%type <temp> logical_or_expression
+%type <temp> conditional_expression
+%type <temp> assignment_expression
+%type <temp> expression
+%type <temp> constant_expression
+%type <temp> argument_expression_list
+%type <temp> initializer
+%type <temp> declarator
+%type <temp> direct_declarator
+%type <temp> expression_statement L_mark M_mark_stmt M_mark_expr if_head if_else_head
+%type <val> M_quad_count
+
 
 %%
 
 primary_expression
-	: TOK_IDENTIFIER
-    | constant
-    | string
-	| TOK_TRUE
-	| TOK_FALSE
-	| TOK_LPAREN expression TOK_RPAREN
+    : TOK_IDENTIFIER { $$ = $1; }
+    | constant { $$ = $1; }
+    | string { $$ = $1; }
+    | TOK_TRUE { $$ = (char *)malloc(5); strcpy($$, "true"); }
+    | TOK_FALSE { $$ = (char *)malloc(6); strcpy($$, "false"); }
+    | TOK_LPAREN expression TOK_RPAREN { $$ = $2; }
     ;
 
 constant
-	: TOK_INTEGER {int_consts++;}
-	| TOK_FLOAT_LIT
-	| TOK_CHAR_LIT
-	;
+    : TOK_INTEGER
+    {
+        int_consts++;
+        $$ = $1;
+    }
+    | TOK_FLOAT_LIT { $$ = $1; }
+    | TOK_CHAR_LIT  { $$ = $1; }
+    ;
 
 string
-	: TOK_STRING_LIT
-	;
+    : TOK_STRING_LIT { $$ = $1; }
+    ;
 
 
 postfix_expression
-	: primary_expression
-	| postfix_expression TOK_LBRACKET expression TOK_RBRACKET
-	| postfix_expression TOK_LPAREN TOK_RPAREN
-	| postfix_expression TOK_LPAREN argument_expression_list TOK_RPAREN
-	| postfix_expression TOK_DOT TOK_IDENTIFIER
-	| postfix_expression TOK_ARROW TOK_IDENTIFIER
-	| postfix_expression TOK_INC
-	| postfix_expression TOK_DEC
-	| TOK_LPAREN type_name TOK_RPAREN TOK_BEGIN initializer_list TOK_END
-	| TOK_LPAREN type_name TOK_RPAREN TOK_BEGIN initializer_list TOK_COMMA TOK_END
-	;
+    : primary_expression { $$ = $1; }
+    | postfix_expression TOK_LBRACKET expression TOK_RBRACKET { $$ = $1; }
+    | postfix_expression TOK_LPAREN TOK_RPAREN { $$ = $1; }
+    | postfix_expression TOK_LPAREN argument_expression_list TOK_RPAREN { $$ = $1; }
+    | postfix_expression TOK_DOT TOK_IDENTIFIER { $$ = $1; }
+    | postfix_expression TOK_ARROW TOK_IDENTIFIER { $$ = $1; }
+	| postfix_expression TOK_INC { codegen_unsupported("postfix increment (x++)"); $$ = $1; }
+	| postfix_expression TOK_DEC { codegen_unsupported("postfix decrement (x--)"); $$ = $1; }
+    | TOK_LPAREN type_name TOK_RPAREN TOK_BEGIN initializer_list TOK_END { $$ = (char *)malloc(20); strcpy($$, "init_result"); }
+    | TOK_LPAREN type_name TOK_RPAREN TOK_BEGIN initializer_list TOK_COMMA TOK_END { $$ = (char *)malloc(20); strcpy($$, "init_result"); }
+    ;
 
 argument_expression_list
-	: assignment_expression
-	| argument_expression_list TOK_COMMA assignment_expression
-	;
+    : assignment_expression { $$ = $1; }
+    | argument_expression_list TOK_COMMA assignment_expression { $$ = $3; }
+    ;
 
 unary_expression
-	: postfix_expression
-	| TOK_INC unary_expression
-	| TOK_DEC unary_expression
-	| unary_operator cast_expression
-	| TOK_SIZEOF unary_expression
-	| TOK_SIZEOF TOK_LPAREN type_name TOK_RPAREN
-	;
-
-unary_operator
-	: TOK_AMP
-	| TOK_STAR
-	| TOK_PLUS
-	| TOK_MINUS
-	| TOK_BITNOT
-	| TOK_NOT
-	;
+    : postfix_expression { $$ = $1; }
+	| TOK_INC unary_expression { codegen_unsupported("prefix increment (++x)"); $$ = $2; }
+	| TOK_DEC unary_expression { codegen_unsupported("prefix decrement (--x)"); $$ = $2; }
+    | TOK_MINUS cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("minus", $2, NULL, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    | TOK_PLUS cast_expression { $$ = $2; }
+    | TOK_NOT cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("not", $2, NULL, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    | TOK_BITNOT cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("~", $2, NULL, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    | TOK_AMP cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("&", $2, NULL, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    | TOK_STAR cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("*", $2, NULL, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    ;
 
 cast_expression
-	: unary_expression
-	| TOK_LPAREN type_name TOK_RPAREN cast_expression
-	;
+    : unary_expression { $$ = $1; }
+    | TOK_LPAREN type_name TOK_RPAREN cast_expression { $$ = $4; }
+    ;
 
 multiplicative_expression
-    : cast_expression
-	| multiplicative_expression TOK_MULT cast_expression
-	| multiplicative_expression TOK_DIV cast_expression
-	| multiplicative_expression TOK_MOD cast_expression
+    : cast_expression { $$ = $1; }
+    | multiplicative_expression TOK_MULT cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("*", $1, $3, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    | multiplicative_expression TOK_DIV cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("/", $1, $3, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    | multiplicative_expression TOK_MOD cast_expression
+    {
+        char *temp = new_temp();
+        emit_quad("%", $1, $3, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
     ;
 
 additive_expression
-	: multiplicative_expression
-	| additive_expression TOK_PLUS multiplicative_expression
-	| additive_expression TOK_MINUS multiplicative_expression
-	;
+    : multiplicative_expression { $$ = $1; }
+    | additive_expression TOK_PLUS multiplicative_expression
+    {
+        char *temp = new_temp();
+        emit_quad("+", $1, $3, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    | additive_expression TOK_MINUS multiplicative_expression
+    {
+        char *temp = new_temp();
+        emit_quad("-", $1, $3, temp);
+        $$ = (char *)malloc(strlen(temp) + 1);
+        strcpy($$, temp);
+    }
+    ;
 
 shift_expression
-	: additive_expression
+	: additive_expression { $$ = $1; }
 	| shift_expression TOK_LSHIFT additive_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("<<", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	| shift_expression TOK_RSHIFT additive_expression
+	{
+	    char *t = new_temp();
+	    emit_quad(">>", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	;
 
 relational_expression
-    : shift_expression
-	| relational_expression TOK_LT shift_expression
-	| relational_expression TOK_GT shift_expression
-	| relational_expression TOK_LE shift_expression
-	| relational_expression TOK_GE shift_expression
-	| relational_expression TOK_SPACESHIP shift_expression
+    : shift_expression { $$ = $1; }
+	| relational_expression TOK_LT shift_expression { char *t=new_temp(); emit_quad("<", $1, $3, t); $$ = strdup(t); }
+	| relational_expression TOK_GT shift_expression { char *t=new_temp(); emit_quad(">", $1, $3, t); $$ = strdup(t); }
+	| relational_expression TOK_LE shift_expression { char *t=new_temp(); emit_quad("<=", $1, $3, t); $$ = strdup(t); }
+	| relational_expression TOK_GE shift_expression { char *t=new_temp(); emit_quad(">=", $1, $3, t); $$ = strdup(t); }
+	| relational_expression TOK_SPACESHIP shift_expression { $$ = $3; }
     ;
 
 equality_expression
-	: relational_expression
-	| equality_expression TOK_EQ relational_expression
-	| equality_expression TOK_NE relational_expression
+	: relational_expression { $$ = $1; }
+	| equality_expression TOK_EQ relational_expression { char *t=new_temp(); emit_quad("==", $1, $3, t); $$ = strdup(t); }
+	| equality_expression TOK_NE relational_expression { char *t=new_temp(); emit_quad("!=", $1, $3, t); $$ = strdup(t); }
 	;
 
 and_expression
-	: equality_expression
+	: equality_expression { $$ = $1; }
 	| and_expression TOK_AMP equality_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("&", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	;
 
 exclusive_or_expression
-    : and_expression
+    : and_expression { $$ = $1; }
 	| exclusive_or_expression TOK_XOR and_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("^", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
     ;
 
 inclusive_or_expression
-	: exclusive_or_expression
+	: exclusive_or_expression { $$ = $1; }
 	| inclusive_or_expression TOK_BITOR exclusive_or_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("|", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	;
 
 logical_and_expression
-	: inclusive_or_expression
+	: inclusive_or_expression { $$ = $1; }
 	| logical_and_expression TOK_AND inclusive_or_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("&&", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	;
 
 logical_or_expression
-	: logical_and_expression
+	: logical_and_expression { $$ = $1; }
 	| logical_or_expression TOK_OR logical_and_expression
+	{
+	    char *t = new_temp();
+	    emit_quad("||", $1, $3, t);
+	    $$ = (char *)malloc(strlen(t) + 1);
+	    strcpy($$, t);
+	}
 	;
 
 conditional_expression
-	: logical_or_expression
+	: logical_or_expression { $$ = $1; }
 	;
 
 assignment_expression
-	: conditional_expression
-	| unary_expression assignment_operator assignment_expression
-	;
-
-assignment_operator
-	: TOK_ASSIGN
-	| TOK_MULTEQ
-	| TOK_DIVEQ
-	| TOK_MODEQ
-	| TOK_PLUSEQ
-	| TOK_MINUSEQ
-	;
+    : conditional_expression { $$ = $1; }
+    | unary_expression TOK_ASSIGN assignment_expression
+    {
+        emit_quad("=", $3, NULL, $1);
+        $$ = (char *)malloc(strlen($1) + 1);
+        strcpy($$, $1);
+    }
+    | unary_expression TOK_PLUSEQ assignment_expression
+    {
+        char *t = new_temp();
+        emit_quad("+", $1, $3, t);
+        emit_quad("=", t, NULL, $1);
+        $$ = (char *)malloc(strlen($1) + 1);
+        strcpy($$, $1);
+    }
+    | unary_expression TOK_MINUSEQ assignment_expression
+    {
+        char *t = new_temp();
+        emit_quad("-", $1, $3, t);
+        emit_quad("=", t, NULL, $1);
+        $$ = (char *)malloc(strlen($1) + 1);
+        strcpy($$, $1);
+    }
+    | unary_expression TOK_MULTEQ assignment_expression
+    {
+        char *t = new_temp();
+        emit_quad("*", $1, $3, t);
+        emit_quad("=", t, NULL, $1);
+        $$ = (char *)malloc(strlen($1) + 1);
+        strcpy($$, $1);
+    }
+    | unary_expression TOK_DIVEQ assignment_expression
+    {
+        char *t = new_temp();
+        emit_quad("/", $1, $3, t);
+        emit_quad("=", t, NULL, $1);
+        $$ = (char *)malloc(strlen($1) + 1);
+        strcpy($$, $1);
+    }
+    | unary_expression TOK_MODEQ assignment_expression
+    {
+        char *t = new_temp();
+        emit_quad("%", $1, $3, t);
+        emit_quad("=", t, NULL, $1);
+        $$ = (char *)malloc(strlen($1) + 1);
+        strcpy($$, $1);
+    }
+    ;
 
 expression
-	: assignment_expression
-	| expression TOK_COMMA assignment_expression
-	;
+    : assignment_expression { $$ = $1; }
+    | expression TOK_COMMA assignment_expression { $$ = $3; }
+    ;
 
 constant_expression
-	: conditional_expression	/* with constraints */
-	;
+    : conditional_expression { $$ = $1; }	/* with constraints */
+    ;
 
 declaration
 	: declaration_specifiers TOK_SEMICOLON
@@ -297,6 +466,11 @@ init_declarator_list
 
 init_declarator
 	: declarator TOK_ASSIGN initializer
+	{
+	    if ($1 && $3) {
+	        emit_quad("=", $3, NULL, $1);
+	    }
+	}
 	| declarator
 	;
 
@@ -355,18 +529,18 @@ struct_declarator
 
 
 declarator
-	: pointer direct_declarator
-	| direct_declarator
+	: pointer direct_declarator { $$ = $2; }
+	| direct_declarator         { $$ = $1; }
 	;
 
 direct_declarator
-	: TOK_IDENTIFIER
-	| TOK_LPAREN declarator TOK_RPAREN
-	| direct_declarator TOK_LBRACKET TOK_RBRACKET
-	| direct_declarator TOK_LBRACKET assignment_expression TOK_RBRACKET
-	| direct_declarator TOK_LPAREN parameter_type_list TOK_RPAREN
-	| direct_declarator TOK_LPAREN TOK_RPAREN
-	| direct_declarator TOK_LPAREN identifier_list TOK_RPAREN
+	: TOK_IDENTIFIER                                                    { $$ = $1; }
+	| TOK_LPAREN declarator TOK_RPAREN                                  { $$ = $2; }
+	| direct_declarator TOK_LBRACKET TOK_RBRACKET                       { $$ = $1; }
+	| direct_declarator TOK_LBRACKET assignment_expression TOK_RBRACKET { $$ = $1; }
+	| direct_declarator TOK_LPAREN parameter_type_list TOK_RPAREN       { $$ = $1; }
+	| direct_declarator TOK_LPAREN TOK_RPAREN                           { $$ = $1; }
+	| direct_declarator TOK_LPAREN identifier_list TOK_RPAREN          { $$ = $1; }
 	;
 
 pointer
@@ -420,10 +594,13 @@ direct_abstract_declarator
 	;
 
 initializer
-	: TOK_BEGIN initializer_list TOK_END
-	| TOK_BEGIN initializer_list TOK_COMMA TOK_END
-	| assignment_expression
-	;
+    : TOK_BEGIN initializer_list TOK_END { $$ = (char *)malloc(20); strcpy($$, "init"); }
+    | TOK_BEGIN initializer_list TOK_COMMA TOK_END { $$ = (char *)malloc(20); strcpy($$, "init"); }
+    | assignment_expression
+    {
+        $$ = $1;
+    }
+    ;
 
 initializer_list
 	: designation initializer
@@ -449,6 +626,7 @@ designator
 statement
     : matched_statement
     | unmatched_statement
+    | error TOK_SEMICOLON { yyerrok; }
     ;
 
 compound_statement
@@ -467,9 +645,18 @@ block_item
 	;
 
 expression_statement
-	: TOK_SEMICOLON
-	| expression TOK_SEMICOLON
+	: TOK_SEMICOLON { $$ = NULL; }
+	| expression TOK_SEMICOLON { $$ = $1; }
 	;
+
+
+L_mark: /* empty */ { $$ = strdup(new_label()); emit_quad("label", NULL, NULL, $$); } ;
+M_mark_stmt: expression_statement { $$ = strdup(new_label()); emit_quad("ifFalse", $1, NULL, $$); } ;
+M_mark_expr: expression { $$ = strdup(new_label()); emit_quad("ifFalse", $1, NULL, $$); } ;
+if_head: TOK_IF TOK_LPAREN expression TOK_RPAREN { $$ = strdup(new_label()); emit_quad("ifFalse", $3, NULL, $$); } ;
+if_else_head: if_head matched_statement TOK_ELSE { $$ = strdup(new_label()); emit_quad("goto", NULL, NULL, $$); emit_quad("label", NULL, NULL, $1); } ;
+
+M_quad_count: /* empty */ { $$ = get_quad_count(); } ;
 
 matched_statement
 	: compound_statement
@@ -477,49 +664,49 @@ matched_statement
     | iteration_statement
     | jump_statement
 	| TOK_IDENTIFIER TOK_COLON matched_statement
-	| TOK_CASE constant_expression TOK_COLON matched_statement
-	| TOK_DEFAULT TOK_COLON matched_statement
-    | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN matched_statement
-	| TOK_IF TOK_LPAREN expression TOK_RPAREN matched_statement TOK_ELSE matched_statement {ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--;}
+	| TOK_CASE constant_expression TOK_COLON matched_statement { codegen_unsupported("case label"); }
+	| TOK_DEFAULT TOK_COLON matched_statement { codegen_unsupported("default label"); }
+    | TOK_SWITCH TOK_LPAREN expression TOK_RPAREN matched_statement { codegen_unsupported("switch statement"); }
+	| if_else_head matched_statement { emit_quad("label", NULL, NULL, $1); ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--; }
     ;
 
 unmatched_statement
 	: TOK_IDENTIFIER TOK_COLON unmatched_statement
-	| TOK_CASE constant_expression TOK_COLON unmatched_statement
-	| TOK_DEFAULT TOK_COLON unmatched_statement
+	| TOK_CASE constant_expression TOK_COLON unmatched_statement { codegen_unsupported("case label"); }
+	| TOK_DEFAULT TOK_COLON unmatched_statement { codegen_unsupported("default label"); }
     | unmatched_iteration_statement
-	| TOK_IF TOK_LPAREN expression TOK_RPAREN statement {ifs_wo_else++;}
-	| TOK_IF TOK_LPAREN expression TOK_RPAREN matched_statement TOK_ELSE unmatched_statement {ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--;}
+	| if_head statement { emit_quad("label", NULL, NULL, $1); ifs_wo_else++; }
+	| if_else_head unmatched_statement { emit_quad("label", NULL, NULL, $1); ladder_len++; if(ladder_len>=max){max=ladder_len;} ladder_len--; }
     ;
 
 iteration_statement
-	: TOK_WHILE TOK_LPAREN expression TOK_RPAREN matched_statement
-	| TOK_REPEAT matched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement TOK_RPAREN matched_statement
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement expression TOK_RPAREN matched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement TOK_RPAREN matched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement expression TOK_RPAREN matched_statement
+	: TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN matched_statement { emit_quad("goto", NULL, NULL, $2); emit_quad("label", NULL, NULL, $4); }
+	| TOK_REPEAT L_mark matched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON { emit_quad("ifFalse", $6, NULL, $2); }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN matched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt M_quad_count expression M_quad_count TOK_RPAREN matched_statement { ir_defer_update($6, $8, get_quad_count()); emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN matched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt M_quad_count expression M_quad_count TOK_RPAREN matched_statement { ir_defer_update($6, $8, get_quad_count()); emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
     ;
 
 unmatched_iteration_statement
-	: TOK_WHILE TOK_LPAREN expression TOK_RPAREN unmatched_statement
-	| TOK_REPEAT unmatched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement TOK_RPAREN unmatched_statement
-	| TOK_FOR TOK_LPAREN expression_statement expression_statement expression TOK_RPAREN unmatched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement TOK_RPAREN unmatched_statement
-	| TOK_FOR TOK_LPAREN declaration expression_statement expression TOK_RPAREN unmatched_statement
-	;
+        : TOK_WHILE L_mark TOK_LPAREN M_mark_expr TOK_RPAREN unmatched_statement { emit_quad("goto", NULL, NULL, $2); emit_quad("label", NULL, NULL, $4); }
+        | TOK_REPEAT L_mark unmatched_statement TOK_UNTIL TOK_LPAREN expression TOK_RPAREN TOK_SEMICOLON { emit_quad("ifFalse", $6, NULL, $2); }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt TOK_RPAREN unmatched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN expression_statement L_mark M_mark_stmt M_quad_count expression M_quad_count TOK_RPAREN unmatched_statement { ir_defer_update($6, $8, get_quad_count()); emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt TOK_RPAREN unmatched_statement { emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+        | TOK_FOR TOK_LPAREN declaration L_mark M_mark_stmt M_quad_count expression M_quad_count TOK_RPAREN unmatched_statement { ir_defer_update($6, $8, get_quad_count()); emit_quad("goto", NULL, NULL, $4); emit_quad("label", NULL, NULL, $5); }
+    ;
 
 jump_statement
-	: TOK_CONTINUE TOK_SEMICOLON
-	| TOK_BREAK TOK_SEMICOLON
-	| TOK_RETURN TOK_SEMICOLON
-	| TOK_RETURN expression TOK_SEMICOLON
-	;
+	: TOK_CONTINUE TOK_SEMICOLON { codegen_unsupported("continue statement"); }
+	| TOK_BREAK TOK_SEMICOLON { codegen_unsupported("break statement"); }
+    | TOK_RETURN TOK_SEMICOLON { emit_quad("return", NULL, NULL, NULL); }
+    | TOK_RETURN expression TOK_SEMICOLON { emit_quad("return", $2, NULL, NULL); }
+    ;
 
 translation_unit
-	: external_declaration {global_declarations++;}
-	| translation_unit external_declaration {global_declarations++;}
+	: external_declaration
+	| translation_unit external_declaration
 	;
 
 external_declaration
@@ -544,6 +731,18 @@ declaration_list
 #include <unistd.h>
 
 extern int fileno(FILE *stream);
+
+static void codegen_unsupported(const char *construct)
+{
+	fprintf(stdout,
+			"[IR ERROR] Unsupported construct during code generation: %s at line %d, col %d near '%s'\n",
+			construct ? construct : "unknown",
+			token_start_line,
+			token_start_col,
+			(yytext && yytext[0] != '\0') ? yytext : "end of input");
+	fflush(stdout);
+	exit(1);
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
  *  SECTION 1 – Human-friendly token name translation
@@ -963,8 +1162,6 @@ static int find_prev_word_before_col(const char *line, int before_col,
  *    (c) contextual hint
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-char buff[2048];
-
 int yylex(void);
 int mode = -1;
 
@@ -1127,7 +1324,7 @@ void yyerror(const char *s)
         printf("%s\n", s);
     }
 
-    exit(-1);
+    exit(1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1348,9 +1545,10 @@ int main(int argc, char **argv)
 
 	if(argc < 2)
 	{
+		char buff[2048];
 		sprintf(buff,
-		        "***process terminated*** [input error]: "
-		        "invalid number of command-line arguments");
+				"***process terminated*** [input error]: "
+				"invalid number of command-line arguments");
 		mode = 1;
 		yyerror(buff);
 		exit(1);
@@ -1359,17 +1557,19 @@ int main(int argc, char **argv)
 	yyin = fopen(argv[1], "r");
 	if(!yyin)
 	{
-		sprintf(buff,
-		        "***process terminated*** [input error]: "
-		        "no such file \"%s\" exists", argv[1]);
-		mode = 1;
-		yyerror(buff);
-		exit(1);
+		char buff[2048];
+                sprintf(buff,
+                        "***process terminated*** [input error]: "
+                        "no such file \"%s\" exists", argv[1]);
+                mode = 1;
+                yyerror(buff);
+                exit(1);
 	}
 
 	load_source_lines(yyin);
+	ir_init();
 
-	do { yyparse(); } while(!feof(yyin));
+	yyparse();
 
 	if(trace_capture && stderr_copy != -1)
 	{
@@ -1388,12 +1588,37 @@ int main(int argc, char **argv)
 	}
 
 	printf("***parsing successful***\n");
-	printf("#global_declarations = %d\n",  global_declarations);
-	printf("#function_definitions = %d\n", func_definitions);
-	printf("#integer_constants = %d\n",    int_consts);
-	printf("#pointers_declarations = %d\n",pointer_decls);
-	printf("#ifs_without_else = %d\n",     ifs_wo_else);
-	printf("if-else max-depth = %d\n",     (max < 0) ? 0 : max);
+    printf("#global_declarations = %d\n",  global_declarations);
+    printf("#function_definitions = %d\n", func_definitions);
+    printf("#integer_constants = %d\n",    int_consts);
+    printf("#pointers_declarations = %d\n",pointer_decls);
+    printf("#ifs_without_else = %d\n",     ifs_wo_else);
+    printf("if-else max-depth = %d\n",     (max < 0) ? 0 : max);
 
-	return 0;
+    /* ── (a) Explicitly show: Input Source Program ─────────────────────── */
+    printf("\n=== Input Source Program ===\n\n");
+    rewind(yyin);
+    {
+        char src_line[MAX_LINE_LEN];
+        int  lineno = 1;
+        while (fgets(src_line, sizeof(src_line), yyin)) {
+            /* strip trailing newline for clean display */
+            size_t slen = strlen(src_line);
+            while (slen > 0 && (src_line[slen-1] == '\n' || src_line[slen-1] == '\r'))
+                src_line[--slen] = '\0';
+            printf("  %4d | %s\n", lineno++, src_line);
+        }
+    }
+    printf("\n");
+
+    /* ── (b) Explicitly show: Generated Intermediate Code ──────────────── */
+    if (get_quad_count() > 0) {
+        print_quads_tabular(stdout);
+    } else {
+        printf("\n(no intermediate code generated)\n\n");
+    }
+
+    ir_cleanup();
+
+    return 0;
 }

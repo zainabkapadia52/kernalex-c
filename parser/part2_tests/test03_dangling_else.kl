@@ -1,0 +1,10 @@
+int main() begin
+    int x; int y; int a;
+    x = 1; y = 0;
+    if (x)
+        if (y)
+            a = 1;
+        else
+            a = 2;
+    return a;
+end

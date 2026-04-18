@@ -139,12 +139,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 127 "parser/kernalex.y"
+#line 130 "parser/kernalex.y"
 
-	int val;
-	struct symtab *symp;
+    int val;
+    struct symtab *symp;
+    char *temp;  /* temporary variable or result name from expression */
 
-#line 148 "parser/kernalex.tab.h"
+#line 149 "parser/kernalex.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

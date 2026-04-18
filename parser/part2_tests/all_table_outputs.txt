@@ -1,0 +1,385 @@
+================================================================================
+FILE: parser/part2_tests/test01_if.kl
+
+--- Source Code ---
+int main() begin
+    int a; int b; int c; int d; int e;
+    a = 5;
+    if (a > 3) begin
+        a = 10;
+    end
+    if (true) begin
+        a = b;
+    end
+    if (a + b ^ c > d - e) begin
+        a = 1;
+    end
+    return a;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+a=5                    | =        | 5             |               | a             
+t1=a>3                 | >        | a             | 3             | t1            
+ifFalse t1 goto L1     | ifFalse  | t1            |               | L1            
+a=10                   | =        | 10            |               | a             
+label L1:              | label    |               |               | L1            
+ifFalse true goto L2   | ifFalse  | true          |               | L2            
+a=b                    | =        | b             |               | a             
+label L2:              | label    |               |               | L2            
+t2=b*c                 | *        | b             | c             | t2            
+t3=a+t2                | +        | a             | t2            | t3            
+t4=d-e                 | -        | d             | e             | t4            
+t5=t3>t4               | >        | t3            | t4            | t5            
+ifFalse t5 goto L3     | ifFalse  | t5            |               | L3            
+a=1                    | =        | 1             |               | a             
+label L3:              | label    |               |               | L3            
+return a               | return   | a             |               |               
+
+
+
+
+================================================================================
+FILE: parser/part2_tests/test02_if_else.kl
+
+--- Source Code ---
+int main() begin
+    int a; int b; int r; int max;
+    a = 10; b = 20; r = 0;
+    if (a >= b) begin
+        max = a;
+    end else begin
+        max = b;
+    end
+    if (a < b) begin
+        r = 1;
+    end
+    if (a == b) begin
+        r = 0;
+    end
+    if (a != b) begin
+        r = 2;
+    end
+    return max;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+a=10                   | =        | 10            |               | a             
+b=20                   | =        | 20            |               | b             
+r=0                    | =        | 0             |               | r             
+t1=a>=b                | >=       | a             | b             | t1            
+ifFalse t1 goto L1     | ifFalse  | t1            |               | L1            
+max=a                  | =        | a             |               | max           
+goto L2                | goto     |               |               | L2            
+label L1:              | label    |               |               | L1            
+max=b                  | =        | b             |               | max           
+label L2:              | label    |               |               | L2            
+t2=a<b                 | <        | a             | b             | t2            
+ifFalse t2 goto L3     | ifFalse  | t2            |               | L3            
+r=1                    | =        | 1             |               | r             
+label L3:              | label    |               |               | L3            
+t3=a==b                | ==       | a             | b             | t3            
+ifFalse t3 goto L4     | ifFalse  | t3            |               | L4            
+r=0                    | =        | 0             |               | r             
+label L4:              | label    |               |               | L4            
+t4=a!=b                | !=       | a             | b             | t4            
+ifFalse t4 goto L5     | ifFalse  | t4            |               | L5            
+r=2                    | =        | 2             |               | r             
+label L5:              | label    |               |               | L5            
+return max             | return   | max           |               |               
+
+
+
+
+================================================================================
+FILE: parser/part2_tests/test03_dangling_else.kl
+
+--- Source Code ---
+int main() begin
+    int x; int y; int a;
+    x = 1; y = 0;
+    if (x)
+        if (y)
+            a = 1;
+        else
+            a = 2;
+    return a;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+x=1                    | =        | 1             |               | x             
+y=0                    | =        | 0             |               | y             
+ifFalse x goto L1      | ifFalse  | x             |               | L1            
+ifFalse y goto L2      | ifFalse  | y             |               | L2            
+a=1                    | =        | 1             |               | a             
+goto L3                | goto     |               |               | L3            
+label L2:              | label    |               |               | L2            
+a=2                    | =        | 2             |               | a             
+label L3:              | label    |               |               | L3            
+label L1:              | label    |               |               | L1            
+return a               | return   | a             |               |               
+
+
+
+
+================================================================================
+FILE: parser/part2_tests/test04_compound_assign.kl
+
+--- Source Code ---
+int main() begin
+    int x; int a; int b;
+    x = 1; a = 0; b = 1;
+    if (x) begin
+        a += 1;
+        b ^= 2;
+    end
+    return a;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+x=1                    | =        | 1             |               | x             
+a=0                    | =        | 0             |               | a             
+b=1                    | =        | 1             |               | b             
+ifFalse x goto L1      | ifFalse  | x             |               | L1            
+t1=a+1                 | +        | a             | 1             | t1            
+a=t1                   | =        | t1            |               | a             
+t2=b*2                 | *        | b             | 2             | t2            
+b=t2                   | =        | t2            |               | b             
+label L1:              | label    |               |               | L1            
+return a               | return   | a             |               |               
+
+
+
+
+================================================================================
+FILE: parser/part2_tests/test05_while.kl
+
+--- Source Code ---
+int main() begin
+    int i;
+    i = 0;
+    while (i < 10) begin
+        i = i + 1;
+    end
+    return i;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+i=0                    | =        | 0             |               | i             
+label L1:              | label    |               |               | L1            
+t1=i<10                | <        | i             | 10            | t1            
+ifFalse t1 goto L2     | ifFalse  | t1            |               | L2            
+t2=i+1                 | +        | i             | 1             | t2            
+i=t2                   | =        | t2            |               | i             
+goto L1                | goto     |               |               | L1            
+label L2:              | label    |               |               | L2            
+return i               | return   | i             |               |               
+
+
+
+
+================================================================================
+FILE: parser/part2_tests/test06_for.kl
+
+--- Source Code ---
+int main() begin
+    int i; int sum;
+    sum = 0;
+    for (i = 0; i < 5; i = i + 1) begin
+        sum = sum + i;
+    end
+    return sum;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+sum=0                  | =        | 0             |               | sum           
+i=0                    | =        | 0             |               | i             
+label L1:              | label    |               |               | L1            
+t1=i<5                 | <        | i             | 5             | t1            
+ifFalse t1 goto L2     | ifFalse  | t1            |               | L2            
+t3=sum+i               | +        | sum           | i             | t3            
+sum=t3                 | =        | t3            |               | sum           
+t2=i+1                 | +        | i             | 1             | t2            
+i=t2                   | =        | t2            |               | i             
+goto L1                | goto     |               |               | L1            
+label L2:              | label    |               |               | L2            
+return sum             | return   | sum           |               |               
+
+
+
+
+================================================================================
+FILE: parser/part2_tests/test07_for_decl_empty.kl
+
+--- Source Code ---
+int main() begin
+    int x;
+    x = 0;
+    for (int i = 0; i < 10; i = i + 1) begin
+        x = x + i;
+    end
+    for (int j = 0; j < 5; j = j + 1) ;
+    return x;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+x=0                    | =        | 0             |               | x             
+i=0                    | =        | 0             |               | i             
+label L1:              | label    |               |               | L1            
+t1=i<10                | <        | i             | 10            | t1            
+ifFalse t1 goto L2     | ifFalse  | t1            |               | L2            
+t3=x+i                 | +        | x             | i             | t3            
+x=t3                   | =        | t3            |               | x             
+t2=i+1                 | +        | i             | 1             | t2            
+i=t2                   | =        | t2            |               | i             
+goto L1                | goto     |               |               | L1            
+label L2:              | label    |               |               | L2            
+j=0                    | =        | 0             |               | j             
+label L3:              | label    |               |               | L3            
+t4=j<5                 | <        | j             | 5             | t4            
+ifFalse t4 goto L4     | ifFalse  | t4            |               | L4            
+t5=j+1                 | +        | j             | 1             | t5            
+j=t5                   | =        | t5            |               | j             
+goto L3                | goto     |               |               | L3            
+label L4:              | label    |               |               | L4            
+return x               | return   | x             |               |               
+
+
+
+
+================================================================================
+FILE: parser/part2_tests/test08_repeat_until.kl
+
+--- Source Code ---
+int main() begin
+    int a;
+    a = 0;
+    repeat begin
+        a = a + 1;
+    end until (a > 10);
+    return a;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+a=0                    | =        | 0             |               | a             
+label L1:              | label    |               |               | L1            
+t1=a+1                 | +        | a             | 1             | t1            
+a=t1                   | =        | t1            |               | a             
+t2=a>10                | >        | a             | 10            | t2            
+ifFalse t2 goto L1     | ifFalse  | t2            |               | L1            
+return a               | return   | a             |               |               
+
+
+
+
+================================================================================
+FILE: parser/part2_tests/test09_nested_loops.kl
+
+--- Source Code ---
+int main() begin
+    int i; int j; int sum;
+    sum = 0; i = 0;
+    while (i < 10) begin
+        for (j = 0; j < 5; j = j + 1) begin
+            sum = sum + 1;
+        end
+        i = i + 1;
+    end
+    return sum;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+sum=0                  | =        | 0             |               | sum           
+i=0                    | =        | 0             |               | i             
+label L1:              | label    |               |               | L1            
+t1=i<10                | <        | i             | 10            | t1            
+ifFalse t1 goto L2     | ifFalse  | t1            |               | L2            
+j=0                    | =        | 0             |               | j             
+label L3:              | label    |               |               | L3            
+t2=j<5                 | <        | j             | 5             | t2            
+ifFalse t2 goto L4     | ifFalse  | t2            |               | L4            
+t4=sum+1               | +        | sum           | 1             | t4            
+sum=t4                 | =        | t4            |               | sum           
+t3=j+1                 | +        | j             | 1             | t3            
+j=t3                   | =        | t3            |               | j             
+goto L3                | goto     |               |               | L3            
+label L4:              | label    |               |               | L4            
+t5=i+1                 | +        | i             | 1             | t5            
+i=t5                   | =        | t5            |               | i             
+goto L1                | goto     |               |               | L1            
+label L2:              | label    |               |               | L2            
+return sum             | return   | sum           |               |               
+
+
+
+
+================================================================================
+FILE: parser/part2_tests/test10_comprehensive.kl
+
+--- Source Code ---
+int main() begin
+    int sum; int i;
+    sum = 0;
+    for (i = 0; i < 10; i = i + 1) begin
+        if (a == b) begin
+            sum = sum + i;
+        end else begin
+            sum = sum + 1;
+        end
+    end
+    return sum;
+end
+
+---Generated Intermediate Code (Quadruple Table) ---
+
+                       | op       | arg1          | arg2          | result        
+-----------------------+----------+---------------+---------------+---------------
+sum=0                  | =        | 0             |               | sum           
+i=0                    | =        | 0             |               | i             
+label L1:              | label    |               |               | L1            
+t1=i<10                | <        | i             | 10            | t1            
+ifFalse t1 goto L2     | ifFalse  | t1            |               | L2            
+t3=a==b                | ==       | a             | b             | t3            
+ifFalse t3 goto L3     | ifFalse  | t3            |               | L3            
+t4=sum+i               | +        | sum           | i             | t4            
+sum=t4                 | =        | t4            |               | sum           
+goto L4                | goto     |               |               | L4            
+label L3:              | label    |               |               | L3            
+t5=sum+1               | +        | sum           | 1             | t5            
+sum=t5                 | =        | t5            |               | sum           
+label L4:              | label    |               |               | L4            
+t2=i+1                 | +        | i             | 1             | t2            
+i=t2                   | =        | t2            |               | i             
+goto L1                | goto     |               |               | L1            
+label L2:              | label    |               |               | L2            
+return sum             | return   | sum           |               |               
+
+
+
+

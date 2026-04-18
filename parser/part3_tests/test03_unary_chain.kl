@@ -1,0 +1,6 @@
+int main() begin
+    int a; int x;
+    x = 7;
+    a = - -x;
+    return a;
+end

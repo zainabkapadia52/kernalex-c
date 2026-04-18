@@ -1,0 +1,6 @@
+int main() begin
+    a = 2;
+    b = 3;
+    c = 5;
+    result = (a + b) ^ (c - a) + b;
+end

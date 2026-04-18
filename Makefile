@@ -1,7 +1,7 @@
 CC = gcc
 FLEX = flex
 BISON = bison
-CFLAGS = -Wall -Wextra -std=c99
+CFLAGS = -Wall -Wextra -std=c99 -D_POSIX_C_SOURCE=200809L
 
 # Directory structure
 LEXER_DIR = lexer
@@ -16,7 +16,7 @@ PARSER_LEX_FILE = $(LEXER_DIR)/kernalex.l
 PARSER_TAB_C = $(PARSER_DIR)/kernalex.tab.c
 PARSER_TAB_H = $(PARSER_DIR)/kernalex.tab.h
 
-.PHONY: all clean lexer parser lalr-table lalr-table-full lalr-table-important
+.PHONY: all clean lexer parser part3-tests part4-tests lalr-table lalr-table-full lalr-table-important
 
 all: parser lexer
 
@@ -32,6 +32,12 @@ $(LEXER): $(LEXER_SRC)
 # Parser build 
 parser: $(PARSER)
 
+part3-tests: parser
+	bash parser/run_part3_tests.sh
+
+part4-tests: parser
+	bash parser/run_part4_tests.sh
+
 lalr-table: lalr-table-full lalr-table-important
 
 lalr-table-full: $(PARSER_DIR)/parsing_table/lalr1_table_full.csv
@@ -44,8 +50,11 @@ $(PARSER_TAB_C) $(PARSER_TAB_H) $(PARSER_OUTPUT): $(PARSER_DIR)/kernalex.y
 $(PARSER_LEX_SRC): $(PARSER_LEX_FILE) $(PARSER_TAB_H)
 	$(FLEX) -o $(PARSER_LEX_SRC) $(PARSER_LEX_FILE)
 
-$(PARSER): $(PARSER_TAB_C) $(PARSER_LEX_SRC)
-	$(CC) $(CFLAGS) -DYYDEBUG=1 -DPARSER_MODE -I$(PARSER_DIR) -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC)
+# $(PARSER): $(PARSER_TAB_C) $(PARSER_LEX_SRC)
+# 	$(CC) $(CFLAGS) -DYYDEBUG=1 -DPARSER_MODE -I$(PARSER_DIR) -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC)
+
+$(PARSER): $(PARSER_TAB_C) $(PARSER_LEX_SRC) $(PARSER_DIR)/ir.c $(PARSER_DIR)/ir.h
+	$(CC) $(CFLAGS) -DYYDEBUG=1 -DPARSER_MODE -I$(PARSER_DIR) -o $(PARSER) $(PARSER_TAB_C) $(PARSER_LEX_SRC) $(PARSER_DIR)/ir.c
 
 $(PARSER_DIR)/parsing_table/lalr1_table_full.csv: $(PARSER_DIR)/kernalex.output $(PARSER_DIR)/parsing_table/generate_lalr_table.py
 	python3 $(PARSER_DIR)/parsing_table/generate_lalr_table.py $(PARSER_DIR)/kernalex.output $(PARSER_DIR)/parsing_table/lalr1_table_full

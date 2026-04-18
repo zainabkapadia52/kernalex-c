@@ -1,0 +1,1 @@
+[IR ERROR] Unsupported construct during code generation: switch statement at line 6, col 5 near 'end'

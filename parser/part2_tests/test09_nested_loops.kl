@@ -1,0 +1,11 @@
+int main() begin
+    int i; int j; int sum;
+    sum = 0; i = 0;
+    while (i < 10) begin
+        for (j = 0; j < 5; j = j + 1) begin
+            sum = sum + 1;
+        end
+        i = i + 1;
+    end
+    return sum;
+end
