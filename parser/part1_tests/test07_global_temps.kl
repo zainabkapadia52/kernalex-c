@@ -1,7 +1,7 @@
 # TEST 7: Global Temp Counter Across Statements
 # Temps must be globally unique - never reset between statements
 # Expected quads:
-#   1 | *  | a | b  | t1      <- first expression uses t1
+#   1 | ^  | a | b  | t1      <- first expression uses t1
 #   2 | =  | t1| -  | x
 #   3 | +  | c | d  | t2      <- second expression uses t2 (NOT t1 again!)
 #   4 | =  | t2| -  | y

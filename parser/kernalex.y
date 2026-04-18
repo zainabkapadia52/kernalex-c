@@ -258,7 +258,7 @@ multiplicative_expression
     | multiplicative_expression TOK_MULT cast_expression
     {
         char *temp = new_temp();
-        emit_quad("*", $1, $3, temp);
+        emit_quad("^", $1, $3, temp);
         $$ = (char *)malloc(strlen(temp) + 1);
         strcpy($$, temp);
     }
@@ -345,7 +345,7 @@ exclusive_or_expression
 	| exclusive_or_expression TOK_XOR and_expression
 	{
 	    char *t = new_temp();
-	    emit_quad("^", $1, $3, t);
+	    emit_quad("^^", $1, $3, t);
 	    $$ = (char *)malloc(strlen(t) + 1);
 	    strcpy($$, t);
 	}
@@ -415,7 +415,7 @@ assignment_expression
     | unary_expression TOK_MULTEQ assignment_expression
     {
         char *t = new_temp();
-        emit_quad("*", $1, $3, t);
+        emit_quad("^", $1, $3, t);
         emit_quad("=", t, NULL, $1);
         $$ = (char *)malloc(strlen($1) + 1);
         strcpy($$, $1);
@@ -814,7 +814,7 @@ token_names[] = {
     { "TOK_SPACESHIP",  "' <=>'"    },
     { "TOK_PLUS",       "'+'"       },
     { "TOK_MINUS",      "'-'"       },
-    { "TOK_MULT",       "'*'"       },
+    { "TOK_MULT",       "'^'"       },
     { "TOK_DIV",        "'/'"       },
     { "TOK_MOD",        "'%'"       },
     { "TOK_AND",        "'&&'"      },
@@ -822,7 +822,7 @@ token_names[] = {
     { "TOK_NOT",        "'!'"       },
     { "TOK_AMP",        "'&'"       },
     { "TOK_BITOR",      "'|'"       },
-    { "TOK_XOR",        "'^'"       },
+    { "TOK_XOR",        "'^^'"      },
     { "TOK_BITNOT",     "'~'"       },
     { "TOK_LSHIFT",     "'<<'"      },
     { "TOK_RSHIFT",     "'>>'"      },
@@ -830,7 +830,7 @@ token_names[] = {
     { "TOK_DEC",        "'--'"      },
     { "TOK_PLUSEQ",     "'+='"      },
     { "TOK_MINUSEQ",    "'-='"      },
-    { "TOK_MULTEQ",     "'*='"      },
+    { "TOK_MULTEQ",     "'^='"      },
     { "TOK_DIVEQ",      "'/='"      },
     { "TOK_MODEQ",      "'%='"      },
     { "TOK_ARROW",      "'->'"      },

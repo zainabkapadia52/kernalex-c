@@ -6,9 +6,9 @@ FILE: parser/part1_tests/test01_spec_example.kl
 # Input:  a = b ^ -c + b ^ -c   (^ is multiply in KernaLex)
 # Expected quads:
 #   1 | minus | c  | -  | t1
-#   2 | *     | b  | t1 | t2
+#   2 | ^     | b  | t1 | t2
 #   3 | minus | c  | -  | t3
-#   4 | *     | b  | t3 | t4
+#   4 | ^     | b  | t3 | t4
 #   5 | +     | t2 | t4 | t5
 #   6 | =     | t5 | -  | a
 
@@ -24,9 +24,9 @@ end
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
 t1=minus c             | minus    | c             |               | t1            
-t2=b*t1                | *        | b             | t1            | t2            
+t2=b^t1                | ^        | b             | t1            | t2            
 t3=minus c             | minus    | c             |               | t3            
-t4=b*t3                | *        | b             | t3            | t4            
+t4=b^t3                | ^        | b             | t3            | t4            
 t5=t2+t4               | +        | t2            | t4            | t5            
 a=t5                   | =        | t5            |               | a             
 
@@ -40,7 +40,7 @@ FILE: parser/part1_tests/test02_precedence.kl
 # TEST 2: Operator Precedence - ^ (multiply) binds tighter than +/-
 # z = a + b ^ c - d / e % f
 # Expected quads (^ and / and % before + and -):
-#   1 | *  | b | c  | t1      <- b^c first
+#   1 | ^  | b | c  | t1      <- b^c first
 #   2 | /  | d | e  | t2      <- d/e
 #   3 | %  | t2| f  | t3      <- t2%f
 #   4 | +  | a | t1 | t4      <- a + t1
@@ -63,7 +63,7 @@ end
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
-t1=b*c                 | *        | b             | c             | t1            
+t1=b^c                 | ^        | b             | c             | t1            
 t2=a+t1                | +        | a             | t1            | t2            
 t3=d/e                 | /        | d             | e             | t3            
 t4=t3%f                | %        | t3            | f             | t4            
@@ -82,9 +82,9 @@ FILE: parser/part1_tests/test03_parens.kl
 # With parens:  (a + b)^c  -> t1=a+b, t2=t1^c   (addition first)
 # Expected quads:
 #   1 | +  | a  | b  | t1     <- addition FIRST (parenthesised)
-#   2 | *  | t1 | c  | t2     <- then multiply
+#   2 | ^  | t1 | c  | t2     <- then multiply
 #   3 | =  | t2 | -  | x
-#   4 | *  | b  | c  | t3     <- multiply FIRST (no parens)
+#   4 | ^  | b  | c  | t3     <- multiply FIRST (no parens)
 #   5 | +  | a  | t3 | t4     <- then addition
 #   6 | =  | t4 | -  | y
 
@@ -103,9 +103,9 @@ end
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
 t1=a+b                 | +        | a             | b             | t1            
-t2=t1*c                | *        | t1            | c             | t2            
+t2=t1^c                | ^        | t1            | c             | t2            
 x=t2                   | =        | t2            |               | x             
-t3=b*c                 | *        | b             | c             | t3            
+t3=b^c                 | ^        | b             | c             | t3            
 t4=a+t3                | +        | a             | t3            | t4            
 y=t4                   | =        | t4            |               | y             
 
@@ -192,7 +192,7 @@ FILE: parser/part1_tests/test06_compound_assign.kl
 #   1 | =   | 10 | -  | x
 #   2 | +=  | 5  | -  | x      <- x += 5
 #   3 | -=  | 3  | -  | x      <- x -= 3
-#   4 | *=  | 2  | -  | x      <- x ^= 2  (multiply-assign)
+#   4 | ^=  | 2  | -  | x      <- x ^= 2  (multiply-assign)
 #   5 | /=  | 4  | -  | x      <- x /= 4
 #   6 | %=  | 3  | -  | x      <- x %= 3
 # Key check: result column must be 'x', arg1 is the RHS value
@@ -216,7 +216,7 @@ t1=x+5                 | +        | x             | 5             | t1
 x=t1                   | =        | t1            |               | x             
 t2=x-3                 | -        | x             | 3             | t2            
 x=t2                   | =        | t2            |               | x             
-t3=x*2                 | *        | x             | 2             | t3            
+t3=x^2                 | ^        | x             | 2             | t3            
 x=t3                   | =        | t3            |               | x             
 t4=x/4                 | /        | x             | 4             | t4            
 x=t4                   | =        | t4            |               | x             
@@ -233,7 +233,7 @@ FILE: parser/part1_tests/test07_global_temps.kl
 # TEST 7: Global Temp Counter Across Statements
 # Temps must be globally unique - never reset between statements
 # Expected quads:
-#   1 | *  | a | b  | t1      <- first expression uses t1
+#   1 | ^  | a | b  | t1      <- first expression uses t1
 #   2 | =  | t1| -  | x
 #   3 | +  | c | d  | t2      <- second expression uses t2 (NOT t1 again!)
 #   4 | =  | t2| -  | y
@@ -260,7 +260,7 @@ end
 
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
-t1=a*b                 | *        | a             | b             | t1            
+t1=a^b                 | ^        | a             | b             | t1            
 x=t1                   | =        | t1            |               | x             
 t2=c+d                 | +        | c             | d             | t2            
 y=t2                   | =        | t2            |               | y             
@@ -281,7 +281,7 @@ FILE: parser/part1_tests/test08_decl_init.kl
 #
 # Expected quads:
 #   1 | =  | 5  | -  | x      <- from: int x = 5  (declaration)
-#   2 | *  | 3  | 4  | t1     <- from: int y = 3^4 (declaration with expr)
+#   2 | ^  | 3  | 4  | t1     <- from: int y = 3^4 (declaration with expr)
 #   3 | =  | t1 | -  | y
 #   4 | +  | x  | y  | t2     <- from: standalone z = x + y
 #   5 | =  | t2 | -  | z
@@ -299,7 +299,7 @@ end
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
 x=5                    | =        | 5             |               | x             
-t1=3*4                 | *        | 3             | 4             | t1            
+t1=3^4                 | ^        | 3             | 4             | t1            
 y=t1                   | =        | t1            |               | y             
 t2=x+y                 | +        | x             | y             | t2            
 z=t2                   | =        | t2            |               | z             
@@ -318,8 +318,8 @@ FILE: parser/part1_tests/test09_deep_nesting.kl
 # Expected quads (8 operations, strict left-to-right):
 #   1 | +  | a  | b  | t1
 #   2 | -  | c  | d  | t2
-#   3 | *  | t1 | t2 | t3     <- t1 ^ t2
-#   4 | *  | e  | f  | t4     <- e ^ f
+#   3 | ^  | t1 | t2 | t3     <- t1 ^ t2
+#   4 | ^  | e  | f  | t4     <- e ^ f
 #   5 | +  | g  | h  | t5
 #   6 | /  | t4 | t5 | t6
 #   7 | +  | t3 | t6 | t7
@@ -346,8 +346,8 @@ end
 -----------------------+----------+---------------+---------------+---------------
 t1=a+b                 | +        | a             | b             | t1            
 t2=c-d                 | -        | c             | d             | t2            
-t3=t1*t2               | *        | t1            | t2            | t3            
-t4=e*f                 | *        | e             | f             | t4            
+t3=t1^t2               | ^        | t1            | t2            | t3            
+t4=e^f                 | ^        | e             | f             | t4            
 t5=g+h                 | +        | g             | h             | t5            
 t6=t4/t5               | /        | t4            | t5            | t6            
 t7=t3+t6               | +        | t3            | t6            | t7            
@@ -367,7 +367,7 @@ FILE: parser/part1_tests/test10_mixed_unary_binary.kl
 # Step-by-step expected:
 #   1 | minus | a  | -  | t1     <- -a
 #   2 | minus | b  | -  | t2     <- -b
-#   3 | *     | t1 | t2 | t3     <- t1 ^ t2  i.e. (-a)^(-b)
+#   3 | ^     | t1 | t2 | t3     <- t1 ^ t2  i.e. (-a)^(-b)
 #   4 | +     | c  | d  | t4     <- c + d
 #   5 | minus | t4 | -  | t5     <- -(c+d)
 #   6 | +     | t3 | t5 | t6     <- t3 + t5
@@ -390,7 +390,7 @@ end
 -----------------------+----------+---------------+---------------+---------------
 t1=minus a             | minus    | a             |               | t1            
 t2=minus b             | minus    | b             |               | t2            
-t3=t1*t2               | *        | t1            | t2            | t3            
+t3=t1^t2               | ^        | t1            | t2            | t3            
 t4=c+d                 | +        | c             | d             | t4            
 t5=minus t4            | minus    | t4            |               | t5            
 t6=t3+t5               | +        | t3            | t5            | t6            
@@ -412,9 +412,9 @@ end
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
 t1=minus c             | minus    | c             |               | t1            
-t2=b*t1                | *        | b             | t1            | t2            
+t2=b^t1                | ^        | b             | t1            | t2            
 t3=minus c             | minus    | c             |               | t3            
-t4=b*t3                | *        | b             | t3            | t4            
+t4=b^t3                | ^        | b             | t3            | t4            
 t5=t2+t4               | +        | t2            | t4            | t5            
 a=t5                   | =        | t5            |               | a             
 
@@ -436,7 +436,7 @@ end
                        | op       | arg1          | arg2          | result        
 -----------------------+----------+---------------+---------------+---------------
 t1=x+3                 | +        | x             | 3             | t1            
-t2=y*2                 | *        | y             | 2             | t2            
+t2=y^2                 | ^        | y             | 2             | t2            
 
 
 
@@ -458,7 +458,7 @@ end
 x=5                    | =        | 5             |               | x             
 t1=x+3                 | +        | x             | 3             | t1            
 y=t1                   | =        | t1            |               | y             
-t2=y*2                 | *        | y             | 2             | t2            
+t2=y^2                 | ^        | y             | 2             | t2            
 z=t2                   | =        | t2            |               | z             
 
 
@@ -502,7 +502,7 @@ b=10                   | =        | 10            |               | b
 c=3                    | =        | 3             |               | c             
 t1=b+c                 | +        | b             | c             | t1            
 d=t1                   | =        | t1            |               | d             
-t2=a*d                 | *        | a             | d             | t2            
+t2=a^d                 | ^        | a             | d             | t2            
 e=t2                   | =        | t2            |               | e             
 t3=e+a                 | +        | e             | a             | t3            
 result=t3              | =        | t3            |               | result        
@@ -534,7 +534,7 @@ t1=a+b                 | +        | a             | b             | t1
 c=t1                   | =        | t1            |               | c             
 t2=a-b                 | -        | a             | b             | t2            
 d=t2                   | =        | t2            |               | d             
-t3=a*b                 | *        | a             | b             | t3            
+t3=a^b                 | ^        | a             | b             | t3            
 e=t3                   | =        | t3            |               | e             
 t4=a/b                 | /        | a             | b             | t4            
 f=t4                   | =        | t4            |               | f             
@@ -563,11 +563,11 @@ end
 a=2                    | =        | 2             |               | a             
 b=3                    | =        | 3             |               | b             
 c=4                    | =        | 4             |               | c             
-t1=b*c                 | *        | b             | c             | t1            
+t1=b^c                 | ^        | b             | c             | t1            
 t2=a+t1                | +        | a             | t1            | t2            
 d=t2                   | =        | t2            |               | d             
 t3=a+b                 | +        | a             | b             | t3            
-t4=t3*c                | *        | t3            | c             | t4            
+t4=t3^c                | ^        | t3            | c             | t4            
 e=t4                   | =        | t4            |               | e             
 
 
@@ -593,7 +593,7 @@ b=3                    | =        | 3             |               | b
 c=5                    | =        | 5             |               | c             
 t1=a+b                 | +        | a             | b             | t1            
 t2=c-a                 | -        | c             | a             | t2            
-t3=t1*t2               | *        | t1            | t2            | t3            
+t3=t1^t2               | ^        | t1            | t2            | t3            
 t4=t3+b                | +        | t3            | b             | t4            
 result=t4              | =        | t4            |               | result        
 
@@ -657,7 +657,7 @@ end
 x=5                    | =        | 5             |               | x             
 t1=x+3                 | +        | x             | 3             | t1            
 y=t1                   | =        | t1            |               | y             
-t2=y*2                 | *        | y             | 2             | t2            
+t2=y^2                 | ^        | y             | 2             | t2            
 z=t2                   | =        | t2            |               | z             
 
 

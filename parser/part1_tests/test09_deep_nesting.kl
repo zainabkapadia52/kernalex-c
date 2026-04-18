@@ -5,8 +5,8 @@
 # Expected quads (8 operations, strict left-to-right):
 #   1 | +  | a  | b  | t1
 #   2 | -  | c  | d  | t2
-#   3 | *  | t1 | t2 | t3     <- t1 ^ t2
-#   4 | *  | e  | f  | t4     <- e ^ f
+#   3 | ^  | t1 | t2 | t3     <- t1 ^ t2
+#   4 | ^  | e  | f  | t4     <- e ^ f
 #   5 | +  | g  | h  | t5
 #   6 | /  | t4 | t5 | t6
 #   7 | +  | t3 | t6 | t7

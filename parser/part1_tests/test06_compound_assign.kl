@@ -4,7 +4,7 @@
 #   1 | =   | 10 | -  | x
 #   2 | +=  | 5  | -  | x      <- x += 5
 #   3 | -=  | 3  | -  | x      <- x -= 3
-#   4 | *=  | 2  | -  | x      <- x ^= 2  (multiply-assign)
+#   4 | ^=  | 2  | -  | x      <- x ^= 2  (multiply-assign)
 #   5 | /=  | 4  | -  | x      <- x /= 4
 #   6 | %=  | 3  | -  | x      <- x %= 3
 # Key check: result column must be 'x', arg1 is the RHS value

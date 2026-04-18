@@ -5,7 +5,7 @@
 # Step-by-step expected:
 #   1 | minus | a  | -  | t1     <- -a
 #   2 | minus | b  | -  | t2     <- -b
-#   3 | *     | t1 | t2 | t3     <- t1 ^ t2  i.e. (-a)^(-b)
+#   3 | ^     | t1 | t2 | t3     <- t1 ^ t2  i.e. (-a)^(-b)
 #   4 | +     | c  | d  | t4     <- c + d
 #   5 | minus | t4 | -  | t5     <- -(c+d)
 #   6 | +     | t3 | t5 | t6     <- t3 + t5

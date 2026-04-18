@@ -2476,7 +2476,7 @@ yyreduce:
 #line 259 "parser/kernalex.y"
     {
         char *temp = new_temp();
-        emit_quad("*", (yyvsp[-2].temp), (yyvsp[0].temp), temp);
+        emit_quad("^", (yyvsp[-2].temp), (yyvsp[0].temp), temp);
         (yyval.temp) = (char *)malloc(strlen(temp) + 1);
         strcpy((yyval.temp), temp);
     }
@@ -2642,7 +2642,7 @@ yyreduce:
 #line 346 "parser/kernalex.y"
         {
 	    char *t = new_temp();
-	    emit_quad("^", (yyvsp[-2].temp), (yyvsp[0].temp), t);
+	    emit_quad("^^", (yyvsp[-2].temp), (yyvsp[0].temp), t);
 	    (yyval.temp) = (char *)malloc(strlen(t) + 1);
 	    strcpy((yyval.temp), t);
 	}
@@ -2750,7 +2750,7 @@ yyreduce:
 #line 416 "parser/kernalex.y"
     {
         char *t = new_temp();
-        emit_quad("*", (yyvsp[-2].temp), (yyvsp[0].temp), t);
+        emit_quad("^", (yyvsp[-2].temp), (yyvsp[0].temp), t);
         emit_quad("=", t, NULL, (yyvsp[-2].temp));
         (yyval.temp) = (char *)malloc(strlen((yyvsp[-2].temp)) + 1);
         strcpy((yyval.temp), (yyvsp[-2].temp));
@@ -3427,7 +3427,7 @@ token_names[] = {
     { "TOK_SPACESHIP",  "' <=>'"    },
     { "TOK_PLUS",       "'+'"       },
     { "TOK_MINUS",      "'-'"       },
-    { "TOK_MULT",       "'*'"       },
+    { "TOK_MULT",       "'^'"       },
     { "TOK_DIV",        "'/'"       },
     { "TOK_MOD",        "'%'"       },
     { "TOK_AND",        "'&&'"      },
@@ -3435,7 +3435,7 @@ token_names[] = {
     { "TOK_NOT",        "'!'"       },
     { "TOK_AMP",        "'&'"       },
     { "TOK_BITOR",      "'|'"       },
-    { "TOK_XOR",        "'^'"       },
+    { "TOK_XOR",        "'^^'"      },
     { "TOK_BITNOT",     "'~'"       },
     { "TOK_LSHIFT",     "'<<'"      },
     { "TOK_RSHIFT",     "'>>'"      },
@@ -3443,7 +3443,7 @@ token_names[] = {
     { "TOK_DEC",        "'--'"      },
     { "TOK_PLUSEQ",     "'+='"      },
     { "TOK_MINUSEQ",    "'-='"      },
-    { "TOK_MULTEQ",     "'*='"      },
+    { "TOK_MULTEQ",     "'^='"      },
     { "TOK_DIVEQ",      "'/='"      },
     { "TOK_MODEQ",      "'%='"      },
     { "TOK_ARROW",      "'->'"      },

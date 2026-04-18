@@ -29,7 +29,7 @@ label L1:              | label    |               |               | L1
 ifFalse true goto L2   | ifFalse  | true          |               | L2            
 a=b                    | =        | b             |               | a             
 label L2:              | label    |               |               | L2            
-t2=b*c                 | *        | b             | c             | t2            
+t2=b^c                 | ^        | b             | c             | t2            
 t3=a+t2                | +        | a             | t2            | t3            
 t4=d-e                 | -        | d             | e             | t4            
 t5=t3>t4               | >        | t3            | t4            | t5            
@@ -154,7 +154,7 @@ b=1                    | =        | 1             |               | b
 ifFalse x goto L1      | ifFalse  | x             |               | L1            
 t1=a+1                 | +        | a             | 1             | t1            
 a=t1                   | =        | t1            |               | a             
-t2=b*2                 | *        | b             | 2             | t2            
+t2=b^2                 | ^        | b             | 2             | t2            
 b=t2                   | =        | t2            |               | b             
 label L1:              | label    |               |               | L1            
 return a               | return   | a             |               |               

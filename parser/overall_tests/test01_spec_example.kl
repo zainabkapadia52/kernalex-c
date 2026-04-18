@@ -2,9 +2,9 @@
 # Input:  a = b ^ -c + b ^ -c   (^ is multiply in KernaLex)
 # Expected quads:
 #   1 | minus | c  | -  | t1
-#   2 | *     | b  | t1 | t2
+#   2 | ^     | b  | t1 | t2
 #   3 | minus | c  | -  | t3
-#   4 | *     | b  | t3 | t4
+#   4 | ^     | b  | t3 | t4
 #   5 | +     | t2 | t4 | t5
 #   6 | =     | t5 | -  | a
 

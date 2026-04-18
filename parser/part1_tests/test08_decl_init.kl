@@ -5,7 +5,7 @@
 #
 # Expected quads:
 #   1 | =  | 5  | -  | x      <- from: int x = 5  (declaration)
-#   2 | *  | 3  | 4  | t1     <- from: int y = 3^4 (declaration with expr)
+#   2 | ^  | 3  | 4  | t1     <- from: int y = 3^4 (declaration with expr)
 #   3 | =  | t1 | -  | y
 #   4 | +  | x  | y  | t2     <- from: standalone z = x + y
 #   5 | =  | t2 | -  | z
